@@ -7,6 +7,8 @@ creating an issue at: https://github.com/WoLpH/alfred-converter/issues
 
 Example queries
 
+::
+
     1m in cm # Just a simple conversion
     2^30 byte # Using powers before conversion
     5' # Converting units with special characters
