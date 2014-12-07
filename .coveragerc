@@ -1,0 +1,25 @@
+[report]
+fail_under = 100
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    if self.debug:
+    if settings.DEBUG
+    raise AssertionError
+    raise NotImplementedError
+    if 0:
+    if __name__ == .__main__.:
+    if six.PY2:
+    if six.PY3:
+
+[run]
+branch = True
+
+omit =
+    */mock/*
+    */nose/*
+    */tests/*
+
+[paths]
+source =
+    converter
