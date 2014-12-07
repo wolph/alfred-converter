@@ -23,6 +23,10 @@ Example queries
     ((1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis the other way
     inf - inf # Not actually possible, but we backtrack to "inf"
 
+.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/bytes.png
+
+.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/square_metres.png
+
+
 The list of units and conversions was downloaded from:
 http://w3.energistics.org/uom/poscUnits22.xml
-
