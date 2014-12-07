@@ -1,4 +1,4 @@
-Alfred Calculor is a smart calculator for Alfred with support for unit
+Alfred unit converter is a smart calculator for Alfred with support for unit
 conversions to make it a bit comparable to the Google Calculator and Wolfram
 Alpha.
 
