@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>bundleid</key>
-	<string></string>
+	<string>wolph-unit-converter</string>
 	<key>category</key>
 	<string>Productivity</string>
 	<key>connections</key>
@@ -153,9 +153,9 @@
 		</array>
 	</dict>
 	<key>createdby</key>
-	<string></string>
+	<string>Wolph</string>
 	<key>description</key>
-	<string>Simple tool to convert from one unit to another</string>
+	<string>Simple tool to convert measurements with advanced calculation support</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -561,7 +561,31 @@ main.scriptfilter('''{query}''')</string>
 		</dict>
 	</array>
 	<key>readme</key>
-	<string></string>
+	<string>Alfred Calculor is a smart calculator for Alfred with support for unit
+conversions to make it a bit comparable to the Google Calculator and Wolfram
+Alpha.
+
+If new units and/or other names for units should be added please let me know by
+creating an issue at: https://github.com/WoLpH/alfred-converter/issues
+
+Example queries
+
+    1m in cm # Just a simple conversion
+    2^30 byte # Using powers before conversion
+    5' # Converting units with special characters
+    20" # Like above
+    5 * cos(pi + 2) # Executing mathematical functions
+    5 * pi + 2 mm in m # Mathematical constants with unit conversion
+    1 * cos(pi/2) - sin(pi^2) # More advanced mathematical expressions
+    ln(e^10) # Testing the ln(x) alias of log _e(x)
+    log(e^10) # The normal log method
+    5+3^2" in mm # Testing math with unit conversion
+    1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis with unit conversion
+    ((1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis the other way
+    inf - inf # Not actually possible, but we backtrack to "inf"
+
+The list of units and conversions was downloaded from:
+http://w3.energistics.org/uom/poscUnits22.xml</string>
 	<key>uidata</key>
 	<dict>
 		<key>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</key>
@@ -640,6 +664,6 @@ main.scriptfilter('''{query}''')</string>
 		</dict>
 	</dict>
 	<key>webaddress</key>
-	<string></string>
+	<string>http://wol.ph/</string>
 </dict>
 </plist>
