@@ -267,11 +267,19 @@ def main(units, query, create_item):
     for from_, quantity, to in units.convert(query):
         if from_:
             base_quantity = from_.to_base(quantity)
-
             new_quantity = to.from_base(base_quantity)
 
+            quantity = quantity.normalize()
+            new_quantity = new_quantity.normalize()
+            base_quantity = base_quantity.normalize()
+
             yield create_item(
-                title='%s %s = %s %s' % (from_, quantity, to, new_quantity),
+                title='%s %s = %s %s' % (
+                    from_,
+                    quantity,
+                    to,
+                    new_quantity,
+                ),
                 subtitle=('Action this item to copy the converted value '
                           'to the clipboard'),
                 attrib=dict(
@@ -282,6 +290,8 @@ def main(units, query, create_item):
                 ),
             )
         else:
+            quantity = quantity.normalize()
+
             yield create_item(
                 title='%s' % quantity,
                 subtitle=('Action this item to copy the converted value to '
