@@ -25,8 +25,11 @@ Example queries
 
 .. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/bytes.png
 
-.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/square_metres.png
+.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/exponent_rounding.png
 
+.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/mathematical_functions.png
+
+.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/square_metres.png
 
 The list of units and conversions was downloaded from:
 http://w3.energistics.org/uom/poscUnits22.xml
