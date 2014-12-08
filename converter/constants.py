@@ -3,6 +3,8 @@ import re
 UNITS_XML_FILE = 'poscUnits22.xml'
 UNITS_PICKLE_FILE = 'units.pickle'
 
+OUTPUT_DECIMALS = 6
+
 
 SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s][^\s]*)'
 SOURCE_RE = re.compile(SOURCE_PATTERN + '$', re.IGNORECASE | re.VERBOSE)

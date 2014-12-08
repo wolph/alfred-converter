@@ -261,6 +261,18 @@ def clean_query(query):
     return query
 
 
+def decimal_to_string(value):
+    '''This strips trailing zeros without converting to 0e0 for 0'''
+    with decimal.localcontext() as context:
+        value = value.quantize(
+            decimal.Decimal(10) ** -constants.OUTPUT_DECIMALS, context=context)
+
+        value = str(value)
+        if '.' in value:
+            value = value.rstrip('0').rstrip('.')
+        return value
+
+
 def main(units, query, create_item):
     query = clean_query(query)
 
@@ -269,9 +281,9 @@ def main(units, query, create_item):
             base_quantity = from_.to_base(quantity)
             new_quantity = to.from_base(base_quantity)
 
-            quantity = quantity.normalize()
-            new_quantity = new_quantity.normalize()
-            base_quantity = base_quantity.normalize()
+            quantity = decimal_to_string(quantity)
+            new_quantity = decimal_to_string(new_quantity)
+            base_quantity = decimal_to_string(base_quantity)
 
             yield create_item(
                 title='%s %s = %s %s' % (
@@ -290,7 +302,7 @@ def main(units, query, create_item):
                 ),
             )
         else:
-            quantity = quantity.normalize()
+            quantity = decimal_to_string(quantity)
 
             yield create_item(
                 title='%s' % quantity,
