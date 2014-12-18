@@ -314,8 +314,6 @@ def main(units, query, create_item):
             new_quantity = decimal_to_string(new_quantity)
             base_quantity = decimal_to_string(base_quantity)
 
-            print from_.quantity_types
-
             yield create_item(
                 title='%s %s = %s %s' % (
                     from_,
@@ -335,17 +333,59 @@ def main(units, query, create_item):
                 ),
             )
         else:
-            quantity = decimal_to_string(quantity)
+            q_str = decimal_to_string(quantity)
 
             yield create_item(
-                title='%s' % quantity,
+                title='%s' % q_str,
                 subtitle=('Action this item to copy the converted value to '
                           'the clipboard'),
                 icon='icons/calculator63.png',
                 attrib=dict(
-                    uid=quantity,
-                    arg=quantity,
+                    uid=q_str,
+                    arg=q_str,
                     valid='yes',
                 ),
             )
+
+            if q_str.isdigit() or (q_str[0] == '-' and q_str[1:].isdigit()):
+                quantity = int(quantity)
+
+                q_hex = hex(quantity)
+                yield create_item(
+                    title='%s' % q_hex,
+                    subtitle=('Action this item to copy the converted value '
+                              'to the clipboard'),
+                    icon='icons/calculator63.png',
+                    attrib=dict(
+                        uid=q_hex,
+                        arg=q_hex,
+                        valid='yes',
+                    ),
+                )
+
+                q_oct = oct(quantity)
+                yield create_item(
+                    title='%s' % q_oct,
+                    subtitle=('Action this item to copy the converted value '
+                              'to the clipboard'),
+                    icon='icons/calculator63.png',
+                    attrib=dict(
+                        uid=q_oct,
+                        arg=q_oct,
+                        valid='yes',
+                    ),
+                )
+
+                q_bin = bin(quantity)
+                yield create_item(
+                    title='%s' % q_bin,
+                    subtitle=('Action this item to copy the converted value '
+                              'to the clipboard'),
+                    icon='icons/calculator63.png',
+                    attrib=dict(
+                        uid=q_bin,
+                        arg=q_bin,
+                        valid='yes',
+                    ),
+                )
 

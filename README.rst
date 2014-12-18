@@ -22,6 +22,7 @@ Example queries
     1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis with unit conversion
     ((1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis the other way
     inf - inf # Not actually possible, but we backtrack to "inf"
+    0b1010 + 0xA - 050
 
 .. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/bytes.png
 
@@ -30,6 +31,8 @@ Example queries
 .. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/mathematical_functions.png
 
 .. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/square_metres.png
+
+.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/bin_oct_hex.png
 
 The list of units and conversions was downloaded from:
 http://w3.energistics.org/uom/poscUnits22.xml

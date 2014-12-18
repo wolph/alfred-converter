@@ -17,6 +17,7 @@ log(e^10) # The normal log method
 ((1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis the other way
 2^3 cm^2 in mm^2 # Test units with powers
 10 m/s in mm/s # Test units with multiple sub-units
+0b1010 + 0xA - 050 # Test calculations with hex, oct and binary numbers
 '''.split('\n')
 
 
