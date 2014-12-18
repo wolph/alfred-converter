@@ -8,12 +8,12 @@ from xml.etree import cElementTree as ET
 def create_item(parent, attrib={}, **kwargs):
     # Make sure all attributes are strings
     for k in list(attrib):
-        attrib[k] = str(attrib[k])
+        attrib[k] = unicode(attrib[k])
 
     item = ET.SubElement(parent, 'item', attrib)
     for k, v in kwargs.items():
         elem = ET.SubElement(item, k)
-        elem.text = str(v)
+        elem.text = unicode(v)
 
     return item
 
