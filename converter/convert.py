@@ -116,6 +116,10 @@ class Units(object):
                 self.register(elem)
 
     def convert(self, query):
+        '''Convert a query to a list of units with quantities
+
+        :rtype: list of (Unit, decimal.Decimal, Unit)
+        '''
         match = constants.FULL_RE.match(query)
         source_match = constants.SOURCE_RE.match(query)
 
@@ -154,6 +158,13 @@ class Units(object):
             yield None, quantity, None
 
     def get(self, name):
+        '''Get a unit with the given name or annotation
+
+        :param str name: Unit name or annotation
+
+        :return: Returns unit
+        :rtype: Unit
+        '''
         unit = self.units.get(name)
         if not unit:
             unit = self.annotations.get(name)
@@ -183,6 +194,11 @@ class Unit(object):
         self.quantity_types = set(quantity_types)
         self.base_unit = base_unit
         self.conversion_params = conversion_params
+
+    def get_icon(self):
+        for quantity_type in self.quantity_types:  # pragma: no branch
+            if quantity_type in constants.ICONS:
+                return constants.ICONS[quantity_type]
 
     def to_base(self, value):
         a, b, c, d = map(decimal.Decimal, self.conversion_params)
@@ -262,14 +278,27 @@ def clean_query(query):
 
 
 def decimal_to_string(value):
-    '''This strips trailing zeros without converting to 0e0 for 0'''
+    '''This strips trailing zeros without converting to 0e0 for 0
+
+    >>> decimal_to_string(decimal.Decimal('1.2345'))
+    '1.2345'
+    >>> decimal_to_string(decimal.Decimal('1.2000000000000000000000000000001'))
+    '1.2'
+    >>> decimal_to_string(decimal.Decimal('1.01'))
+    '1.01'
+    >>> decimal_to_string(decimal.Decimal('1.10'))
+    '1.1'
+    >>> decimal_to_string(decimal.Decimal('1.00'))
+    '1'
+    >>> decimal_to_string(decimal.Decimal('1'))
+    '1'
+    '''
     with decimal.localcontext() as context:
         value = value.quantize(
             decimal.Decimal(10) ** -constants.OUTPUT_DECIMALS, context=context)
 
         value = str(value)
-        if '.' in value:
-            value = value.rstrip('0').rstrip('.')
+        value = value.rstrip('0').rstrip('.')
         return value
 
 
@@ -285,6 +314,8 @@ def main(units, query, create_item):
             new_quantity = decimal_to_string(new_quantity)
             base_quantity = decimal_to_string(base_quantity)
 
+            print from_.quantity_types
+
             yield create_item(
                 title='%s %s = %s %s' % (
                     from_,
@@ -294,6 +325,8 @@ def main(units, query, create_item):
                 ),
                 subtitle=('Action this item to copy the converted value '
                           'to the clipboard'),
+                icon='icons/' + (to.get_icon() or from_.get_icon()
+                                 or constants.DEFAULT_ICON),
                 attrib=dict(
                     uid='%s to %s' % (from_.id, to.id),
                     arg=new_quantity,
@@ -308,13 +341,11 @@ def main(units, query, create_item):
                 title='%s' % quantity,
                 subtitle=('Action this item to copy the converted value to '
                           'the clipboard'),
+                icon='icons/calculator63.png',
                 attrib=dict(
                     uid=quantity,
                     arg=quantity,
                     valid='yes',
                 ),
             )
-
-if __name__ == '__main__':
-    Units.dump()
 

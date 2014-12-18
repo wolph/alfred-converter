@@ -13,6 +13,21 @@ FULL_PATTERN = r'(\s+as|\s+to|\s+in|\s*>|\s*=)\s(?P<to>[^\d\s][^\s]*)$'
 FULL_RE = re.compile(SOURCE_PATTERN + FULL_PATTERN + '$',
                      re.IGNORECASE | re.VERBOSE)
 
+ICONS = {
+    'length': 'scale6.png',
+    'height': 'scale6.png',
+    'distance': 'scale6.png',
+    'area': 'scaling1.png',
+    'time': 'round27.png',
+    'thermodynamic temperature': 'thermometer19.png',
+    'volume': 'measuring3.png',
+    'mass': 'weight4.png',
+    'velocity': 'timer18.png',
+    'level of power intensity': 'treble2.png',
+    'digital storage': 'binary9.png',
+}
+DEFAULT_ICON = 'ruler9.png'
+
 ANNOTATION_REPLACEMENTS = {
     'metre': ('metres', 'meter', 'meters'),
     'inch': ('inches', '"'),
