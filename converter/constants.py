@@ -49,6 +49,9 @@ FUNCTION_ALIASES = {
     'deg': 'degrees',
     'rad': 'radians',
     'ln': 'log',
+    'arccos': 'acos',
+    'arcsin': 'asin',
+    'arctan': 'atan',
 }
 FUNCTION_ALIASES_RE = re.compile(r'\b(%s)\(' % '|'.join(FUNCTION_ALIASES))
 
@@ -116,5 +119,8 @@ MATH_FUNCTIONS = [
     'erfc',
     'gamma',
     'lgamma',
+
+    # Missing functions won't break anything but won't do anything either
+    'this_function_definitely_does_not_exist',
 ]
 

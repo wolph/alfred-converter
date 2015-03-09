@@ -9,16 +9,7 @@
 	<key>connections</key>
 	<dict>
 		<key>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</key>
-		<array>
-			<dict>
-				<key>destinationuid</key>
-				<string>6CA6839F-674D-4E9A-A54C-AC2A4A663EB1</string>
-				<key>modifiers</key>
-				<integer>0</integer>
-				<key>modifiersubtext</key>
-				<string></string>
-			</dict>
-		</array>
+		<array/>
 		<key>5E060269-88B3-4259-A125-92E4B3E8942C</key>
 		<array>
 			<dict>
@@ -31,6 +22,17 @@
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E0</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</key>
 		<array>
 			<dict>
 				<key>destinationuid</key>
@@ -170,34 +172,6 @@
 				<key>escaping</key>
 				<integer>0</integer>
 				<key>keyword</key>
-				<string>1</string>
-				<key>runningsubtext</key>
-				<string>Converting...</string>
-				<key>script</key>
-				<string>from converter import main
-main.scriptfilter('''1{query}''')</string>
-				<key>title</key>
-				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
-				<key>type</key>
-				<integer>3</integer>
-				<key>withspace</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.input.scriptfilter</string>
-			<key>uid</key>
-			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</string>
-			<key>version</key>
-			<integer>0</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>argumenttype</key>
-				<integer>1</integer>
-				<key>escaping</key>
-				<integer>0</integer>
-				<key>keyword</key>
 				<string>0</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
@@ -229,25 +203,35 @@ main.scriptfilter('''0{query}''')</string>
 			<key>type</key>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
-			<string>6CA6839F-674D-4E9A-A54C-AC2A4A663EB1</string>
+			<string>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
 				<key>escaping</key>
-				<integer>127</integer>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>1</string>
+				<key>runningsubtext</key>
+				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-convert.action('''{query}''')</string>
+main.scriptfilter('''1{query}''')</string>
+				<key>title</key>
+				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
 				<integer>3</integer>
+				<key>withspace</key>
+				<false/>
 			</dict>
 			<key>type</key>
-			<string>alfred.workflow.action.script</string>
+			<string>alfred.workflow.input.scriptfilter</string>
 			<key>uid</key>
-			<string>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</string>
+			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
@@ -604,9 +588,15 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 			<real>60</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E0</key>
-		<dict/>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</key>
-		<dict/>
+		<dict>
+			<key>ypos</key>
+			<real>80</real>
+		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E2</key>
 		<dict>
 			<key>ypos</key>
