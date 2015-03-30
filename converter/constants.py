@@ -29,10 +29,19 @@ ICONS = {
 DEFAULT_ICON = 'ruler9.png'
 
 ANNOTATION_REPLACEMENTS = {
+    'litre': ('liter', 'liters', 'l'),
     'metre': ('metres', 'meter', 'meters'),
     'inch': ('inches', '"'),
-    'm2': ('m^2',),
-    'm3': ('m^3',),
+    'm2': ('m^2', 'meter^2', 'metre^2'),
+    'm3': ('m^3', 'meter^3', 'metre^3'),
+    'dm2': ('dm^2', 'meter^2', 'metre^2'),
+    'dm3': ('dm^3', 'meter^3', 'metre^3'),
+    'cm2': ('cm^2', 'centimeter^2', 'centimetre^2'),
+    'cm3': ('cm^3', 'centimeter^3', 'centimetre^3'),
+    'mm2': ('mm^2', 'milimeter^2', 'milimetre^2', 'millimeter^2',
+            'millimetre^2'),
+    'mm3': ('mm^3', 'milimeter^3', 'milimetre^3', 'millimeter^3',
+            'millimetre^3'),
     'sq ': ('square ',),
     'foot': ('feet', "'"),
     'degF': ('f', 'fahrenheit', 'farhenheit', 'farenheit'),
@@ -42,6 +51,20 @@ ANNOTATION_REPLACEMENTS = {
     'kbyte': ('KB', 'kB', 'kb', 'kilobyte',),
     'Mbyte': ('MB', 'megabyte',),
 }
+
+# Mostly for language specific stuff, defaulting to US for now since I'm not
+# easily able to detect the language in a fast way from within alfred
+LOCALIZED_UNITS = (
+    ('metre', 'meter'),
+    ('litre', 'liter'),
+)
+
+
+def localize(input_):
+    for k, v in LOCALIZED_UNITS:
+        if k in input_:
+            return input_.replace(k, v)
+    return input_
 
 RIGHT_TRIMABLE_OPERATORS = '/+*- (.^'
 

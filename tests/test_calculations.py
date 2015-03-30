@@ -8,6 +8,8 @@ EXPRESSIONS = {
     'sqrt(4)*2*sqrt(2^2^2)+2^3-2^5+2^3': '0',
     '(sqrt(sqrt(5)^2)^2^2)^(1/2)': '5',
     '(sqrt(sqrt(5)^2)^2^2)^1/2': '12.5',
+    '10 meter in cm': 'meter 10 = centimeter 1000',
+    '10 metre in cm': 'meter 10 = centimeter 1000',
 }
 
 
@@ -27,10 +29,10 @@ def test_working(test):
             return True
 
     if result:
-        raise RuntimeError('%r didnt return, expected: %r' % (
-            expression, expected_result))
-    else:
         raise RuntimeError('%r returned %r, expected: %r' % (
             expression, result['title'], expected_result))
+    else:
+        raise RuntimeError('%r didnt return, expected: %r' % (
+            expression, expected_result))
 
 
