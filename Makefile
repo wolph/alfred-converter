@@ -4,5 +4,6 @@ ARGS=--recurse-paths --verbose
 OUTFILE=unit_converter.alfredworkflow
 
 all:
+	rm -vf ${OUTFILE}
 	zip ${ARGS} ${OUTFILE} ${FILES}
 
