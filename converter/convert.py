@@ -16,14 +16,18 @@ class UnknownUnit(Exception):
 def get_text(parent, name, default=None):
     child = parent.find(name)
     if child is not None:
-        return child.text or default
+        return (child.text or '').strip() or default
     else:
         return default
 
 
-def get_texts(parent, name):
+def _get_texts(parent, name):
     for child in parent.findall(name):
         yield child.text
+
+
+def get_texts(parent, name):
+    return list(_get_texts(parent, name))
 
 
 def parse_quantity(quantity):
@@ -47,6 +51,7 @@ class Units(object):
     def __init__(self):
         self.annotations = {}
         self.units = {}
+        self.ids = {}
         self.base_units = {}
         self.quantity_types = collections.defaultdict(set)
 
@@ -87,7 +92,7 @@ class Units(object):
         base_unit, conversion_params = self.get_converter(elem)
         name = get_text(elem, 'Name') or elem.get('id')
 
-        Unit(
+        unit = Unit(
             units=self,
             id=elem.get('id'),
             name=name,
@@ -98,9 +103,14 @@ class Units(object):
             quantity_types=get_texts(elem, 'QuantityType'),
             base_unit=get_text(elem, 'BaseUnit'),
             conversion_params=conversion_params,
-        ).register(self)
+        )
+
+        unit.register(self)
 
     def load(self, xml_file):
+        import extra_units
+        extra_units.register_pre(self)
+
         from xml.etree import cElementTree as ET
         tree = ET.parse(xml_file)
         root = tree.getroot()
@@ -114,6 +124,8 @@ class Units(object):
                     continue
 
                 self.register(elem)
+
+        extra_units.register_post(self)
 
     def convert(self, query):
         '''Convert a query to a list of units with quantities
@@ -195,6 +207,20 @@ class Unit(object):
         self.base_unit = base_unit
         self.conversion_params = conversion_params
 
+    def copy(self, id, conversion_params, **kwargs):
+        annotations = []
+        data = dict(
+            units=self.units,
+            annotations=annotations,
+            quantity_types=self.quantity_types,
+            base_unit=self.base_unit,
+        )
+        data.update(kwargs)
+        data['id'] = id
+        data['name'] = kwargs.get('name', id)
+        data['conversion_params'] = map(str, conversion_params)
+        return Unit(**data)
+
     def get_icon(self):
         for quantity_type in self.quantity_types:  # pragma: no branch
             if quantity_type in constants.ICONS:
@@ -209,6 +235,7 @@ class Unit(object):
         return (a - c * value) / (d * value - b)
 
     def register(self, units):
+        units.ids[self.id] = self
         units.units[self.name] = self
 
         for annotation in self.annotations:
@@ -323,8 +350,8 @@ def main(units, query, create_item):
                 ),
                 subtitle=('Action this item to copy the converted value '
                           'to the clipboard'),
-                icon='icons/' + (to.get_icon() or from_.get_icon()
-                                 or constants.DEFAULT_ICON),
+                icon='icons/' + (to.get_icon() or from_.get_icon() or
+                                 constants.DEFAULT_ICON),
                 attrib=dict(
                     uid='%s to %s' % (from_.id, to.id),
                     arg=new_quantity,

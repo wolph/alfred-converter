@@ -5,6 +5,9 @@ import functools
 from xml.etree import cElementTree as ET
 
 
+DEBUG = os.environ.get('DEBUG_CONVERTER')
+
+
 def create_item(parent, attrib={}, **kwargs):
     # Make sure all attributes are strings
     for k in list(attrib):
@@ -25,6 +28,10 @@ def item_creator(parent):
     return _item_creator
 
 
+def debug_item_creator(attrib, **kwargs):
+    return kwargs
+
+
 def to_xml(f):
     @functools.wraps(f)
     def _to_xml(*args, **kwargs):
@@ -36,8 +43,9 @@ def to_xml(f):
 
             f(items, *args, **kwargs)
 
-            assert items, 'No results for %r' % args
-            tree.write(sys.__stdout__)
+            if not DEBUG:
+                assert items, 'No results for %r' % args
+                tree.write(sys.__stdout__)
 
         except Exception, e:  # pragma: no cover
             items = ET.Element('items')
@@ -65,6 +73,7 @@ def scriptfilter(items, query):
     import cPickle as pickle
 
     try:
+        assert not DEBUG
         with open(constants.UNITS_PICKLE_FILE, 'rb') as fh:
             units = pickle.load(fh)
     except:  # pragma: no cover
@@ -77,7 +86,12 @@ def scriptfilter(items, query):
         with open(constants.UNITS_PICKLE_FILE, 'rb') as fh:
             units = pickle.load(fh)
 
-    list(convert.main(units, query, item_creator(items)))
+    if DEBUG:
+        import pprint
+        items = list(convert.main(units, query, debug_item_creator))
+        pprint.pprint(items)
+    else:
+        list(convert.main(units, query, item_creator(items)))
 
 
 if __name__ == '__main__':
