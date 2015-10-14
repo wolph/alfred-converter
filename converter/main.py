@@ -28,7 +28,7 @@ def item_creator(parent):
     return _item_creator
 
 
-def debug_item_creator(attrib, **kwargs):
+def debug_item_creator(attrib, **kwargs):  # pragma: no cover
     return kwargs
 
 

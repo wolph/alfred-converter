@@ -207,7 +207,7 @@ class Unit(object):
         self.base_unit = base_unit
         self.conversion_params = conversion_params
 
-    def copy(self, id, conversion_params, **kwargs):
+    def copy(self, id, conversion_params, **kwargs):  # pragma: no cover
         annotations = []
         data = dict(
             units=self.units,

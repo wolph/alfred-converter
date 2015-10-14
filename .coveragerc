@@ -11,6 +11,8 @@ exclude_lines =
     if __name__ == .__main__.:
     if six.PY2:
     if six.PY3:
+    if DEBUG:
+    if not DEBUG:
 
 [run]
 branch = True
