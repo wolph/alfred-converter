@@ -58,6 +58,44 @@
   </DocumentInformation>
 
   <UnitsDefinition>
+        <UnitOfMeasure id="$Py" annotation="dpy">
+      <Name>$/year</Name>
+      <QuantityType>dollar per time</QuantityType>
+      <DimensionalClass>1/T</DimensionalClass>
+      <BaseUnit/>
+    </UnitOfMeasure>
+    <UnitOfMeasure id="$Ph" annotation="dph">
+      <Name>$/hour</Name>
+      <QuantityType>dollar per time</QuantityType>
+      <DimensionalClass>1/T</DimensionalClass>
+      <ConversionToBaseUnit baseUnit="dpy">
+        <Factor>2087</Factor>
+      </ConversionToBaseUnit>
+    </UnitOfMeasure>
+    <UnitOfMeasure id="$Pm" annotation="dpm">
+      <Name>$/month</Name>
+      <QuantityType>dollar per time</QuantityType>
+      <DimensionalClass>1/T</DimensionalClass>
+      <ConversionToBaseUnit baseUnit="dpy">
+        <Factor>12</Factor>
+      </ConversionToBaseUnit>
+    </UnitOfMeasure>
+    <UnitOfMeasure id="$Pd" annotation="dpd">
+      <Name>$/work day</Name>
+      <QuantityType>dollar per time</QuantityType>
+      <DimensionalClass>1/T</DimensionalClass>
+      <ConversionToBaseUnit baseUnit="dpy">
+        <Factor>261</Factor>
+      </ConversionToBaseUnit>
+    </UnitOfMeasure>
+    <UnitOfMeasure id="$Pw" annotation="dpw">
+      <Name>$/week</Name>
+      <QuantityType>dollar per time</QuantityType>
+      <DimensionalClass>1/T</DimensionalClass>
+      <ConversionToBaseUnit baseUnit="dpy">
+        <Factor>52</Factor>
+      </ConversionToBaseUnit>
+    </UnitOfMeasure>
 
     <UnitOfMeasure id="1PH" annotation="1/H">
       <Name>inverse henry</Name>
