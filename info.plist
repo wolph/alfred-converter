@@ -142,6 +142,17 @@
 				<string></string>
 			</dict>
 		</array>
+		<key>87B4FA40-AE32-4F0F-A763-0F7633244946</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
 		<key>B9E7F633-5C7A-405B-894B-BBDFB09DE5C8</key>
 		<array>
 			<dict>
@@ -694,6 +705,42 @@ main.scriptfilter('''({query}''')</string>
 			<key>version</key>
 			<integer>0</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>-</string>
+				<key>queuedelaycustom</key>
+				<integer>1</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<false/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Converting...</string>
+				<key>script</key>
+				<string>from converter import main
+main.scriptfilter('''-{query}''')</string>
+				<key>title</key>
+				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
+				<key>type</key>
+				<integer>3</integer>
+				<key>withspace</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>87B4FA40-AE32-4F0F-A763-0F7633244946</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
 	</array>
 	<key>readme</key>
 	<string>Alfred Calculor is a smart calculator for Alfred with support for unit
@@ -807,6 +854,11 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<dict>
 			<key>ypos</key>
 			<real>1330</real>
+		</dict>
+		<key>87B4FA40-AE32-4F0F-A763-0F7633244946</key>
+		<dict>
+			<key>ypos</key>
+			<real>1550</real>
 		</dict>
 	</dict>
 	<key>webaddress</key>
