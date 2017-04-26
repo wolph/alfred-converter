@@ -19,6 +19,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>5E060269-88B3-4259-A125-92E4B3E8942C</key>
@@ -30,6 +32,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E0</key>
@@ -41,6 +45,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</key>
@@ -52,6 +58,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E2</key>
@@ -63,6 +71,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E3</key>
@@ -74,6 +84,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E4</key>
@@ -85,6 +97,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E5</key>
@@ -96,6 +110,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E6</key>
@@ -107,6 +123,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E7</key>
@@ -118,6 +136,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E8</key>
@@ -129,6 +149,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E9</key>
@@ -140,6 +162,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>87B4FA40-AE32-4F0F-A763-0F7633244946</key>
@@ -151,6 +175,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>B9E7F633-5C7A-405B-894B-BBDFB09DE5C8</key>
@@ -162,6 +188,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 		<key>E42A313A-CE15-4A7E-B4B7-AAA7ADCBA21E</key>
@@ -173,6 +201,8 @@
 				<integer>0</integer>
 				<key>modifiersubtext</key>
 				<string></string>
+				<key>vitoclose</key>
+				<false/>
 			</dict>
 		</array>
 	</dict>
@@ -189,6 +219,8 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -208,6 +240,12 @@
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''0{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -220,11 +258,13 @@ main.scriptfilter('''0{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E0</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -244,6 +284,12 @@ main.scriptfilter('''0{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''1{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -256,11 +302,13 @@ main.scriptfilter('''1{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -280,6 +328,12 @@ main.scriptfilter('''1{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''2{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -292,11 +346,13 @@ main.scriptfilter('''2{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E2</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -316,6 +372,12 @@ main.scriptfilter('''2{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''3{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -328,11 +390,13 @@ main.scriptfilter('''3{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E3</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -352,6 +416,12 @@ main.scriptfilter('''3{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''4{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -364,11 +434,13 @@ main.scriptfilter('''4{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E4</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -388,6 +460,12 @@ main.scriptfilter('''4{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''5{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -400,11 +478,13 @@ main.scriptfilter('''5{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E5</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -424,6 +504,12 @@ main.scriptfilter('''5{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''6{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -436,7 +522,7 @@ main.scriptfilter('''6{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E6</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -445,17 +531,21 @@ main.scriptfilter('''6{query}''')</string>
 				<false/>
 				<key>clipboardtext</key>
 				<string>{query}</string>
+				<key>transient</key>
+				<false/>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
 			<string>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -475,6 +565,12 @@ main.scriptfilter('''6{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''7{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -487,11 +583,13 @@ main.scriptfilter('''7{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E7</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -511,6 +609,12 @@ main.scriptfilter('''7{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''8{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -523,11 +627,13 @@ main.scriptfilter('''8{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E8</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -547,6 +653,12 @@ main.scriptfilter('''8{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''9{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -559,11 +671,13 @@ main.scriptfilter('''9{query}''')</string>
 			<key>uid</key>
 			<string>7DD3BDE5-A157-42E5-9376-F681FB50A4E9</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -583,6 +697,12 @@ main.scriptfilter('''9{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''0.{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -595,11 +715,13 @@ main.scriptfilter('''0.{query}''')</string>
 			<key>uid</key>
 			<string>B9E7F633-5C7A-405B-894B-BBDFB09DE5C8</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -619,6 +741,12 @@ main.scriptfilter('''0.{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -631,11 +759,13 @@ main.scriptfilter('''{query}''')</string>
 			<key>uid</key>
 			<string>5E060269-88B3-4259-A125-92E4B3E8942C</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -655,6 +785,12 @@ main.scriptfilter('''{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -667,11 +803,13 @@ main.scriptfilter('''{query}''')</string>
 			<key>uid</key>
 			<string>E42A313A-CE15-4A7E-B4B7-AAA7ADCBA21E</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -691,6 +829,12 @@ main.scriptfilter('''{query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''({query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -703,11 +847,13 @@ main.scriptfilter('''({query}''')</string>
 			<key>uid</key>
 			<string>4CC56A28-09F3-4387-A540-81DCB4DC8C14</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -727,6 +873,12 @@ main.scriptfilter('''({query}''')</string>
 				<key>script</key>
 				<string>from converter import main
 main.scriptfilter('''-{query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
@@ -739,7 +891,7 @@ main.scriptfilter('''-{query}''')</string>
 			<key>uid</key>
 			<string>87B4FA40-AE32-4F0F-A763-0F7633244946</string>
 			<key>version</key>
-			<integer>0</integer>
+			<integer>2</integer>
 		</dict>
 	</array>
 	<key>readme</key>
@@ -772,95 +924,128 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 	<dict>
 		<key>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</key>
 		<dict>
+			<key>xpos</key>
+			<integer>700</integer>
 			<key>ypos</key>
 			<real>670</real>
 		</dict>
 		<key>4CC56A28-09F3-4387-A540-81DCB4DC8C14</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>1440</real>
 		</dict>
 		<key>5E060269-88B3-4259-A125-92E4B3E8942C</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>1220</real>
 		</dict>
-		<key>6CA6839F-674D-4E9A-A54C-AC2A4A663EB1</key>
-		<dict>
-			<key>ypos</key>
-			<real>110</real>
-		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E0</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>10</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>120</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E2</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>230</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E3</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>340</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E4</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>450</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E5</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>560</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E6</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>670</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E7</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>780</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E8</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>890</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E9</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>1000</real>
 		</dict>
-		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4EE</key>
+		<key>87B4FA40-AE32-4F0F-A763-0F7633244946</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
-			<real>80</real>
+			<real>1550</real>
 		</dict>
 		<key>B9E7F633-5C7A-405B-894B-BBDFB09DE5C8</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>1110</real>
 		</dict>
 		<key>E42A313A-CE15-4A7E-B4B7-AAA7ADCBA21E</key>
 		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
 			<key>ypos</key>
 			<real>1330</real>
 		</dict>
-		<key>87B4FA40-AE32-4F0F-A763-0F7633244946</key>
-		<dict>
-			<key>ypos</key>
-			<real>1550</real>
-		</dict>
 	</dict>
+	<key>variables</key>
+	<dict>
+		<key>BASE_16</key>
+		<string>true</string>
+		<key>BASE_2</key>
+		<string>true</string>
+		<key>BASE_8</key>
+		<string>true</string>
+	</dict>
+	<key>version</key>
+	<string></string>
 	<key>webaddress</key>
 	<string>http://wol.ph/</string>
 </dict>

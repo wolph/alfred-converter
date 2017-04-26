@@ -3,6 +3,7 @@
 Note that we are _explicityly_ using the system python so we don't rely on
 custom libraries and/or versions
 '''
+import os
 import collections
 import decimal
 import constants
@@ -377,42 +378,45 @@ def main(units, query, create_item):
             if q_str.isdigit() or (q_str[0] == '-' and q_str[1:].isdigit()):
                 quantity = int(quantity)
 
-                q_hex = hex(quantity)
-                yield create_item(
-                    title='%s' % q_hex,
-                    subtitle=('Action this item to copy the converted value '
-                              'to the clipboard'),
-                    icon='icons/calculator63.png',
-                    attrib=dict(
-                        uid=q_hex,
-                        arg=q_hex,
-                        valid='yes',
-                    ),
-                )
+                if os.environ.get('BASE_16', 'true').lower() == 'true':
+                    q_hex = hex(quantity)
+                    yield create_item(
+                        title='%s' % q_hex,
+                        subtitle=('Action this item to copy the converted '
+                                  'value to the clipboard'),
+                        icon='icons/calculator63.png',
+                        attrib=dict(
+                            uid=q_hex,
+                            arg=q_hex,
+                            valid='yes',
+                        ),
+                    )
 
-                q_oct = oct(quantity)
-                yield create_item(
-                    title='%s' % q_oct,
-                    subtitle=('Action this item to copy the converted value '
-                              'to the clipboard'),
-                    icon='icons/calculator63.png',
-                    attrib=dict(
-                        uid=q_oct,
-                        arg=q_oct,
-                        valid='yes',
-                    ),
-                )
+                if os.environ.get('BASE_8', 'true').lower() == 'true':
+                    q_oct = oct(quantity)
+                    yield create_item(
+                        title='%s' % q_oct,
+                        subtitle=('Action this item to copy the converted '
+                                  'value to the clipboard'),
+                        icon='icons/calculator63.png',
+                        attrib=dict(
+                            uid=q_oct,
+                            arg=q_oct,
+                            valid='yes',
+                        ),
+                    )
 
-                q_bin = bin(quantity)
-                yield create_item(
-                    title='%s' % q_bin,
-                    subtitle=('Action this item to copy the converted value '
-                              'to the clipboard'),
-                    icon='icons/calculator63.png',
-                    attrib=dict(
-                        uid=q_bin,
-                        arg=q_bin,
-                        valid='yes',
-                    ),
-                )
+                if os.environ.get('BASE_2', 'true').lower() == 'true':
+                    q_bin = bin(quantity)
+                    yield create_item(
+                        title='%s' % q_bin,
+                        subtitle=('Action this item to copy the converted '
+                                  'value to the clipboard'),
+                        icon='icons/calculator63.png',
+                        attrib=dict(
+                            uid=q_bin,
+                            arg=q_bin,
+                            valid='yes',
+                        ),
+                    )
 
