@@ -302,6 +302,7 @@ def clean_query(query):
     query = query.strip()
     query = constants.POWER_UNIT_RE.sub(constants.POWER_UNIT_REPLACEMENT,
                                         query)
+    query = constants.FOOT_INCH_RE.sub(constants.FOOT_INCH_REPLACE, query)
     return query
 
 
@@ -378,7 +379,11 @@ def main(units, query, create_item):
             if q_str.isdigit() or (q_str[0] == '-' and q_str[1:].isdigit()):
                 quantity = int(quantity)
 
-                if os.environ.get('BASE_16', 'true').lower() == 'true':
+                bases = {
+                    k: os.environ.get('BASE_%d' % k, 'true').lower() == 'true'
+                    for k in (2, 8, 16)}
+
+                if bases[16]:  # pragma: no branch
                     q_hex = hex(quantity)
                     yield create_item(
                         title='%s' % q_hex,
@@ -392,7 +397,7 @@ def main(units, query, create_item):
                         ),
                     )
 
-                if os.environ.get('BASE_8', 'true').lower() == 'true':
+                if bases[8]:  # pragma: no branch
                     q_oct = oct(quantity)
                     yield create_item(
                         title='%s' % q_oct,
@@ -406,7 +411,7 @@ def main(units, query, create_item):
                         ),
                     )
 
-                if os.environ.get('BASE_2', 'true').lower() == 'true':
+                if bases[2]:  # pragma: no branch
                     q_bin = bin(quantity)
                     yield create_item(
                         title='%s' % q_bin,

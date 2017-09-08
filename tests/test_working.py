@@ -6,6 +6,7 @@ TESTS = '''
 1m in cm # Just a simple conversion
 2^30 byte # Using powers before conversion
 5' # Converting units with special characters
+5'6" # Converting combined units with special characters
 20" # Like above
 5 * cos(pi + 2) # Executing mathematical functions
 5 * pi + 2 mm in m # Mathematical constants with unit conversion
@@ -31,6 +32,6 @@ def test_working(test):
 
     # Execute the test
     for result in convert.main(units, test, dict):
-        print result
+        print(result)
 
 

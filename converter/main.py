@@ -47,7 +47,7 @@ def to_xml(f):
                 assert items, 'No results for %r' % args
                 tree.write(sys.__stdout__)
 
-        except Exception, e:  # pragma: no cover
+        except Exception as e:  # pragma: no cover
             items = ET.Element('items')
             tree = ET.ElementTree(items)
             item = ET.SubElement(items, 'item', valid='no')

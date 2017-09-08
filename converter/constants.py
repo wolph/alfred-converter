@@ -86,6 +86,9 @@ def FUNCTION_ALIASES_REPLACEMENT(match):
     return FUNCTION_ALIASES[match.group(1)] + '('
 
 
+FOOT_INCH_RE = re.compile(r'''(\d+)'(\d+)"?''')
+FOOT_INCH_REPLACE = r'(\1*12)+\2 inch'
+
 POWER_UNIT_RE = re.compile(r'([a-z])\^([23])\b')
 POWER_UNIT_REPLACEMENT = r'\g<1>\g<2>'
 

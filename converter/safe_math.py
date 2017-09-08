@@ -30,11 +30,13 @@ BIN_RE = re.compile(r'(?!\.)\b0b([01]+)\b', re.IGNORECASE)
 def BIN_REPLACE(match):
     return str(int(match.group(1), 2))
 
+
 OCT_RE = re.compile(r'(?:[^\.]\b|^)0([0-7]+)\b')
 
 
 def OCT_REPLACE(match):
     return str(int(match.group(1), 8))
+
 
 HEX_RE = re.compile(r'\b0x([a-f0-9]+)\b', re.IGNORECASE)
 
@@ -93,6 +95,6 @@ def safe_eval(query):
 
     try:
         return eval(query, {'__builtins__': None}, safe_dict)
-    except SyntaxError, e:
+    except SyntaxError as e:
         raise SyntaxErr(e)
 
