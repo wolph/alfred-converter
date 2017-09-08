@@ -50,6 +50,8 @@ ANNOTATION_REPLACEMENTS = {
     'bit': ('b', 'bits',),
     'kbyte': ('KB', 'kB', 'kb', 'kilobyte',),
     'Mbyte': ('MB', 'megabyte',),
+    'ozm': ('oz', 'ounce', 'ounces'),
+    'lbm': ('lb', 'lbs', 'pound', 'pounds'),
 }
 
 # Mostly for language specific stuff, defaulting to US for now since I'm not
@@ -65,6 +67,7 @@ def localize(input_):
         if k in input_:
             return input_.replace(k, v)
     return input_
+
 
 RIGHT_TRIMABLE_OPERATORS = '/+*- (.^'
 
