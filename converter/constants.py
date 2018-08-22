@@ -52,6 +52,8 @@ ANNOTATION_REPLACEMENTS = {
     'Mbyte': ('MB', 'megabyte',),
     'ozm': ('oz', 'ounce', 'ounces'),
     'lbm': ('lb', 'lbs', 'pound', 'pounds'),
+    'miPh': ('mph',),
+    'ftPh': ('fps',),
 }
 
 # Mostly for language specific stuff, defaulting to US for now since I'm not
