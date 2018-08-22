@@ -93,14 +93,20 @@ class Units(object):
         base_unit, conversion_params = self.get_converter(elem)
         name = get_text(elem, 'Name') or elem.get('id')
 
+        annotations = [
+            elem.get('id'),
+            elem.get('annotation'),
+        ]
+        for annotation in annotations[:]:
+            lower_annotation = annotation.lower()
+            if lower_annotation != annotation:
+                annotations.append(lower_annotation)
+
         unit = Unit(
             units=self,
             id=elem.get('id'),
             name=name,
-            annotations=[
-                elem.get('id'),
-                elem.get('annotation'),
-            ],
+            annotations=annotations,
             quantity_types=get_texts(elem, 'QuantityType'),
             base_unit=get_text(elem, 'BaseUnit'),
             conversion_params=conversion_params,
