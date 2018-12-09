@@ -54,6 +54,8 @@ ANNOTATION_REPLACEMENTS = {
     'lbm': ('lb', 'lbs', 'pound', 'pounds'),
     'miPh': ('mph',),
     'ftPh': ('fps',),
+    'flozUS': ('flus', 'floz', 'fl',),
+    'flozUK': ('fluk',),
 }
 
 # Mostly for language specific stuff, defaulting to US for now since I'm not
