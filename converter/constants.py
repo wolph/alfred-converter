@@ -6,7 +6,7 @@ UNITS_PICKLE_FILE = 'units.pickle'
 OUTPUT_DECIMALS = 6
 
 
-SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s][^\s]*)'
+SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s]([^\s]*|.+?))'
 SOURCE_RE = re.compile(SOURCE_PATTERN + '$', re.IGNORECASE | re.VERBOSE)
 
 FULL_PATTERN = r'(\s+as|\s+to|\s+in|\s*>|\s*=)\s(?P<to>[^\d\s][^\s]*)$'
@@ -28,22 +28,20 @@ ICONS = {
 }
 DEFAULT_ICON = 'ruler9.png'
 
+
 ANNOTATION_REPLACEMENTS = {
     'litre': ('liter', 'liters', 'l'),
-    'metre': ('metres', 'meter', 'meters'),
-    'inch': ('inches', '"'),
-    'm2': ('m^2', 'meter^2', 'metre^2'),
-    'm3': ('m^3', 'meter^3', 'metre^3'),
-    'dm2': ('dm^2', 'meter^2', 'metre^2'),
-    'dm3': ('dm^3', 'meter^3', 'metre^3'),
-    'cm2': ('cm^2', 'centimeter^2', 'centimetre^2'),
-    'cm3': ('cm^3', 'centimeter^3', 'centimetre^3'),
-    'mm2': ('mm^2', 'milimeter^2', 'milimetre^2', 'millimeter^2',
-            'millimetre^2'),
-    'mm3': ('mm^3', 'milimeter^3', 'milimetre^3', 'millimeter^3',
-            'millimetre^3'),
-    'sq ': ('square ',),
-    'foot': ('feet', "'"),
+    'metre': ('meter', 'm'),
+    'm2': ('meter^3',),
+    'dm': ('decimeter',),
+    'dm2': ('dm^2', 'decimeter^2',),
+    'dm3': ('dm^3', 'decimeter^3',),
+    'cm': ('centimeter',),
+    'cm2': ('cm^2', 'centimeter^2',),
+    'cm3': ('cm^3', 'centimeter^3',),
+    'mm': ('milimeter',),
+    'mm2': ('mm^2', 'milimeter^2'),
+    'mm3': ('mm^3', 'milimeter^3'),
     'degF': ('f', 'fahrenheit', 'farhenheit', 'farenheit'),
     'degC': ('c', 'celsius', 'celcius'),
     'byte': ('B', 'bytes',),
@@ -54,9 +52,39 @@ ANNOTATION_REPLACEMENTS = {
     'lbm': ('lb', 'lbs', 'pound', 'pounds'),
     'miPh': ('mph',),
     'ftPh': ('fps',),
-    'flozUS': ('flus', 'floz', 'fl',),
-    'flozUK': ('fluk',),
+    'foot': ("'",),
+    'square': ('sq',),
+    'ft2': ('ft^2', 'foot^2'),
+    'ft3': ('ft^3', 'foot^3'),
+    'inch': ('inches', '"'),
+    'inch2': ('inch^2', 'square inch'),
+    'inch3': ('inch^3', 'cube inch'),
+    'flozUS': ('flus', 'floz', 'fl', 'fl oz', 'fl oz uk'),
+    'flozUK': ('fluk', 'fl oz uk', 'fl uk'),
 }
+
+
+EXPANSIONS = {
+    'foot': ('feet', 'ft'),
+    'mili': ('milli',),
+    'meter': ('metres', 'meter', 'meters'),
+    '^2': ('sq', 'square'),
+    '^3': ('cube', 'cubed'),
+}
+
+
+for annotation, items in ANNOTATION_REPLACEMENTS.items():
+    items = set(items)
+    items.add(annotation)
+
+    for key, expansions in EXPANSIONS.iteritems():
+        for expansion in expansions:
+            for item in set(items):
+                items.add(item.replace(key, expansion))
+
+    ANNOTATION_REPLACEMENTS[annotation] = sorted(items)
+
+
 
 # Mostly for language specific stuff, defaulting to US for now since I'm not
 # easily able to detect the language in a fast way from within alfred
