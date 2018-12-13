@@ -239,7 +239,7 @@
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''0{query}''')</string>
+main.scriptfilter(''' 0{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -283,7 +283,7 @@ main.scriptfilter('''0{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''1{query}''')</string>
+main.scriptfilter(''' 1{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -327,7 +327,7 @@ main.scriptfilter('''1{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''2{query}''')</string>
+main.scriptfilter(''' 2{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -371,7 +371,7 @@ main.scriptfilter('''2{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''3{query}''')</string>
+main.scriptfilter(''' 3{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -415,7 +415,7 @@ main.scriptfilter('''3{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''4{query}''')</string>
+main.scriptfilter(''' 4{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -459,7 +459,7 @@ main.scriptfilter('''4{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''5{query}''')</string>
+main.scriptfilter(''' 5{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -503,7 +503,7 @@ main.scriptfilter('''5{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''6{query}''')</string>
+main.scriptfilter(''' 6{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -564,7 +564,7 @@ main.scriptfilter('''6{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''7{query}''')</string>
+main.scriptfilter(''' 7{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -608,7 +608,7 @@ main.scriptfilter('''7{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''8{query}''')</string>
+main.scriptfilter(''' 8{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -652,7 +652,7 @@ main.scriptfilter('''8{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''9{query}''')</string>
+main.scriptfilter(''' 9{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -696,7 +696,7 @@ main.scriptfilter('''9{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''0.{query}''')</string>
+main.scriptfilter(''' 0.{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -740,7 +740,7 @@ main.scriptfilter('''0.{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''{query}''')</string>
+main.scriptfilter(''' {query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -784,7 +784,7 @@ main.scriptfilter('''{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''{query}''')</string>
+main.scriptfilter(''' {query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -828,7 +828,7 @@ main.scriptfilter('''{query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''({query}''')</string>
+main.scriptfilter(''' ({query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -872,7 +872,7 @@ main.scriptfilter('''({query}''')</string>
 				<string>Converting...</string>
 				<key>script</key>
 				<string>from converter import main
-main.scriptfilter('''-{query}''')</string>
+main.scriptfilter(''' -{query} ''')</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
