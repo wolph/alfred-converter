@@ -51,6 +51,7 @@ def parse_quantity(quantity):
 class Units(object):
     def __init__(self):
         self.annotations = {}
+        self.lower_annotations = {}
         self.units = {}
         self.ids = {}
         self.base_units = {}
@@ -97,10 +98,6 @@ class Units(object):
             elem.get('id'),
             elem.get('annotation'),
         ]
-        for annotation in annotations[:]:
-            lower_annotation = annotation.lower()
-            if lower_annotation != annotation:
-                annotations.append(lower_annotation)
 
         unit = Unit(
             units=self,
@@ -189,6 +186,12 @@ class Units(object):
             unit = self.annotations.get(name)
 
         if not unit:
+            unit = self.annotations.get(name.lower())
+
+        if not unit:
+            unit = self.lower_annotations.get(name.lower())
+
+        if not unit:
             raise UnknownUnit(name)
 
         return unit
@@ -247,6 +250,7 @@ class Unit(object):
 
         for annotation in self.annotations:
             units.annotations[annotation] = self
+            units.lower_annotations[annotation.lower()] = self
 
         for quantity_type in list(self.quantity_types):
             units.quantity_types[quantity_type].add(self)
