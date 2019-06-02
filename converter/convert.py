@@ -333,6 +333,7 @@ def decimal_to_string(value):
     '1'
     '''
     with decimal.localcontext() as context:
+        context.prec = 50
         value = value.quantize(
             decimal.Decimal(10) ** -constants.OUTPUT_DECIMALS, context=context)
 
