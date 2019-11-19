@@ -31,6 +31,22 @@ def get_texts(parent, name):
     return list(_get_texts(parent, name))
 
 
+def get_color_prefix():
+    backcolor = os.environ['alfred_theme_background']
+    print("!!!" + backcolor)
+    if backcolor.startswith('rgba'):
+        # Format: 'rgba(r,g,b,a)'
+        channel = backcolor[5:-1].split(",")
+        # Reference: stackoverflow.com/questions/9780632/how-do-i-determine-if-a-color-is-closer-to-white-or-black
+        grey = 0.2126 * int(channel[0]) + 0.7152 * int(channel[1]) + 0.0722 * int(channel[2])
+        if grey < 128:
+            return 'inv-'
+        else:
+            return ''
+    else:
+        return ''
+
+
 def parse_quantity(quantity):
     '''
     Parse a quantity, supports pretty much everything with high precision
@@ -234,7 +250,7 @@ class Unit(object):
     def get_icon(self):
         for quantity_type in self.quantity_types:  # pragma: no branch
             if quantity_type in constants.ICONS:
-                return constants.ICONS[quantity_type]
+                return get_color_prefix() + constants.ICONS[quantity_type]
 
     def to_base(self, value):
         a, b, c, d = map(decimal.Decimal, self.conversion_params)
@@ -364,7 +380,7 @@ def main(units, query, create_item):
                 subtitle=('Action this item to copy the converted value '
                           'to the clipboard'),
                 icon='icons/' + (to.get_icon() or from_.get_icon() or
-                                 constants.DEFAULT_ICON),
+                                 get_color_prefix() + constants.DEFAULT_ICON),
                 attrib=dict(
                     uid='%s to %s' % (from_.id, to.id),
                     arg=new_quantity,
@@ -379,7 +395,7 @@ def main(units, query, create_item):
                 title='%s' % q_str,
                 subtitle=('Action this item to copy the converted value to '
                           'the clipboard'),
-                icon='icons/calculator63.png',
+                icon='icons/%scalculator63.png' % get_color_prefix(),
                 attrib=dict(
                     uid=q_str,
                     arg=q_str,
@@ -398,9 +414,9 @@ def main(units, query, create_item):
                     q_hex = hex(quantity)
                     yield create_item(
                         title='%s' % q_hex,
-                        subtitle=('Action this item to copy the converted '
+                        subtitle=('Action this item to copy the HEX '
                                   'value to the clipboard'),
-                        icon='icons/calculator63.png',
+                        icon='icons/%scalculator63.png' % get_color_prefix(),
                         attrib=dict(
                             uid=q_hex,
                             arg=q_hex,
@@ -412,9 +428,9 @@ def main(units, query, create_item):
                     q_oct = oct(quantity)
                     yield create_item(
                         title='%s' % q_oct,
-                        subtitle=('Action this item to copy the converted '
+                        subtitle=('Action this item to copy the OCT '
                                   'value to the clipboard'),
-                        icon='icons/calculator63.png',
+                        icon='icons/%scalculator63.png' % get_color_prefix(),
                         attrib=dict(
                             uid=q_oct,
                             arg=q_oct,
@@ -426,9 +442,9 @@ def main(units, query, create_item):
                     q_bin = bin(quantity)
                     yield create_item(
                         title='%s' % q_bin,
-                        subtitle=('Action this item to copy the converted '
+                        subtitle=('Action this item to copy the BIN '
                                   'value to the clipboard'),
-                        icon='icons/calculator63.png',
+                        icon='icons/%scalculator63.png' % get_color_prefix(),
                         attrib=dict(
                             uid=q_bin,
                             arg=q_bin,
