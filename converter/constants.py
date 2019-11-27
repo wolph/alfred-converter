@@ -73,6 +73,14 @@ EXPANSIONS = {
 }
 
 
+ANNOTATION_BLACKLIST = {
+    'chUS',
+    'ftUS',
+    'inUS',
+    'lkUS',
+}
+
+
 for annotation, items in ANNOTATION_REPLACEMENTS.items():
     items = set(items)
     items.add(annotation)
@@ -83,7 +91,6 @@ for annotation, items in ANNOTATION_REPLACEMENTS.items():
                 items.add(item.replace(key, expansion))
 
     ANNOTATION_REPLACEMENTS[annotation] = sorted(items)
-
 
 
 # Mostly for language specific stuff, defaulting to US for now since I'm not
@@ -118,8 +125,33 @@ def FUNCTION_ALIASES_REPLACEMENT(match):
     return FUNCTION_ALIASES[match.group(1)] + '('
 
 
-FOOT_INCH_RE = re.compile(r'''(\d+\.?\d*)'(\d+\.?\d*)"?''')
-FOOT_INCH_REPLACE = r'(\1*12)+\2 inch'
+FOOT_INCH_RE = re.compile(r'''
+((?P<foot>\d+\.?\d*)')?
+(?P<inch_decimal>\d+[\.\/]?\d*)?
+([ -](?P<inch_fraction>\d+[\.\/]\d+))?
+(?P<inch>"?)
+''', flags=re.VERBOSE)
+
+
+def FOOT_INCH_REPLACE(match):
+    g = match.groupdict()
+    # Without this check we'll match any number
+    if not g['inch'] and not g['foot'] and not g['inch_fraction']:
+        return match.group(0)
+
+    output = []
+    if g['foot']:
+        output.append('%s*12' % g['foot'])
+
+    if g['inch_decimal']:
+        output.append(g['inch_decimal'])
+
+    if g['inch_fraction']:
+        output.append(g['inch_fraction'])
+
+    output = [o.strip() for o in output]
+    return '+'.join(output) + ' inch'
+
 
 POWER_UNIT_RE = re.compile(r'([a-z])\^([23])\b')
 POWER_UNIT_REPLACEMENT = r'\g<1>\g<2>'

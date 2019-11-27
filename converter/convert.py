@@ -3,6 +3,7 @@
 Note that we are _explicityly_ using the system python so we don't rely on
 custom libraries and/or versions
 '''
+from __future__ import print_function
 import os
 import collections
 import decimal
@@ -33,7 +34,7 @@ def get_texts(parent, name):
 
 def get_color_prefix():
     backcolor = os.environ.get('alfred_theme_background', '')
-    if backcolor.startswith('rgba'):
+    if backcolor.startswith('rgba'):  # pragma: no cover
         # Format: 'rgba(r,g,b,a)'
         channel = backcolor[5:-1].split(",")
         red, green, blue = channel[:3]
@@ -60,7 +61,7 @@ def parse_quantity(quantity):
     except decimal.InvalidOperation:
         try:
             return decimal.Decimal(safe_math.safe_eval(quantity))
-        except decimal.InvalidOperation:
+        except decimal.InvalidOperation:  # pragma: no cover
             pass
 
 
@@ -140,6 +141,9 @@ class Units(object):
                 if '(' in annotation:
                     continue
 
+                if annotation in constants.ANNOTATION_BLACKLIST:
+                    continue
+
                 if any(x.isdigit() for x in annotation.split('/') if x):
                     continue
 
@@ -176,7 +180,7 @@ class Units(object):
                 from_ = None
                 quantity = parse_quantity(query)
 
-        except:
+        except:  # NOQA
             partial_query = ' '.join(query.split()[:-1])
             if partial_query:
                 for from_, quantity, to in self.convert(partial_query):
@@ -248,7 +252,7 @@ class Unit(object):
         return Unit(**data)
 
     def get_icon(self):
-        for quantity_type in self.quantity_types:  # pragma: no branch
+        for quantity_type in self.quantity_types:  # pragma: no cover
             if quantity_type in constants.ICONS:
                 return get_color_prefix() + constants.ICONS[quantity_type]
 
@@ -328,7 +332,7 @@ def clean_query(query):
     query = query.strip()
     query = constants.POWER_UNIT_RE.sub(constants.POWER_UNIT_REPLACEMENT,
                                         query)
-    query = constants.FOOT_INCH_RE.sub(constants.FOOT_INCH_REPLACE, query)
+    query = constants.FOOT_INCH_RE.sub(constants.FOOT_INCH_REPLACE, query, 1)
     return query
 
 
@@ -379,8 +383,10 @@ def main(units, query, create_item):
                 ),
                 subtitle=('Action this item to copy the converted value '
                           'to the clipboard'),
-                icon='icons/' + (to.get_icon() or from_.get_icon() or
-                                 get_color_prefix() + constants.DEFAULT_ICON),
+                icon='icons/' + (
+                    to.get_icon()
+                    or from_.get_icon()
+                    or get_color_prefix() + constants.DEFAULT_ICON),
                 attrib=dict(
                     uid='%s to %s' % (from_.id, to.id),
                     arg=new_quantity,
