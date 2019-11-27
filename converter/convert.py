@@ -36,7 +36,7 @@ def get_color_prefix():
     if backcolor.startswith('rgba'):
         # Format: 'rgba(r,g,b,a)'
         channel = backcolor[5:-1].split(",")
-        red, green, blue = channel[:2]
+        red, green, blue = channel[:3]
         # Reference: stackoverflow.com/questions/9780632/
         grey = 0.2126 * int(red) + 0.7152 * int(green) + 0.0722 * int(blue)
         if grey < 128:
