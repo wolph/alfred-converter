@@ -76,7 +76,7 @@ def scriptfilter(items, query):
         assert not DEBUG
         with open(constants.UNITS_PICKLE_FILE, 'rb') as fh:
             units = pickle.load(fh)
-    except:  # pragma: no cover
+    except BaseException:  # pragma: no cover
         units = convert.Units()
         units.load(constants.UNITS_XML_FILE)
 

@@ -10,6 +10,9 @@ EXPRESSIONS = {
     '(sqrt(sqrt(5)^2)^2^2)^1/2': '12.5',
     '10 meter in cm': 'meter 10 = centimeter 1000',
     '10 metre in cm': 'meter 10 = centimeter 1000',
+    '''4'2" in inch''': 'inch 50 = inch 50',
+    '''4'2 1/4" in inch''': 'inch 50.25 = inch 50.25',
+    '''4'2-1/4" in inch''': 'inch 50.25 = inch 50.25',
 }
 
 
@@ -27,6 +30,8 @@ def test_working(test):
     for result in convert.main(units, expression, dict):
         if result['title'] == expected_result:
             return True
+        else:
+            print('%r != %r' % (expected_result, result['title']))
 
     if result:
         raise RuntimeError('%r returned %r, expected: %r' % (

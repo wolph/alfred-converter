@@ -13,6 +13,7 @@ exclude_lines =
     if six.PY3:
     if DEBUG:
     if not DEBUG:
+    NOQA
 
 [run]
 branch = True

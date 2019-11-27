@@ -22,7 +22,7 @@ DECIMAL_RE = re.compile(r'(\d*\.\d+|\d+\.?)')
 DECIMAL_REPLACE = r'Decimal("\g<1>")'
 
 AUTOMUL_RE = re.compile(r'\)\s*(\w+)')
-AUTOMUL_REPLACE = ') * \g<1>'
+AUTOMUL_REPLACE = r') * \g<1>'
 
 BIN_RE = re.compile(r'(?!\.)\b0b([01]+)\b', re.IGNORECASE)
 
