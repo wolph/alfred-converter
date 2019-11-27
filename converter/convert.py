@@ -135,7 +135,7 @@ class Units(object):
         from xml.etree import cElementTree as ET
         tree = ET.parse(xml_file)
         root = tree.getroot()
-        for elem in root.find('UnitsDefinition'):
+        for elem in root.find('{http://www.posc.org/schemas}UnitsDefinition'):
             if elem.find('Deprecated') is None:
                 annotation = elem.get('annotation')
                 if '(' in annotation:
