@@ -1,12 +1,7 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="stylesheet/Units.xsl"?>
 
-<UnitOfMeasureDictionary version="2.2"
-    xmlns="http://www.posc.org/schemas" 
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.posc.org/schemas
-           units20/Units.xsd">
-
+<UnitOfMeasureDictionary version="2.2">
   <DocumentInformation>
     <DocumentName>
       <Name>POSC Units of Measure Dictionary v2.2</Name>

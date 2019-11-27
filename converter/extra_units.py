@@ -57,6 +57,26 @@ def register_post(units):
                 conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
                 **params).register(units)
 
-
-
+    liter = units.get('L')
+    liter.copy(
+        units=units,
+        id='teaspoon',
+        name='teaspoon',
+        annotations=['t', 'tsp'],
+        conversion_params=('0', '0.000005', '1', '0'),
+    ).register(units)
+    liter.copy(
+        units=units,
+        id='tablespoon',
+        name='tablespoon',
+        annotations=['tbl', 'tbs', 'tbsp'],
+        conversion_params=('0', '0.000015', '1', '0'),
+    ).register(units)
+    liter.copy(
+        units=units,
+        id='cup',
+        name='cup',
+        annotations=['cup'],
+        conversion_params=('0', '0.000240', '1', '0'),
+    ).register(units)
 
