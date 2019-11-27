@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
-<UnitOfMeasureDictionary version="2.2">
+<?xml-stylesheet type="text/xsl" href="stylesheet/Units.xsl"?>
+
+<UnitOfMeasureDictionary version="2.2"
+    xmlns="http://www.posc.org/schemas" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.posc.org/schemas
+           units20/Units.xsd">
+
   <DocumentInformation>
     <DocumentName>
       <Name>POSC Units of Measure Dictionary v2.2</Name>
@@ -58,44 +65,6 @@
   </DocumentInformation>
 
   <UnitsDefinition>
-        <UnitOfMeasure id="$Py" annotation="dpy">
-      <Name>$/year</Name>
-      <QuantityType>dollar per time</QuantityType>
-      <DimensionalClass>1/T</DimensionalClass>
-      <BaseUnit/>
-    </UnitOfMeasure>
-    <UnitOfMeasure id="$Ph" annotation="dph">
-      <Name>$/hour</Name>
-      <QuantityType>dollar per time</QuantityType>
-      <DimensionalClass>1/T</DimensionalClass>
-      <ConversionToBaseUnit baseUnit="dpy">
-        <Factor>2087</Factor>
-      </ConversionToBaseUnit>
-    </UnitOfMeasure>
-    <UnitOfMeasure id="$Pm" annotation="dpm">
-      <Name>$/month</Name>
-      <QuantityType>dollar per time</QuantityType>
-      <DimensionalClass>1/T</DimensionalClass>
-      <ConversionToBaseUnit baseUnit="dpy">
-        <Factor>12</Factor>
-      </ConversionToBaseUnit>
-    </UnitOfMeasure>
-    <UnitOfMeasure id="$Pd" annotation="dpd">
-      <Name>$/work day</Name>
-      <QuantityType>dollar per time</QuantityType>
-      <DimensionalClass>1/T</DimensionalClass>
-      <ConversionToBaseUnit baseUnit="dpy">
-        <Factor>261</Factor>
-      </ConversionToBaseUnit>
-    </UnitOfMeasure>
-    <UnitOfMeasure id="$Pw" annotation="dpw">
-      <Name>$/week</Name>
-      <QuantityType>dollar per time</QuantityType>
-      <DimensionalClass>1/T</DimensionalClass>
-      <ConversionToBaseUnit baseUnit="dpy">
-        <Factor>52</Factor>
-      </ConversionToBaseUnit>
-    </UnitOfMeasure>
 
     <UnitOfMeasure id="1PH" annotation="1/H">
       <Name>inverse henry</Name>
