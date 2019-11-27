@@ -32,13 +32,13 @@ def get_texts(parent, name):
 
 
 def get_color_prefix():
-    backcolor = os.environ['alfred_theme_background']
-    print("!!!" + backcolor)
+    backcolor = os.environ.get('alfred_theme_background', '')
     if backcolor.startswith('rgba'):
         # Format: 'rgba(r,g,b,a)'
         channel = backcolor[5:-1].split(",")
-        # Reference: stackoverflow.com/questions/9780632/how-do-i-determine-if-a-color-is-closer-to-white-or-black
-        grey = 0.2126 * int(channel[0]) + 0.7152 * int(channel[1]) + 0.0722 * int(channel[2])
+        red, green, blue = channel[:2]
+        # Reference: stackoverflow.com/questions/9780632/
+        grey = 0.2126 * int(red) + 0.7152 * int(green) + 0.0722 * int(blue)
         if grey < 128:
             return 'inv-'
         else:
