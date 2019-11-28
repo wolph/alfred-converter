@@ -64,6 +64,7 @@ def register_post(units):
         name='teaspoon',
         annotations=['t', 'tsp'],
         conversion_params=('0', '0.000005', '1', '0'),
+        fractional=True,
     ).register(units)
     liter.copy(
         units=units,
@@ -71,6 +72,7 @@ def register_post(units):
         name='tablespoon',
         annotations=['tbl', 'tbs', 'tbsp'],
         conversion_params=('0', '0.000015', '1', '0'),
+        fractional=True,
     ).register(units)
     liter.copy(
         units=units,
@@ -78,5 +80,11 @@ def register_post(units):
         name='cup',
         annotations=['cup'],
         conversion_params=('0', '0.000240', '1', '0'),
+        fractional=True,
     ).register(units)
+
+    units.get('in').fractional = True
+    foot = units.get('ft')
+    foot.split = 'in'
+    foot.fractional = True
 

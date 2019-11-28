@@ -72,12 +72,19 @@ EXPANSIONS = {
     '^3': ('cube', 'cubed'),
 }
 
-
+# Blacklisting a bunch of esoteric units
 ANNOTATION_BLACKLIST = {
     'chUS',
     'ftUS',
     'inUS',
     'lkUS',
+    'ftGC',
+    'ftMA',
+    'ftSe',
+    'ftBnA',
+    'ftBnB',
+    'ftCla',
+    'ftInd',
 }
 
 

@@ -7,6 +7,7 @@ from __future__ import print_function
 import os
 import collections
 import decimal
+import fractions
 import constants
 import safe_math
 
@@ -63,6 +64,20 @@ def parse_quantity(quantity):
             return decimal.Decimal(safe_math.safe_eval(quantity))
         except decimal.InvalidOperation:  # pragma: no cover
             pass
+
+
+def fraction_to_decimal(value):
+    '''Convert a fraction to a decimal
+
+    >>> fraction_to_decimal(fractions.Fraction('1/2'))
+    Decimal('0.5')
+    '''
+    if isinstance(value, fractions.Fraction):
+        numerator = decimal.Decimal(value.numerator)
+        denominator = decimal.Decimal(value.denominator)
+        value = numerator / denominator
+
+    return value
 
 
 class Units(object):
@@ -219,10 +234,12 @@ class Units(object):
 
 class Unit(object):
     def __init__(self, units, id, name, annotations, quantity_types, base_unit,
-                 conversion_params):
+                 conversion_params, fractional=False, split=None):
         self.units = units
         self.id = id
         self.name = name
+        self.fractional = fractional
+        self.split = split
 
         for k, vs in constants.ANNOTATION_REPLACEMENTS.items():
             if k in name:
@@ -244,6 +261,8 @@ class Unit(object):
             annotations=annotations,
             quantity_types=self.quantity_types,
             base_unit=self.base_unit,
+            fractional=self.fractional,
+            split=self.split,
         )
         data.update(kwargs)
         data['id'] = id
@@ -258,11 +277,23 @@ class Unit(object):
 
     def to_base(self, value):
         a, b, c, d = map(decimal.Decimal, self.conversion_params)
-        return (a + b * value) / (c + d * value)
+        if self.fractional:
+            assert not a and not d, 'Fractional units cannot use A and D'
+            fraction = fractions.Fraction(b) / fractions.Fraction(c)
+            return fraction * fractions.Fraction(value)
+        else:
+            value = fraction_to_decimal(value)
+            return (a + b * value) / (c + d * value)
 
     def from_base(self, value):
         a, b, c, d = map(decimal.Decimal, self.conversion_params)
-        return (a - c * value) / (d * value - b)
+        if self.fractional:
+            assert not a and not d, 'Fractional units cannot use A and D'
+            fraction = fractions.Fraction(c) / fractions.Fraction(b)
+            return fraction * fractions.Fraction(value)
+        else:
+            value = fraction_to_decimal(value)
+            return (a - c * value) / (d * value - b)
 
     def register(self, units):
         units.ids[self.id] = self
@@ -362,6 +393,14 @@ def decimal_to_string(value):
         return value
 
 
+def decimal_to_fraction_string(value):
+    '''Converts a decimal to a string fraction
+
+
+    '''
+    return str(fractions.Fraction(value))
+
+
 def main(units, query, create_item):
     query = clean_query(query)
 
@@ -371,29 +410,47 @@ def main(units, query, create_item):
             new_quantity = to.from_base(base_quantity)
 
             quantity = decimal_to_string(quantity)
-            new_quantity = decimal_to_string(new_quantity)
-            base_quantity = decimal_to_string(base_quantity)
+            if to.fractional:
+                new_quantity = decimal_to_fraction_string(new_quantity)
+            else:
+                new_quantity = decimal_to_string(new_quantity)
 
-            yield create_item(
-                title='%s %s = %s %s' % (
-                    from_,
-                    quantity,
-                    to,
-                    new_quantity,
-                ),
-                subtitle=('Action this item to copy the converted value '
-                          'to the clipboard'),
-                icon='icons/' + (
-                    to.get_icon()
-                    or from_.get_icon()
-                    or get_color_prefix() + constants.DEFAULT_ICON),
-                attrib=dict(
-                    uid='%s to %s' % (from_.id, to.id),
-                    arg=new_quantity,
-                    valid='yes',
-                    autocomplete='%s %s' % (new_quantity, to),
-                ),
-            )
+            if from_.fractional:
+                base_quantity = decimal_to_fraction_string(base_quantity)
+            else:
+                base_quantity = decimal_to_string(base_quantity)
+
+            titles = []
+
+            titles.append('%s %s = %s %s'
+                          % (from_, quantity, to, new_quantity))
+
+            if to.split:
+                split = units.get(to.split)
+
+                major_quantity = to.from_base(base_quantity)
+                minor_quantity = split.from_base(base_quantity)
+                major = int(major_quantity)
+                minor = minor_quantity % major
+                titles.append('%s %s = %s %s %s %s'
+                              % (from_, quantity, to, major, split, minor))
+
+            for title in titles:
+                yield create_item(
+                    title=title,
+                    subtitle=('Action this item to copy the converted value '
+                              'to the clipboard'),
+                    icon='icons/' + (
+                        to.get_icon()
+                        or from_.get_icon()
+                        or get_color_prefix() + constants.DEFAULT_ICON),
+                    attrib=dict(
+                        uid='%s to %s' % (from_.id, to.id),
+                        arg=new_quantity,
+                        valid='yes',
+                        autocomplete='%s %s' % (new_quantity, to),
+                    ),
+                )
         else:
             q_str = decimal_to_string(quantity)
 
