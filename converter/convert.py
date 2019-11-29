@@ -393,12 +393,19 @@ def decimal_to_string(value):
         return value
 
 
-def decimal_to_fraction_string(value):
+def fraction_to_string(value, proper=False):
     '''Converts a decimal to a string fraction
 
 
     '''
-    return str(fractions.Fraction(value))
+    fraction = fractions.Fraction(value)
+    if proper:
+        if fraction.numerator > fraction.denominator:
+            major = int(fraction.numerator / fraction.denominator)
+            fraction %= fraction.denominator
+            return '%s %s' % (major, fraction)
+    else:
+        return str(fraction)
 
 
 def main(units, query, create_item):
@@ -411,19 +418,24 @@ def main(units, query, create_item):
 
             quantity = decimal_to_string(quantity)
             if to.fractional:
-                new_quantity = decimal_to_fraction_string(new_quantity)
+                new_quantity = fraction_to_string(new_quantity)
+                new_quantity_proper = fraction_to_string(new_quantity, True)
             else:
                 new_quantity = decimal_to_string(new_quantity)
+                new_quantity_proper = None
 
             if from_.fractional:
-                base_quantity = decimal_to_fraction_string(base_quantity)
+                base_quantity = fraction_to_string(base_quantity)
             else:
                 base_quantity = decimal_to_string(base_quantity)
 
             titles = []
 
-            titles.append('%s %s = %s %s'
-                          % (from_, quantity, to, new_quantity))
+            titles.append('%s %s = %s %s' % (
+                from_, quantity, to, new_quantity))
+            if new_quantity_proper:
+                titles.append('%s %s = %s %s' % (
+                    from_, quantity, to, new_quantity_proper))
 
             if to.split:
                 split = units.get(to.split)
@@ -432,8 +444,12 @@ def main(units, query, create_item):
                 minor_quantity = split.from_base(base_quantity)
                 major = int(major_quantity)
                 minor = minor_quantity % major
-                titles.append('%s %s = %s %s %s %s'
-                              % (from_, quantity, to, major, split, minor))
+                minor_proper = fraction_to_string(minor_quantity % major, True)
+                titles.append('%s %s = %s %s %s %s' % (
+                    from_, quantity, to, major, split, minor))
+                if minor_proper:
+                    titles.append('%s %s = %s %s %s %s' % (
+                        from_, quantity, to, major, split, minor_proper))
 
             for title in titles:
                 yield create_item(
