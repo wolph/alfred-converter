@@ -356,6 +356,7 @@ class Unit(object):
 
 
 def clean_query(query):
+    query = query.replace('$', '')
     query = constants.FUNCTION_ALIASES_RE.sub(
         constants.FUNCTION_ALIASES_REPLACEMENT, query)
     query = query.replace('**', '^')
@@ -364,6 +365,8 @@ def clean_query(query):
     query = constants.POWER_UNIT_RE.sub(constants.POWER_UNIT_REPLACEMENT,
                                         query)
     query = constants.FOOT_INCH_RE.sub(constants.FOOT_INCH_REPLACE, query, 1)
+    query = constants.PERCENT_ADD_RE.sub(constants.PERCENT_ADD_REPLACEMENT, query)
+    query = constants.PERCENT_OF_RE.sub(constants.PERCENT_OF_REPLACEMENT, query)
     return query
 
 

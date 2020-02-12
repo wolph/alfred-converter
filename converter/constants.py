@@ -163,6 +163,11 @@ def FOOT_INCH_REPLACE(match):
 POWER_UNIT_RE = re.compile(r'([a-z])\^([23])\b')
 POWER_UNIT_REPLACEMENT = r'\g<1>\g<2>'
 
+PERCENT_OF_RE = re.compile(r'(%|pct|percent)( of)?')
+PERCENT_OF_REPLACEMENT = '*0.01'
+PERCENT_ADD_RE = re.compile(r'(\d+[.,]?\d*)\s*\+\s*(\d+[.,]?\d*)%')
+PERCENT_ADD_REPLACEMENT = r'\1 + \1*\2*0.01'
+
 PRE_EVAL_REPLACEMENTS = {
     '^': '**',
 }
