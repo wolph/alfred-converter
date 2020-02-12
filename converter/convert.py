@@ -362,12 +362,21 @@ def clean_query(query):
     query = query.replace('**', '^')
     query = query.rstrip(constants.RIGHT_TRIMABLE_OPERATORS)
     query = query.strip()
+    print('query', query)
     query = constants.POWER_UNIT_RE.sub(constants.POWER_UNIT_REPLACEMENT,
                                         query)
     query = constants.FOOT_INCH_RE.sub(constants.FOOT_INCH_REPLACE, query, 1)
-    query = constants.PERCENT_ADD_RE.sub(constants.PERCENT_ADD_REPLACEMENT, query)
-    query = constants.PERCENT_OFF_RE.sub(constants.PERCENT_OFF_REPLACEMENT, query)
-    query = constants.PERCENT_OF_RE.sub(constants.PERCENT_OF_REPLACEMENT, query)
+    query = constants.PERCENTAGE_OF_RE.sub(constants.PERCENTAGE_OF_REPLACEMENT,
+                                           query)
+    query = constants.PERCENT_ADD_RE.sub(constants.PERCENT_ADD_REPLACEMENT,
+                                         query)
+    query = constants.PERCENT_OFF_RE.sub(constants.PERCENT_OFF_REPLACEMENT,
+                                         query)
+    query = constants.PERCENT_OF_RE.sub(constants.PERCENT_OF_REPLACEMENT,
+                                        query)
+    query = constants.DIFFERENCE_RE.sub(constants.DIFFERENCE_REPLACEMENT,
+                                        query)
+    print('query', query)
     return query
 
 
