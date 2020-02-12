@@ -366,6 +366,7 @@ def clean_query(query):
                                         query)
     query = constants.FOOT_INCH_RE.sub(constants.FOOT_INCH_REPLACE, query, 1)
     query = constants.PERCENT_ADD_RE.sub(constants.PERCENT_ADD_REPLACEMENT, query)
+    query = constants.PERCENT_OFF_RE.sub(constants.PERCENT_OFF_REPLACEMENT, query)
     query = constants.PERCENT_OF_RE.sub(constants.PERCENT_OF_REPLACEMENT, query)
     return query
 
