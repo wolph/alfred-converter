@@ -13,6 +13,9 @@ EXPRESSIONS = {
     '''4'2" in inch''': 'inch 50 = inch 50',
     '''4'2 1/4" in ft''': 'inch 50.25 = foot 4 inch 9/4',
     '''4'2-1/4" in ft''': 'inch 50.25 = foot 4 inch 9/4',
+    'cos(pi / 3)': '0.5',
+    'cos(pi / 3) * 2': '1',
+    '2 * cos(pi / 3)': '1',
 }
 
 

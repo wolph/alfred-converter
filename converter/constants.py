@@ -197,7 +197,7 @@ MATH_FUNCTIONS = [
     'trunc',
 
     # Power and logarithmic functions
-    'exp',
+    # 'exp',
     'expm1',
     'log',
     'log1p',
@@ -210,9 +210,9 @@ MATH_FUNCTIONS = [
     'asin',
     'atan',
     'atan2',
-    'cos',
+    # 'cos',
     'hypot',
-    'sin',
+    # 'sin',
     'tan',
 
     # Angular conversion functions
