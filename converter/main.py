@@ -56,6 +56,7 @@ def to_xml(f):
             title.text = '%s: %s' % (e.__class__.__name__, str(e))
 
             import traceback
+
             subtitle = ET.SubElement(item, 'subtitle')
             subtitle.text = '%s: %s' % (
                 traceback.format_exc().split('\n')[-4].strip(),
@@ -89,6 +90,7 @@ def scriptfilter(items, query):
 
     if DEBUG:
         import pprint
+
         items = list(convert.main(units, query, debug_item_creator))
         pprint.pprint(items)
     else:

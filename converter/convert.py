@@ -113,8 +113,9 @@ class Units(object):
                 c = formula.find('C').text
                 d = formula.find('D').text
             else:  # pragma: no cover
-                raise RuntimeError('Unknown element with id %r' %
-                                   elem.get('id'))
+                raise RuntimeError(
+                    'Unknown element with id %r' % elem.get('id')
+                )
 
             base = base_unit.get('baseUnit')
         else:
@@ -145,9 +146,11 @@ class Units(object):
 
     def load(self, xml_file):
         import extra_units
+
         extra_units.register_pre(self)
 
         from xml.etree import cElementTree as ET
+
         tree = ET.parse(xml_file)
         root = tree.getroot()
         for elem in root.find('UnitsDefinition'):
@@ -233,8 +236,18 @@ class Units(object):
 
 
 class Unit(object):
-    def __init__(self, units, id, name, annotations, quantity_types, base_unit,
-                 conversion_params, fractional=False, split=None):
+    def __init__(
+        self,
+        units,
+        id,
+        name,
+        annotations,
+        quantity_types,
+        base_unit,
+        conversion_params,
+        fractional=False,
+        split=None,
+    ):
         self.units = units
         self.id = id
         self.name = name
@@ -338,15 +351,8 @@ class Unit(object):
             return tos
 
     def __repr__(self):
-        return '<%s %r>' % (
-            self.__class__.__name__,
-            self.__dict__,
-        )
-        return '<%s[%s] %s>' % (
-            self.__class__.__name__,
-            self.id,
-            self.name,
-        )
+        return '<%s %r>' % (self.__class__.__name__, self.__dict__,)
+        return '<%s[%s] %s>' % (self.__class__.__name__, self.id, self.name,)
 
     def __str__(self):
         return constants.localize(self.name)
@@ -358,24 +364,31 @@ class Unit(object):
 def clean_query(query):
     query = query.replace('$', '')
     query = constants.FUNCTION_ALIASES_RE.sub(
-        constants.FUNCTION_ALIASES_REPLACEMENT, query)
+        constants.FUNCTION_ALIASES_REPLACEMENT, query
+    )
     query = query.replace('**', '^')
     query = query.rstrip(constants.RIGHT_TRIMABLE_OPERATORS)
     query = query.strip()
     print('query', query)
-    query = constants.POWER_UNIT_RE.sub(constants.POWER_UNIT_REPLACEMENT,
-                                        query)
+    query = constants.POWER_UNIT_RE.sub(
+        constants.POWER_UNIT_REPLACEMENT, query
+    )
     query = constants.FOOT_INCH_RE.sub(constants.FOOT_INCH_REPLACE, query, 1)
-    query = constants.PERCENTAGE_OF_RE.sub(constants.PERCENTAGE_OF_REPLACEMENT,
-                                           query)
-    query = constants.PERCENT_ADD_RE.sub(constants.PERCENT_ADD_REPLACEMENT,
-                                         query)
-    query = constants.PERCENT_OFF_RE.sub(constants.PERCENT_OFF_REPLACEMENT,
-                                         query)
-    query = constants.PERCENT_OF_RE.sub(constants.PERCENT_OF_REPLACEMENT,
-                                        query)
-    query = constants.DIFFERENCE_RE.sub(constants.DIFFERENCE_REPLACEMENT,
-                                        query)
+    query = constants.PERCENTAGE_OF_RE.sub(
+        constants.PERCENTAGE_OF_REPLACEMENT, query
+    )
+    query = constants.PERCENT_ADD_RE.sub(
+        constants.PERCENT_ADD_REPLACEMENT, query
+    )
+    query = constants.PERCENT_OFF_RE.sub(
+        constants.PERCENT_OFF_REPLACEMENT, query
+    )
+    query = constants.PERCENT_OF_RE.sub(
+        constants.PERCENT_OF_REPLACEMENT, query
+    )
+    query = constants.DIFFERENCE_RE.sub(
+        constants.DIFFERENCE_REPLACEMENT, query
+    )
     print('query', query)
     return query
 
@@ -399,7 +412,8 @@ def decimal_to_string(value):
     with decimal.localcontext() as context:
         context.prec = 50
         value = value.quantize(
-            decimal.Decimal(10) ** -constants.OUTPUT_DECIMALS, context=context)
+            decimal.Decimal(10) ** -constants.OUTPUT_DECIMALS, context=context
+        )
 
         value = str(value)
         value = value.rstrip('0').rstrip('.')
@@ -444,11 +458,14 @@ def main(units, query, create_item):
 
             titles = []
 
-            titles.append('%s %s = %s %s' % (
-                from_, quantity, to, new_quantity))
+            titles.append(
+                '%s %s = %s %s' % (from_, quantity, to, new_quantity)
+            )
             if new_quantity_proper:
-                titles.append('%s %s = %s %s' % (
-                    from_, quantity, to, new_quantity_proper))
+                titles.append(
+                    '%s %s = %s %s'
+                    % (from_, quantity, to, new_quantity_proper)
+                )
 
             if to.split:
                 split = units.get(to.split)
@@ -461,21 +478,29 @@ def main(units, query, create_item):
                 else:
                     minor = minor_quantity
                 minor_proper = fraction_to_string(minor, True)
-                titles.append('%s %s = %s %s %s %s' % (
-                    from_, quantity, to, major, split, minor))
+                titles.append(
+                    '%s %s = %s %s %s %s'
+                    % (from_, quantity, to, major, split, minor)
+                )
                 if minor_proper:
-                    titles.append('%s %s = %s %s %s %s' % (
-                        from_, quantity, to, major, split, minor_proper))
+                    titles.append(
+                        '%s %s = %s %s %s %s'
+                        % (from_, quantity, to, major, split, minor_proper)
+                    )
 
             for title in titles:
                 yield create_item(
                     title=title,
-                    subtitle=('Action this item to copy the converted value '
-                              'to the clipboard'),
-                    icon='icons/' + (
+                    subtitle=(
+                        'Action this item to copy the converted value '
+                        'to the clipboard'
+                    ),
+                    icon='icons/'
+                    + (
                         to.get_icon()
                         or from_.get_icon()
-                        or get_color_prefix() + constants.DEFAULT_ICON),
+                        or get_color_prefix() + constants.DEFAULT_ICON
+                    ),
                     attrib=dict(
                         uid='%s to %s' % (from_.id, to.id),
                         arg=new_quantity,
@@ -488,14 +513,12 @@ def main(units, query, create_item):
 
             yield create_item(
                 title='%s' % q_str,
-                subtitle=('Action this item to copy the converted value to '
-                          'the clipboard'),
-                icon='icons/%scalculator63.png' % get_color_prefix(),
-                attrib=dict(
-                    uid=q_str,
-                    arg=q_str,
-                    valid='yes',
+                subtitle=(
+                    'Action this item to copy the converted value to '
+                    'the clipboard'
                 ),
+                icon='icons/%scalculator63.png' % get_color_prefix(),
+                attrib=dict(uid=q_str, arg=q_str, valid='yes',),
             )
 
             if q_str.isdigit() or (q_str[0] == '-' and q_str[1:].isdigit()):
@@ -503,47 +526,41 @@ def main(units, query, create_item):
 
                 bases = {
                     k: os.environ.get('BASE_%d' % k, 'true').lower() == 'true'
-                    for k in (2, 8, 16)}
+                    for k in (2, 8, 16)
+                }
 
                 if bases[16]:  # pragma: no branch
                     q_hex = hex(quantity)
                     yield create_item(
                         title='%s' % q_hex,
-                        subtitle=('Action this item to copy the HEX '
-                                  'value to the clipboard'),
-                        icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(
-                            uid=q_hex,
-                            arg=q_hex,
-                            valid='yes',
+                        subtitle=(
+                            'Action this item to copy the HEX '
+                            'value to the clipboard'
                         ),
+                        icon='icons/%scalculator63.png' % get_color_prefix(),
+                        attrib=dict(uid=q_hex, arg=q_hex, valid='yes',),
                     )
 
                 if bases[8]:  # pragma: no branch
                     q_oct = oct(quantity)
                     yield create_item(
                         title='%s' % q_oct,
-                        subtitle=('Action this item to copy the OCT '
-                                  'value to the clipboard'),
-                        icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(
-                            uid=q_oct,
-                            arg=q_oct,
-                            valid='yes',
+                        subtitle=(
+                            'Action this item to copy the OCT '
+                            'value to the clipboard'
                         ),
+                        icon='icons/%scalculator63.png' % get_color_prefix(),
+                        attrib=dict(uid=q_oct, arg=q_oct, valid='yes',),
                     )
 
                 if bases[2]:  # pragma: no branch
                     q_bin = bin(quantity)
                     yield create_item(
                         title='%s' % q_bin,
-                        subtitle=('Action this item to copy the BIN '
-                                  'value to the clipboard'),
-                        icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(
-                            uid=q_bin,
-                            arg=q_bin,
-                            valid='yes',
+                        subtitle=(
+                            'Action this item to copy the BIN '
+                            'value to the clipboard'
                         ),
+                        icon='icons/%scalculator63.png' % get_color_prefix(),
+                        attrib=dict(uid=q_bin, arg=q_bin, valid='yes',),
                     )
-

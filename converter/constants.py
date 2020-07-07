@@ -10,8 +10,9 @@ SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s]([^\s]*|.+?))'
 SOURCE_RE = re.compile(SOURCE_PATTERN + '$', re.IGNORECASE | re.VERBOSE)
 
 FULL_PATTERN = r'(\s+as|\s+to|\s+in|\s*>|\s*=)\s(?P<to>[^\d\s][^\s]*)$'
-FULL_RE = re.compile(SOURCE_PATTERN + FULL_PATTERN + '$',
-                     re.IGNORECASE | re.VERBOSE)
+FULL_RE = re.compile(
+    SOURCE_PATTERN + FULL_PATTERN + '$', re.IGNORECASE | re.VERBOSE
+)
 
 ICONS = {
     'length': 'scale6.png',
@@ -132,12 +133,15 @@ def FUNCTION_ALIASES_REPLACEMENT(match):
     return FUNCTION_ALIASES[match.group(1)] + '('
 
 
-FOOT_INCH_RE = re.compile(r'''
+FOOT_INCH_RE = re.compile(
+    r'''
 ((?P<foot>\d+\.?\d*)')?
 (?P<inch_decimal>\d+[\.\/]?\d*)?
 ([ -](?P<inch_fraction>\d+[\.\/]\d+))?
 (?P<inch>"?)
-''', flags=re.VERBOSE)
+''',
+    flags=re.VERBOSE,
+)
 
 
 def FOOT_INCH_REPLACE(match):
@@ -164,7 +168,8 @@ POWER_UNIT_RE = re.compile(r'([a-z])\^([23])\b')
 POWER_UNIT_REPLACEMENT = r'\g<1>\g<2>'
 
 PERCENTAGE_OF_RE = re.compile(
-    r'(\d+[.,]?\d*)\s+(is\s+|)percentage of\s+(\d+[.,]?\d*)')
+    r'(\d+[.,]?\d*)\s+(is\s+|)percentage of\s+(\d+[.,]?\d*)'
+)
 PERCENTAGE_OF_REPLACEMENT = r'\1/\3*100 percent'
 PERCENT_ADD_RE = re.compile(r'(\d+[.,]?\d*)\s*([-+])\s*(\d+[.,]?\d*)%')
 PERCENT_ADD_REPLACEMENT = r'\1 \2 \1*\3*0.01'
@@ -173,7 +178,8 @@ PERCENT_OFF_REPLACEMENT = r'\3 - \1*\3*0.01'
 PERCENT_OF_RE = re.compile(r'(%|pct|percent)\s+(|of\s+)?')
 PERCENT_OF_REPLACEMENT = '*0.01'
 DIFFERENCE_RE = re.compile(
-    r'(\d+[.,]?\d*)\s+(to|from|difference|diff|change)\s+(\d+[.,]?\d*)')
+    r'(\d+[.,]?\d*)\s+(to|from|difference|diff|change)\s+(\d+[.,]?\d*)'
+)
 DIFFERENCE_REPLACEMENT = r'((\3/\1)-1) * 100 percent'
 
 PRE_EVAL_REPLACEMENTS = {
@@ -195,7 +201,6 @@ MATH_FUNCTIONS = [
     'ldexp',
     'modf',
     'trunc',
-
     # Power and logarithmic functions
     # 'exp',
     'expm1',
@@ -204,7 +209,6 @@ MATH_FUNCTIONS = [
     'log10',
     'pow',
     'sqrt',
-
     # Trigonometric functions
     'acos',
     'asin',
@@ -214,11 +218,9 @@ MATH_FUNCTIONS = [
     'hypot',
     # 'sin',
     'tan',
-
     # Angular conversion functions
     'degrees',
     'radians',
-
     # Hyperbolic functions
     'acosh',
     'asinh',
@@ -226,14 +228,11 @@ MATH_FUNCTIONS = [
     'cosh',
     'sinh',
     'tanh',
-
     # Special functions
     'erf',
     'erfc',
     'gamma',
     'lgamma',
-
     # Missing functions won't break anything but won't do anything either
     'this_function_definitely_does_not_exist',
 ]
-

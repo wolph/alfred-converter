@@ -38,10 +38,11 @@ def test_working(test):
             print('%r != %r' % (expected_result, result['title']))
 
     if result:
-        raise RuntimeError('%r returned %r, expected: %r' % (
-            expression, result['title'], expected_result))
+        raise RuntimeError(
+            '%r returned %r, expected: %r'
+            % (expression, result['title'], expected_result)
+        )
     else:
-        raise RuntimeError('%r didnt return, expected: %r' % (
-            expression, expected_result))
-
-
+        raise RuntimeError(
+            '%r didnt return, expected: %r' % (expression, expected_result)
+        )

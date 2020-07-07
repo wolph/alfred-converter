@@ -32,10 +32,7 @@ def register_post(units):
         for exponent, prefix, full_prefix in exponents:
             multiplier = base ** exponent
 
-            params = dict(
-                units=units,
-                quantity_types=['digital storage'],
-            )
+            params = dict(units=units, quantity_types=['digital storage'],)
 
             id = prefix + 'bit'
             name = full_prefix + 'bit'
@@ -45,7 +42,8 @@ def register_post(units):
                 name=name,
                 annotations=[prefix.lower() + 'b', prefix + 'b', id, name],
                 conversion_params=tuple(map(str, (0, multiplier, 8, 0))),
-                **params).register(units)
+                **params
+            ).register(units)
 
             id = prefix + 'byte'
             name = full_prefix + 'byte'
@@ -55,7 +53,8 @@ def register_post(units):
                 base_unit='byte' if exponent else None,
                 annotations=[prefix.lower() + 'B', prefix + 'B', id, name],
                 conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
-                **params).register(units)
+                **params
+            ).register(units)
 
     liter = units.get('L')
     liter.copy(
@@ -87,4 +86,3 @@ def register_post(units):
     foot = units.get('ft')
     foot.split = 'in'
     foot.fractional = True
-

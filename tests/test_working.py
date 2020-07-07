@@ -19,7 +19,9 @@ log(e^10) # The normal log method
 2^3 cm^2 in mm^2 # Test units with powers
 10 m/s in mm/s # Test units with multiple sub-units
 0b1010 + 0xA - 050 # Test calculations with hex, oct and binary numbers
-'''.split('\n')
+'''.split(
+    '\n'
+)
 
 
 @pytest.mark.parametrize('test', TESTS)
@@ -33,5 +35,3 @@ def test_working(test):
     # Execute the test
     for result in convert.main(units, test, dict):
         print(result)
-
-
