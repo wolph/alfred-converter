@@ -16,6 +16,7 @@ EXPRESSIONS = {
     "cos(pi / 3)": "0.5",
     "cos(pi / 3) * 2": "1",
     "2 * cos(pi / 3)": "1",
+    '13"': '1 foot 1 inch',
 }
 
 

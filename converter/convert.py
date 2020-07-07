@@ -457,7 +457,7 @@ def main(units, query, create_item):
                 minor_quantity = split.from_base(base_quantity)
                 major = int(major_quantity)
                 if major:
-                    minor = minor_quantity % major
+                    minor = minor_quantity % major_quantity.denominator
                 else:
                     minor = minor_quantity
                 minor_proper = fraction_to_string(minor, True)
