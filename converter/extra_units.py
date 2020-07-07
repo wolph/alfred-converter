@@ -11,20 +11,20 @@ def register_pre(units):
 def register_post(units):
     exponents = {
         1024: (
-            (0, "", ""),
-            (1, "ki", "kibi"),
-            (2, "Mi", "mebi"),
-            (3, "Gi", "gibi"),
-            (4, "Ti", "tebi"),
-            (5, "Pi", "pebi"),
+            (0, '', ''),
+            (1, 'ki', 'kibi'),
+            (2, 'Mi', 'mebi'),
+            (3, 'Gi', 'gibi'),
+            (4, 'Ti', 'tebi'),
+            (5, 'Pi', 'pebi'),
         ),
         1000: (
-            (0, "", ""),
-            (1, "k", "kilo"),
-            (2, "M", "mega"),
-            (3, "G", "giga"),
-            (4, "T", "tera"),
-            (5, "P", "peta"),
+            (0, '', ''),
+            (1, 'k', 'kilo'),
+            (2, 'M', 'mega'),
+            (3, 'G', 'giga'),
+            (4, 'T', 'tera'),
+            (5, 'P', 'peta'),
         ),
     }
 
@@ -32,57 +32,59 @@ def register_post(units):
         for exponent, prefix, full_prefix in exponents:
             multiplier = base ** exponent
 
-            params = dict(units=units, quantity_types=["digital storage"],)
+            params = dict(
+                units=units,
+                quantity_types=['digital storage'],
+            )
 
-            id = prefix + "bit"
-            name = full_prefix + "bit"
+            id = prefix + 'bit'
+            name = full_prefix + 'bit'
             convert.Unit(
-                base_unit="bit" if exponent else None,
+                base_unit='bit' if exponent else None,
                 id=id,
                 name=name,
-                annotations=[prefix.lower() + "b", prefix + "b", id, name],
+                annotations=[prefix.lower() + 'b', prefix + 'b', id, name],
                 conversion_params=tuple(map(str, (0, multiplier, 8, 0))),
-                **params
-            ).register(units)
+                **params).register(units)
 
-            id = prefix + "byte"
-            name = full_prefix + "byte"
+            id = prefix + 'byte'
+            name = full_prefix + 'byte'
             convert.Unit(
                 id=id,
                 name=name,
-                base_unit="byte" if exponent else None,
-                annotations=[prefix.lower() + "B", prefix + "B", id, name],
+                base_unit='byte' if exponent else None,
+                annotations=[prefix.lower() + 'B', prefix + 'B', id, name],
                 conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
-                **params
-            ).register(units)
+                **params).register(units)
 
-    liter = units.get("L")
+    liter = units.get('L')
     liter.copy(
         units=units,
-        id="teaspoon",
-        name="teaspoon",
-        annotations=["t", "tsp"],
-        conversion_params=("0", "0.000005", "1", "0"),
+        id='teaspoon',
+        name='teaspoon',
+        annotations=['t', 'tsp'],
+        conversion_params=('0', '0.000005', '1', '0'),
         fractional=True,
     ).register(units)
     liter.copy(
         units=units,
-        id="tablespoon",
-        name="tablespoon",
-        annotations=["tbl", "tbs", "tbsp"],
-        conversion_params=("0", "0.000015", "1", "0"),
+        id='tablespoon',
+        name='tablespoon',
+        annotations=['tbl', 'tbs', 'tbsp'],
+        conversion_params=('0', '0.000015', '1', '0'),
         fractional=True,
     ).register(units)
     liter.copy(
         units=units,
-        id="cup",
-        name="cup",
-        annotations=["cup"],
-        conversion_params=("0", "0.000240", "1", "0"),
+        id='cup',
+        name='cup',
+        annotations=['cup'],
+        conversion_params=('0', '0.000240', '1', '0'),
         fractional=True,
     ).register(units)
 
-    units.get("in").fractional = True
-    foot = units.get("ft")
-    foot.split = "in"
+    units.get('in').fractional = True
+    foot = units.get('ft')
+    foot.split = 'in'
     foot.fractional = True
+
