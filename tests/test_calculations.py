@@ -19,6 +19,8 @@ EXPRESSIONS = {
     '11"': 'inch 11 = foot 0 inch 11',
     '12"': 'inch 12 = foot 1 inch 0',
     '13"': 'inch 13 = foot 1 inch 1',
+    'log(10, 10)': '1',
+    'log(100) / log(10)': '2',
 }
 
 

@@ -1,15 +1,30 @@
 import re
 import math
-import constants
 import decimal
+import functools
+import constants
 
 
 safe_dict = dict()
+
+
+def decimal_math(method_name, *args):
+    decimal_args = []
+    for arg in args:
+        if not isinstance(arg, decimal.Decimal):  # pragma: no cover
+            arg = decimal.Decimal(arg)
+
+        decimal_args.append(arg)
+
+    method = getattr(math, method_name)
+    return decimal.Decimal(method(*args))
+
+
 for k in constants.MATH_FUNCTIONS:
     if hasattr(decimal.Decimal, k):
         safe_dict[k] = getattr(decimal.Decimal, k)
     elif hasattr(math, k):
-        safe_dict[k] = lambda *a: decimal.Decimal(getattr(math, k)(*a))
+        safe_dict[k] = functools.partial(decimal_math, k)
 
 
 # The following methods are copied from the Python manual:
@@ -198,7 +213,10 @@ def safe_eval(query):
     for k, v in constants.PRE_EVAL_REPLACEMENTS.items():
         query = query.replace(k, v)
 
+    context = safe_dict.copy()
+    context['math'] = math
+    context['decimal'] = decimal
     try:
-        return eval(query, {'__builtins__': None}, safe_dict)
+        return eval(query, {'__builtins__': None}, context)
     except SyntaxError as e:
         raise SyntaxErr(e)
