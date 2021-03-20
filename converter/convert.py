@@ -428,7 +428,8 @@ def fraction_to_string(value, proper=False):
         if fraction.numerator > fraction.denominator:
             major = int(fraction.numerator / fraction.denominator)
             fraction %= major
-            return '%s %s' % (major, fraction)
+            if major and fraction:
+                return '%s %s' % (major, fraction)
     else:
         return str(fraction)
 
@@ -490,6 +491,7 @@ def main(units, query, create_item):
                 else:
                     minor = minor_quantity
                 minor_proper = fraction_to_string(minor, True)
+
                 titles.append('%s %s = %s %s %s %s' % (
                     swap_unit(left, from_, quantity)
                     + swap_unit(left, to, major)
