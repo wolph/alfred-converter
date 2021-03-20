@@ -11966,7 +11966,7 @@
       <CatalogName>POSC</CatalogName>
       <CatalogSymbol isExplicit="true">Mm</CatalogSymbol>
       <ConversionToBaseUnit baseUnit="m">
-        <Factor>0.001</Factor>
+        <Factor>1000000</Factor>
       </ConversionToBaseUnit>
     </UnitOfMeasure>
     <UnitOfMeasure id="mmPa" annotation="mm/a">

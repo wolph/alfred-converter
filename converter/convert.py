@@ -439,6 +439,11 @@ def get_units_left():
     return os.environ.get('UNITS_SIDE') == 'left'
 
 
+def get_max_magnitude():
+    '''Return the maximum order of magnitude difference between units'''
+    return int(os.environ.get('MAX_MAGNITUDE', 3))
+
+
 def swap_unit(left, unit, *values):
     if left:
         return (unit,) + values
@@ -449,6 +454,7 @@ def swap_unit(left, unit, *values):
 def main(units, query, create_item):
     query = clean_query(query)
     left = get_units_left()
+    max_magnitude = get_max_magnitude()
 
     for from_, quantity, to in units.convert(query):
         if from_:
@@ -457,16 +463,23 @@ def main(units, query, create_item):
 
             quantity = decimal_to_string(quantity)
             if to.fractional:
+                new_magnitude = fraction_to_decimal(new_quantity).log10()
                 new_quantity = fraction_to_string(new_quantity)
                 new_quantity_proper = fraction_to_string(new_quantity, True)
             else:
+                new_magnitude = new_quantity.log10()
                 new_quantity = decimal_to_string(new_quantity)
                 new_quantity_proper = None
 
             if from_.fractional:
+                base_magnitude = fraction_to_decimal(base_quantity).log10()
                 base_quantity = fraction_to_string(base_quantity)
             else:
+                base_magnitude = base_quantity.log10()
                 base_quantity = decimal_to_string(base_quantity)
+
+            if abs(base_magnitude - new_magnitude) > max_magnitude:
+                continue
 
             titles = []
 

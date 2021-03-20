@@ -992,6 +992,9 @@ Alpha.
 If new units and/or other names for units should be added please let me know by
 creating an issue at: https://github.com/WoLpH/alfred-converter/issues
 
+The UNITS_SIDE variable can be set to either `left` or `right` depending on your preference.
+With the `MAX_MAGNITUDE` you can specify the maximum order of magnitude difference between two measures. With 3 you will see up to 3 zeros: 1 meter = 1000 millimeters. With 1 you would see up to 1 meter = 10 decimeter.
+
 Example queries
 
     1m in cm # Just a simple conversion
@@ -1133,6 +1136,8 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<string>true</string>
 		<key>BASE_8</key>
 		<string>true</string>
+		<key>MAX_MAGNITUDE</key>
+		<string>3</string>
 		<key>UNITS_SIDE</key>
 		<string>right</string>
 	</dict>
