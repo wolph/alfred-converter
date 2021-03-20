@@ -159,6 +159,10 @@ class Units(object):
                 if '(' in annotation:
                     continue
 
+                name_words = set(get_text(elem, 'Name', '').lower().split())
+                if name_words & constants.NAME_BLACKLIST:
+                    continue
+
                 if annotation in constants.ANNOTATION_BLACKLIST:
                     continue
 
@@ -461,6 +465,7 @@ def main(units, query, create_item):
             base_quantity = from_.to_base(quantity)
             new_quantity = to.from_base(base_quantity)
 
+            magnitude = quantity.log10()
             quantity = decimal_to_string(quantity)
             if to.fractional:
                 new_magnitude = fraction_to_decimal(new_quantity).log10()
@@ -472,13 +477,11 @@ def main(units, query, create_item):
                 new_quantity_proper = None
 
             if from_.fractional:
-                base_magnitude = fraction_to_decimal(base_quantity).log10()
                 base_quantity = fraction_to_string(base_quantity)
             else:
-                base_magnitude = base_quantity.log10()
                 base_quantity = decimal_to_string(base_quantity)
 
-            if abs(base_magnitude - new_magnitude) > max_magnitude:
+            if abs(magnitude - new_magnitude) > max_magnitude:
                 continue
 
             titles = []

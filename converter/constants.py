@@ -88,6 +88,21 @@ ANNOTATION_BLACKLIST = {
     'ftInd',
 }
 
+NAME_BLACKLIST = {
+    'benoits',
+    'chain',
+    'clarke',
+    'clarkes',
+    'clarks',
+    'fathoms',
+    'german',
+    'indian',
+    'sears',
+    'survey',
+    'imperial',
+    'link',
+}
+
 
 for annotation, items in ANNOTATION_REPLACEMENTS.items():
     items = set(items)
