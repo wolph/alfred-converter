@@ -101,6 +101,7 @@ NAME_BLACKLIST = {
     'survey',
     'imperial',
     'link',
+    'rankine',
 }
 
 

@@ -465,7 +465,7 @@ def main(units, query, create_item):
     max_magnitude = get_max_magnitude()
 
     for from_, quantity, to in units.convert(query):
-        if to.is_blacklisted():
+        if to and to.is_blacklisted():
             continue
 
         if from_:
@@ -508,9 +508,11 @@ def main(units, query, create_item):
 
                 major_quantity = to.from_base(base_quantity)
                 minor_quantity = split.from_base(base_quantity)
+
                 major = int(major_quantity)
                 if major:
-                    minor = minor_quantity % major_quantity.denominator
+                    divisor = split.from_base(1) / to.from_base(1)
+                    minor = minor_quantity % divisor
                 else:
                     minor = minor_quantity
                 minor_proper = fraction_to_string(minor, True)
