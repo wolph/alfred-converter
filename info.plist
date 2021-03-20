@@ -1139,7 +1139,7 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<key>MAX_MAGNITUDE</key>
 		<string>3</string>
 		<key>UNITS_BLACKLIST</key>
-		<string>yard</string>
+		<string>some-blacklisted-word other-blacklisted-word</string>
 		<key>UNITS_SIDE</key>
 		<string>right</string>
 	</dict>
