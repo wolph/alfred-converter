@@ -271,6 +271,10 @@ class Unit(object):
         self.base_unit = base_unit
         self.conversion_params = conversion_params
 
+    def is_blacklisted(self):
+        blacklisted = os.environ.get('UNITS_BLACKLISTED', '').lower().strip()
+        return set(self.name.lower().split()) & set(blacklisted.split())
+
     def copy(self, id, conversion_params, **kwargs):  # pragma: no cover
         annotations = []
         data = dict(
@@ -461,6 +465,9 @@ def main(units, query, create_item):
     max_magnitude = get_max_magnitude()
 
     for from_, quantity, to in units.convert(query):
+        if to.is_blacklisted():
+            continue
+
         if from_:
             base_quantity = from_.to_base(quantity)
             new_quantity = to.from_base(base_quantity)
