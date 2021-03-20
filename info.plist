@@ -1133,6 +1133,8 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<string>true</string>
 		<key>BASE_8</key>
 		<string>true</string>
+		<key>UNITS_SIDE</key>
+		<string>right</string>
 	</dict>
 	<key>version</key>
 	<string></string>

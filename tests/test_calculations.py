@@ -26,7 +26,8 @@ EXPRESSIONS = {
 
 
 @pytest.mark.parametrize('test', EXPRESSIONS.iteritems())
-def test_working(test):
+def test_working(test, monkeypatch):
+    monkeypatch.setenv('UNITS_SIDE', 'left')
     # Remove comments if needed
     expression, expected_result = test
     expression = expression.split('#')[0]

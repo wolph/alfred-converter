@@ -433,8 +433,21 @@ def fraction_to_string(value, proper=False):
         return str(fraction)
 
 
+def get_units_left():
+    '''Whether the place the units on the right or the left of the value'''
+    return os.environ.get('UNITS_SIDE') == 'left'
+
+
+def swap_unit(left, unit, *values):
+    if left:
+        return (unit,) + values
+    else:
+        return values + (unit,)
+
+
 def main(units, query, create_item):
     query = clean_query(query)
+    left = get_units_left()
 
     for from_, quantity, to in units.convert(query):
         if from_:
@@ -456,14 +469,15 @@ def main(units, query, create_item):
 
             titles = []
 
-            titles.append(
-                '%s %s = %s %s' % (from_, quantity, to, new_quantity)
-            )
+            titles.append('%s %s = %s %s' % (
+                swap_unit(left, from_, quantity)
+                + swap_unit(left, to, new_quantity)
+            ))
             if new_quantity_proper:
-                titles.append(
-                    '%s %s = %s %s'
-                    % (from_, quantity, to, new_quantity_proper)
-                )
+                titles.append('%s %s = %s %s' % (
+                    swap_unit(left, from_, quantity)
+                    + swap_unit(left, to, new_quantity_proper)
+                ))
 
             if to.split:
                 split = units.get(to.split)
@@ -476,15 +490,17 @@ def main(units, query, create_item):
                 else:
                     minor = minor_quantity
                 minor_proper = fraction_to_string(minor, True)
-                titles.append(
-                    '%s %s = %s %s %s %s'
-                    % (from_, quantity, to, major, split, minor)
-                )
+                titles.append('%s %s = %s %s %s %s' % (
+                    swap_unit(left, from_, quantity)
+                    + swap_unit(left, to, major)
+                    + swap_unit(left, split, minor)
+                ))
                 if minor_proper:
-                    titles.append(
-                        '%s %s = %s %s %s %s'
-                        % (from_, quantity, to, major, split, minor_proper)
-                    )
+                    titles.append('%s %s = %s %s %s %s' % (
+                        swap_unit(left, from_, quantity)
+                        + swap_unit(left, to, major)
+                        + swap_unit(left, split, minor_proper)
+                    ))
 
             for title in titles:
                 yield create_item(
