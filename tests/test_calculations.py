@@ -2,6 +2,7 @@ import pytest
 from converter import convert, constants
 
 EXPRESSIONS = {
+    '1-0.5': '0.5',
     '.1 * 0.01': '0.001',
     'sqrt(4)*2': '4',
     'sqrt(4) * 2': '4',

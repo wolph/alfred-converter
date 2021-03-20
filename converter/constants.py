@@ -137,7 +137,7 @@ FOOT_INCH_RE = re.compile(
     r'''
 ((?P<foot>\d+\.?\d*)')?
 (?P<inch_decimal>\d+[\.\/]?\d*)?
-([ -](?P<inch_fraction>\d+[\.\/]\d+))?
+([ -](?P<inch_fraction>\d+[\.\/]\d+)")?
 (?P<inch>"?)
 ''',
     flags=re.VERBOSE,
