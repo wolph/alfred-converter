@@ -88,18 +88,22 @@ def register_post(units):
     foot.split = 'in'
     foot.fractional = True
 
-    prefixs = dict(
-        milli=decimal.Decimal('1e-3'),
-        nano=decimal.Decimal('1e-9'),
-    )
+    prefixes = {
+        ('milli', 'm'): decimal.Decimal('1e-3'),
+        ('nano', 'n'): decimal.Decimal('1e-9'),
+        ('pico', 'p'): decimal.Decimal('1e-9'),
+    }
     farad = units.get('farad')
-    for prefix, multiplier in prefixs.items():
-        id=prefix + farad.id
-        name=prefix + farad.name
+    print(farad.annotations)
+    print('farad', farad.id, farad.name)
+    for prefixes, multiplier in prefixes.items():
+        id = prefixes[1] + farad.id
+        name = prefixes[0] + farad.name
+
         farad.copy(
             units=units,
             id=id,
             name=name,
-            annotations=[prefix + 'f', id, name],
+            annotations=[prefix + 'f' for prefix in prefixes] + [id, name],
             conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
         ).register(units)
