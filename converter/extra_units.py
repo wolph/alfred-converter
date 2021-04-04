@@ -2,6 +2,7 @@
 # This allows you to add additional units to the list.
 
 import convert
+import decimal
 
 
 def register_pre(units):
@@ -86,3 +87,19 @@ def register_post(units):
     foot = units.get('ft')
     foot.split = 'in'
     foot.fractional = True
+
+    prefixs = dict(
+        milli=decimal.Decimal('1e-3'),
+        nano=decimal.Decimal('1e-9'),
+    )
+    farad = units.get('farad')
+    for prefix, multiplier in prefixs.items():
+        id=prefix + farad.id
+        name=prefix + farad.name
+        farad.copy(
+            units=units,
+            id=id,
+            name=name,
+            annotations=[prefix + 'f', id, name],
+            conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
+        ).register(units)
