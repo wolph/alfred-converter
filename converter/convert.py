@@ -472,14 +472,14 @@ def main(units, query, create_item):
             base_quantity = from_.to_base(quantity)
             new_quantity = to.from_base(base_quantity)
 
-            magnitude = quantity.log10()
+            magnitude = quantity.copy_abs().log10()
             quantity = decimal_to_string(quantity)
             if to.fractional:
-                new_magnitude = fraction_to_decimal(new_quantity).log10()
+                new_magnitude = fraction_to_decimal(new_quantity).copy_abs().log10()
                 new_quantity = fraction_to_string(new_quantity)
                 new_quantity_proper = fraction_to_string(new_quantity, True)
             else:
-                new_magnitude = new_quantity.log10()
+                new_magnitude = new_quantity.copy_abs().log10()
                 new_quantity = decimal_to_string(new_quantity)
                 new_quantity_proper = None
 

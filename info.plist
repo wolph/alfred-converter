@@ -1137,7 +1137,7 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<key>BASE_8</key>
 		<string>true</string>
 		<key>MAX_MAGNITUDE</key>
-		<string>3</string>
+		<string>6</string>
 		<key>UNITS_BLACKLIST</key>
 		<string>some-blacklisted-word other-blacklisted-word</string>
 		<key>UNITS_SIDE</key>
