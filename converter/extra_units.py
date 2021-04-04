@@ -91,11 +91,8 @@ def register_post(units):
     prefixes = {
         ('milli', 'm'): decimal.Decimal('1e-3'),
         ('nano', 'n'): decimal.Decimal('1e-9'),
-        ('pico', 'p'): decimal.Decimal('1e-9'),
     }
     farad = units.get('farad')
-    print(farad.annotations)
-    print('farad', farad.id, farad.name)
     for prefixes, multiplier in prefixes.items():
         id = prefixes[1] + farad.id
         name = prefixes[0] + farad.name

@@ -126,6 +126,7 @@ class Units(object):
     def register(self, elem):
         base_unit, conversion_params = self.get_converter(elem)
         name = get_text(elem, 'Name') or elem.get('id')
+        name = name.replace('picro', 'pico')
 
         annotations = [
             elem.get('id'),
