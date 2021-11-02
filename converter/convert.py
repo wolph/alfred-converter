@@ -12,6 +12,9 @@ import constants
 import safe_math
 
 
+infinity = decimal.Decimal('inf')
+
+
 class UnknownUnit(Exception):
     pass
 
@@ -489,7 +492,8 @@ def main(units, query, create_item):
             else:
                 base_quantity = decimal_to_string(base_quantity)
 
-            if abs(magnitude - new_magnitude) > max_magnitude:
+            if magnitude not in {infinity, -infinity} \
+                    and abs(magnitude - new_magnitude) > max_magnitude:
                 continue
 
             titles = []
