@@ -573,6 +573,8 @@ main.scriptfilter(''' 6{query} ''')</string>
 				<false/>
 				<key>clipboardtext</key>
 				<string>{query}</string>
+				<key>ignoredynamicplaceholders</key>
+				<false/>
 				<key>transient</key>
 				<false/>
 			</dict>
@@ -1136,6 +1138,8 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<string>true</string>
 		<key>BASE_8</key>
 		<string>true</string>
+		<key>DECIMAL_SEPARATOR</key>
+		<string>.</string>
 		<key>MAX_MAGNITUDE</key>
 		<string>8</string>
 		<key>UNITS_BLACKLIST</key>

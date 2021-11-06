@@ -1,10 +1,11 @@
+import os
 import re
 
 UNITS_XML_FILE = 'poscUnits22.xml'
 UNITS_PICKLE_FILE = 'units.pickle'
 
 OUTPUT_DECIMALS = 6
-
+DECIMAL_SEPARATOR = os.environ.get('DECIMAL_SEPARATOR') or '.'
 
 SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s]([^\s]*|.+?))'
 SOURCE_RE = re.compile(SOURCE_PATTERN + '$', re.IGNORECASE | re.VERBOSE)
@@ -13,6 +14,14 @@ FULL_PATTERN = r'(\s+as|\s+to|\s+in|\s*>|\s*=)\s(?P<to>[^\d\s][^\s]*)$'
 FULL_RE = re.compile(
     SOURCE_PATTERN + FULL_PATTERN + '$', re.IGNORECASE | re.VERBOSE
 )
+
+DECIMAL_SEPARATOR_RE = re.compile(
+    r'(?!\(\s*)(\d+)' + DECIMAL_SEPARATOR + r'(\d+)')
+DECIMAL_SEPARATOR_REPLACEMENT = r'\1.\2'
+
+PARTIAL_DECIMAL_SEPARATOR_RE = re.compile(
+    r'^' + DECIMAL_SEPARATOR + r'(\d+)')
+PARTIAL_DECIMAL_SEPARATOR_REPLACEMENT = r'0.\1'
 
 ICONS = {
     'length': 'scale6.png',

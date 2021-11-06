@@ -7,6 +7,7 @@ from __future__ import print_function
 import os
 import collections
 import decimal
+import functools
 import fractions
 import constants
 import safe_math
@@ -40,7 +41,7 @@ def get_color_prefix():
     backcolor = os.environ.get('alfred_theme_background', '')
     if backcolor.startswith('rgba'):  # pragma: no cover
         # Format: 'rgba(r,g,b,a)'
-        channel = backcolor[5:-1].split(",")
+        channel = backcolor[5:-1].split(',')
         red, green, blue = channel[:3]
         # Reference: stackoverflow.com/questions/9780632/
         grey = 0.2126 * int(red) + 0.7152 * int(green) + 0.0722 * int(blue)
@@ -374,6 +375,10 @@ class Unit(object):
 
 
 def clean_query(query):
+    # query = constants.DECIMAL_SEPARATOR_RE.sub(
+    #     constants.DECIMAL_SEPARATOR_REPLACEMENT, query)
+    # query = constants.PARTIAL_DECIMAL_SEPARATOR_RE.sub(
+    #     constants.PARTIAL_DECIMAL_SEPARATOR_REPLACEMENT, query)
     query = query.replace('$', '')
     query = constants.FUNCTION_ALIASES_RE.sub(
         constants.FUNCTION_ALIASES_REPLACEMENT, query
@@ -463,13 +468,26 @@ def swap_unit(left, unit, *values):
         return values + (unit,)
 
 
+def change_decimal(function):
+    @functools.wraps(function)
+    def _change_decimal(*args, **kwargs):
+        for k, v in list(kwargs.items()):
+            if isinstance(v, (str, unicode)):
+                kwargs[k] = v.replace('.', constants.DECIMAL_SEPARATOR)
+
+        return function(*args, **kwargs)
+
+    return _change_decimal
+
+
 def main(units, query, create_item):
+    create_item = change_decimal(create_item)
     query = clean_query(query)
     left = get_units_left()
     max_magnitude = get_max_magnitude()
 
     for from_, quantity, to in units.convert(query):
-        if to and to.is_blacklisted():
+        if to and to.is_blacklisted():  # pragma: no cover
             continue
 
         if from_:
@@ -479,7 +497,8 @@ def main(units, query, create_item):
             magnitude = quantity.copy_abs().log10()
             quantity = decimal_to_string(quantity)
             if to.fractional:
-                new_magnitude = fraction_to_decimal(new_quantity).copy_abs().log10()
+                new_magnitude = fraction_to_decimal(new_quantity).copy_abs() \
+                    .log10()
                 new_quantity = fraction_to_string(new_quantity)
                 new_quantity_proper = fraction_to_string(new_quantity, True)
             else:

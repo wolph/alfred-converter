@@ -26,6 +26,12 @@ EXPRESSIONS = {
     '0f': 'degree Fahrenheit 0 = degree Fahrenheit -0',
 }
 
+DECIMAL_EXPRESSIONS = {
+    '1.23': '1,23',
+    '1.23 * 2': '2,46',
+    '2 * 1.23': '2,46',
+}
+
 
 @pytest.mark.parametrize('test', EXPRESSIONS.iteritems())
 def test_working(test, monkeypatch):
@@ -40,6 +46,38 @@ def test_working(test, monkeypatch):
     # Execute the expression
     result = None
     for result in convert.main(units, expression, dict):
+        if result['title'] == expected_result:
+            return True
+        else:
+            print('%r != %r' % (expected_result, result['title']))
+
+    if result:
+        raise RuntimeError(
+            '%r returned %r, expected: %r'
+            % (expression, result['title'], expected_result)
+        )
+    else:
+        raise RuntimeError(
+            '%r didnt return, expected: %r' % (expression, expected_result)
+        )
+
+
+@pytest.mark.parametrize('test', DECIMAL_EXPRESSIONS.iteritems())
+def test_decimal_separator(test, monkeypatch):
+    monkeypatch.setenv('UNITS_SIDE', 'left')
+    monkeypatch.setattr(constants, 'DECIMAL_SEPARATOR', ',')
+
+    # Remove comments if needed
+    expression, expected_result = test
+
+    units = convert.Units()
+    units.load(constants.UNITS_XML_FILE)
+    print 'sep', constants.DECIMAL_SEPARATOR, expression
+
+    # Execute the expression
+    result = None
+    for result in convert.main(units, expression, dict):
+        print('result', result)
         if result['title'] == expected_result:
             return True
         else:
