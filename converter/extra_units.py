@@ -29,7 +29,7 @@ def register_post(units):
         ),
     }
 
-    for base, exponents in exponents.iteritems():
+    for base, exponents in exponents.items():
         for exponent, prefix, full_prefix in exponents:
             multiplier = base ** exponent
 

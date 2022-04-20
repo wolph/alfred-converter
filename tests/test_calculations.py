@@ -33,7 +33,7 @@ DECIMAL_EXPRESSIONS = {
 }
 
 
-@pytest.mark.parametrize('test', EXPRESSIONS.iteritems())
+@pytest.mark.parametrize('test', EXPRESSIONS.items())
 def test_working(test, monkeypatch):
     monkeypatch.setenv('UNITS_SIDE', 'left')
     # Remove comments if needed
@@ -62,7 +62,7 @@ def test_working(test, monkeypatch):
         )
 
 
-@pytest.mark.parametrize('test', DECIMAL_EXPRESSIONS.iteritems())
+@pytest.mark.parametrize('test', DECIMAL_EXPRESSIONS.items())
 def test_decimal_separator(test, monkeypatch):
     monkeypatch.setenv('UNITS_SIDE', 'left')
     monkeypatch.setattr(constants, 'DECIMAL_SEPARATOR', ',')

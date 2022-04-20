@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 import constants
@@ -11,12 +12,12 @@ DEBUG = os.environ.get('DEBUG_CONVERTER')
 def create_item(parent, attrib={}, **kwargs):
     # Make sure all attributes are strings
     for k in list(attrib):
-        attrib[k] = unicode(attrib[k])
+        attrib[k] = str(attrib[k])
 
     item = ET.SubElement(parent, 'item', attrib)
     for k, v in kwargs.items():
         elem = ET.SubElement(item, k)
-        elem.text = unicode(v)
+        elem.text = str(v)
 
     return item
 
@@ -45,7 +46,7 @@ def to_xml(f):
 
             if not DEBUG:
                 assert items, 'No results for %r' % args
-                tree.write(sys.__stdout__)
+                tree.write(sys.__stdout__, encoding='unicode')
 
         except Exception as e:  # pragma: no cover
             items = ET.Element('items')
@@ -62,7 +63,7 @@ def to_xml(f):
                 traceback.format_exc().split('\n')[-4].strip(),
                 traceback.format_exc().split('\n')[-3].strip(),
             )
-            tree.write(sys.__stdout__)
+            tree.write(sys.__stdout__, encoding='unicode')
             traceback.print_exc()
 
     return _to_xml
@@ -71,7 +72,7 @@ def to_xml(f):
 @to_xml
 def scriptfilter(items, query):
     import convert
-    import cPickle as pickle
+    import pickle
 
     try:
         assert not DEBUG
@@ -98,6 +99,11 @@ def scriptfilter(items, query):
 
 
 if __name__ == '__main__':
+    with open('/Users/rick/workspace/alfred-converter/log.txt', 'a') as fh:
+        import pprint
+        pprint.pprint(os.environ, stream=fh)
+        print(sys.argv, file=fh)
+
     scriptfilter(' '.join(sys.argv[1:]))
 else:
     sys.stdout = open(os.devnull, 'w')

@@ -234,9 +234,9 @@
 				<key>keyword</key>
 				<string>0</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -244,18 +244,17 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 0{query} ''')</string>
+				<string>python3 converter/main.py 0$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -284,9 +283,9 @@ main.scriptfilter(''' 0{query} ''')</string>
 				<key>keyword</key>
 				<string>1</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -294,18 +293,17 @@ main.scriptfilter(''' 0{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 1{query} ''')</string>
+				<string>python3 converter/main.py 1$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -336,7 +334,7 @@ main.scriptfilter(''' 1{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -344,18 +342,17 @@ main.scriptfilter(''' 1{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 2{query} ''')</string>
+				<string>python3 converter/main.py 2$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -386,7 +383,7 @@ main.scriptfilter(''' 2{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -394,18 +391,17 @@ main.scriptfilter(''' 2{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 3{query} ''')</string>
+				<string>python3 converter/main.py 3$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -436,7 +432,7 @@ main.scriptfilter(''' 3{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -444,18 +440,17 @@ main.scriptfilter(''' 3{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 4{query} ''')</string>
+				<string>python3 converter/main.py 4$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -486,7 +481,7 @@ main.scriptfilter(''' 4{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -494,18 +489,17 @@ main.scriptfilter(''' 4{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 5{query} ''')</string>
+				<string>python3 converter/main.py 5$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -536,7 +530,7 @@ main.scriptfilter(''' 5{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -544,18 +538,17 @@ main.scriptfilter(''' 5{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 6{query} ''')</string>
+				<string>python3 converter/main.py 6$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -605,7 +598,7 @@ main.scriptfilter(''' 6{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -613,18 +606,17 @@ main.scriptfilter(''' 6{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 7{query} ''')</string>
+				<string>python3 converter/main.py 7$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -655,7 +647,7 @@ main.scriptfilter(''' 7{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -663,18 +655,17 @@ main.scriptfilter(''' 7{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 8{query} ''')</string>
+				<string>python3 converter/main.py 8$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -703,9 +694,9 @@ main.scriptfilter(''' 8{query} ''')</string>
 				<key>keyword</key>
 				<string>9</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -713,18 +704,17 @@ main.scriptfilter(''' 8{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 9{query} ''')</string>
+				<string>python3 converter/main.py 9$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -755,7 +745,7 @@ main.scriptfilter(''' 9{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -763,18 +753,17 @@ main.scriptfilter(''' 9{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' 0.{query} ''')</string>
+				<string>python3 converter/main.py .$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -805,7 +794,7 @@ main.scriptfilter(''' 0.{query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -813,18 +802,17 @@ main.scriptfilter(''' 0.{query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' {query} ''')</string>
+				<string>python3 converter/main.py $@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -855,7 +843,7 @@ main.scriptfilter(''' {query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -863,18 +851,17 @@ main.scriptfilter(''' {query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' {query} ''')</string>
+				<string>python3 converter/main.py $@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -905,7 +892,7 @@ main.scriptfilter(''' {query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -913,18 +900,17 @@ main.scriptfilter(''' {query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' ({query} ''')</string>
+				<string>python3 converter/main.py "($@"</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -955,7 +941,7 @@ main.scriptfilter(''' ({query} ''')</string>
 				<key>queuedelaycustom</key>
 				<integer>1</integer>
 				<key>queuedelayimmediatelyinitially</key>
-				<false/>
+				<true/>
 				<key>queuedelaymode</key>
 				<integer>0</integer>
 				<key>queuemode</key>
@@ -963,18 +949,17 @@ main.scriptfilter(''' ({query} ''')</string>
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>from converter import main
-main.scriptfilter(''' -{query} ''')</string>
+				<string>python3 converter/main.py -$@</string>
 				<key>scriptargtype</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>scriptfile</key>
-				<string></string>
+				<string>converter/main.py</string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>5</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>

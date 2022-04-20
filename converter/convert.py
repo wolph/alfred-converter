@@ -472,7 +472,7 @@ def change_decimal(function):
     @functools.wraps(function)
     def _change_decimal(*args, **kwargs):
         for k, v in list(kwargs.items()):
-            if isinstance(v, (str, unicode)):
+            if isinstance(v, str):
                 kwargs[k] = v.replace('.', constants.DECIMAL_SEPARATOR)
 
         return function(*args, **kwargs)
