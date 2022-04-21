@@ -99,7 +99,7 @@ def scriptfilter(items, query):
 
 
 if __name__ == '__main__':
-    with open('/Users/rick/workspace/alfred-converter/log.txt', 'a') as fh:
+    with open('/tmp/alfred-converter-log.txt', 'a') as fh:
         import pprint
         pprint.pprint(os.environ, stream=fh)
         print(sys.argv, file=fh)
