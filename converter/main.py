@@ -99,11 +99,6 @@ def scriptfilter(items, query):
 
 
 if __name__ == '__main__':
-    with open('/tmp/alfred-converter-log.txt', 'a') as fh:
-        import pprint
-        pprint.pprint(os.environ, stream=fh)
-        print(sys.argv, file=fh)
-
     scriptfilter(' '.join(sys.argv[1:]))
 else:
     sys.stdout = open(os.devnull, 'w')
