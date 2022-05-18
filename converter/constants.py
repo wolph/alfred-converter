@@ -76,6 +76,7 @@ ANNOTATION_REPLACEMENTS = {
 
 EXPANSIONS = {
     'foot': ('feet', 'ft'),
+    'mile': ('miles',),
     'mili': ('milli',),
     'meter': ('metres', 'meter', 'meters'),
     '^2': ('sq', 'square'),
