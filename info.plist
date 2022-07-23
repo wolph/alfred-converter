@@ -226,7 +226,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -244,17 +244,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 0$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 0{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -275,7 +276,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -293,17 +294,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 1$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 1{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -324,7 +326,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -332,7 +334,7 @@
 				<key>keyword</key>
 				<string>2</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -342,17 +344,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 2$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 2{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -373,7 +376,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -381,7 +384,7 @@
 				<key>keyword</key>
 				<string>3</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -391,17 +394,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 3$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 3{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -422,7 +426,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -430,7 +434,7 @@
 				<key>keyword</key>
 				<string>4</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -440,17 +444,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 4$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 4{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -471,7 +476,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -479,7 +484,7 @@
 				<key>keyword</key>
 				<string>5</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -489,17 +494,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 5$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 5{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -520,7 +526,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -528,7 +534,7 @@
 				<key>keyword</key>
 				<string>6</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -538,17 +544,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 6$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 6{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -588,7 +595,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -596,7 +603,7 @@
 				<key>keyword</key>
 				<string>7</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -606,17 +613,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 7$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 7{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -637,7 +645,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -645,7 +653,7 @@
 				<key>keyword</key>
 				<string>8</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -655,17 +663,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 8$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 8{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -686,7 +695,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -704,17 +713,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py 9$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 9{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -735,7 +745,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -743,7 +753,7 @@
 				<key>keyword</key>
 				<string>.</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -753,17 +763,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py .$@</string>
+				<string>from converter import main
+main.scriptfilter(''' 0.{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -784,7 +795,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -792,7 +803,7 @@
 				<key>keyword</key>
 				<string>convert</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -802,17 +813,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py $@</string>
+				<string>from converter import main
+main.scriptfilter(''' {query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -833,7 +845,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -841,7 +853,7 @@
 				<key>keyword</key>
 				<string>=</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -851,17 +863,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py $@</string>
+				<string>from converter import main
+main.scriptfilter(''' {query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -882,7 +895,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -890,7 +903,7 @@
 				<key>keyword</key>
 				<string>(</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -900,17 +913,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py "($@"</string>
+				<string>from converter import main
+main.scriptfilter(''' ({query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -931,7 +945,7 @@
 				<key>argumenttreatemptyqueryasnil</key>
 				<false/>
 				<key>argumenttrimmode</key>
-				<integer>0</integer>
+				<integer>1</integer>
 				<key>argumenttype</key>
 				<integer>1</integer>
 				<key>escaping</key>
@@ -939,7 +953,7 @@
 				<key>keyword</key>
 				<string>-</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<true/>
 				<key>queuedelaymode</key>
@@ -949,17 +963,18 @@
 				<key>runningsubtext</key>
 				<string>Converting...</string>
 				<key>script</key>
-				<string>python3 converter/main.py -$@</string>
+				<string>from converter import main
+main.scriptfilter(''' -{query} ''')</string>
 				<key>scriptargtype</key>
-				<integer>1</integer>
+				<integer>0</integer>
 				<key>scriptfile</key>
-				<string>converter/main.py</string>
+				<string></string>
 				<key>subtext</key>
 				<string></string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>5</integer>
+				<integer>3</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -1005,116 +1020,118 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<key>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</key>
 		<dict>
 			<key>xpos</key>
-			<integer>700</integer>
+			<real>700</real>
 			<key>ypos</key>
 			<real>670</real>
 		</dict>
 		<key>4CC56A28-09F3-4387-A540-81DCB4DC8C14</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>1440</real>
 		</dict>
 		<key>5E060269-88B3-4259-A125-92E4B3E8942C</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>1220</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E0</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
-			<real>10</real>
+			<real>15</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>120</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E2</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>230</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E3</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>340</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E4</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>450</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E5</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>560</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E6</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>670</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E7</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>780</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E8</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>890</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E9</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>1000</real>
 		</dict>
 		<key>87B4FA40-AE32-4F0F-A763-0F7633244946</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>1550</real>
 		</dict>
 		<key>B9E7F633-5C7A-405B-894B-BBDFB09DE5C8</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>1110</real>
 		</dict>
 		<key>E42A313A-CE15-4A7E-B4B7-AAA7ADCBA21E</key>
 		<dict>
 			<key>xpos</key>
-			<integer>300</integer>
+			<real>300</real>
 			<key>ypos</key>
 			<real>1330</real>
 		</dict>
 	</dict>
+	<key>userconfigurationconfig</key>
+	<array/>
 	<key>variables</key>
 	<dict>
 		<key>BASE_16</key>

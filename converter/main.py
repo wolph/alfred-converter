@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import print_function
 import os
 import sys
 import constants
@@ -7,6 +8,7 @@ from xml.etree import cElementTree as ET
 
 
 DEBUG = os.environ.get('DEBUG_CONVERTER')
+PRETTY_XML = os.environ.get('PRETTY_XML')
 
 
 def create_item(parent, attrib={}, **kwargs):
@@ -46,9 +48,17 @@ def to_xml(f):
 
             if not DEBUG:
                 assert items, 'No results for %r' % args
-                tree.write(sys.__stdout__, encoding='unicode')
+
+                xml_string = ET.tostring(items)
+                if PRETTY_XML:
+                    from xml.dom import minidom
+                    xml_string = minidom.parseString(
+                        xml_string).toprettyxml(indent='   ')
+
+                sys.__stdout__.write(xml_string.decode('utf-8'))
 
         except Exception as e:  # pragma: no cover
+            raise
             items = ET.Element('items')
             tree = ET.ElementTree(items)
             item = ET.SubElement(items, 'item', valid='no')
@@ -100,6 +110,6 @@ def scriptfilter(items, query):
 
 if __name__ == '__main__':
     scriptfilter(' '.join(sys.argv[1:]))
-else:
-    sys.stdout = open(os.devnull, 'w')
-    sys.stderr = open(os.devnull, 'w')
+# else:
+#     sys.stdout = open(os.devnull, 'w')
+#     sys.stderr = open(os.devnull, 'w')
