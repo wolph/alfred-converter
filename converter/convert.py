@@ -499,8 +499,12 @@ def main(units, query, create_item):
             if to.fractional:
                 new_magnitude = fraction_to_decimal(new_quantity).copy_abs() \
                     .log10()
-                new_quantity = fraction_to_string(new_quantity)
-                new_quantity_proper = fraction_to_string(new_quantity, True)
+                if new_quantity.denominator in constants.ALLOWED_DENOMINATORS:
+                    new_quantity = fraction_to_string(new_quantity)
+                    new_quantity_proper = fraction_to_string(new_quantity, True)
+                else:
+                    new_quantity = decimal_to_string(fraction_to_decimal(new_quantity))
+                    new_quantity_proper = None
             else:
                 new_magnitude = new_quantity.copy_abs().log10()
                 new_quantity = decimal_to_string(new_quantity)
@@ -541,17 +545,18 @@ def main(units, query, create_item):
                     minor = minor_quantity
                 minor_proper = fraction_to_string(minor, True)
 
-                titles.append('%s %s = %s %s %s %s' % (
-                    swap_unit(left, from_, quantity)
-                    + swap_unit(left, to, major)
-                    + swap_unit(left, split, minor)
-                ))
-                if minor_proper:
+                if minor.denominator in constants.ALLOWED_DENOMINATORS:
                     titles.append('%s %s = %s %s %s %s' % (
                         swap_unit(left, from_, quantity)
                         + swap_unit(left, to, major)
-                        + swap_unit(left, split, minor_proper)
+                        + swap_unit(left, split, minor)
                     ))
+                    if minor_proper:
+                        titles.append('%s %s = %s %s %s %s' % (
+                            swap_unit(left, from_, quantity)
+                            + swap_unit(left, to, major)
+                            + swap_unit(left, split, minor_proper)
+                        ))
 
             for title in titles:
                 yield create_item(
