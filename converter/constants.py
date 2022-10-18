@@ -6,6 +6,7 @@ UNITS_PICKLE_FILE = 'units.pickle'
 
 OUTPUT_DECIMALS = 6
 DECIMAL_SEPARATOR = os.environ.get('DECIMAL_SEPARATOR') or '.'
+ALLOWED_DENOMINATORS = set(range(10)) | {16, 32, 64, 100}
 
 SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s]([^\s]*|.+?))'
 SOURCE_RE = re.compile(SOURCE_PATTERN + '$', re.IGNORECASE | re.VERBOSE)
