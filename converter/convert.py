@@ -347,7 +347,11 @@ class Unit(object):
         if keyword:
             new_tos = []
             for to in tos:
-                if keyword in to.name or keyword in to.id:
+                if (
+                    keyword in to.name
+                    or keyword in to.id
+                    or keyword in to.annotations
+                ):
                     new_tos.append(to)
 
             if new_tos:
