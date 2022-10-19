@@ -203,9 +203,7 @@ def safe_eval(query):
     >>> safe_eval('0b10')
     Decimal('2')
     '''
-    query = HEX_RE.sub(HEX_REPLACE, query)
-    query = BIN_RE.sub(BIN_REPLACE, query)
-    query = OCT_RE.sub(OCT_REPLACE, query)
+    query = convert_base(query)
     query = DECIMAL_RE.sub(DECIMAL_REPLACE, query)
     query = AUTOMUL_RE.sub(AUTOMUL_REPLACE, query)
     query = fix_partial_queries(query)
@@ -221,3 +219,10 @@ def safe_eval(query):
         return eval(query, {'__builtins__': None}, context)
     except SyntaxError as e:
         raise SyntaxErr(e)
+
+
+def convert_base(query):
+    query = HEX_RE.sub(HEX_REPLACE, query)
+    query = BIN_RE.sub(BIN_REPLACE, query)
+    query = OCT_RE.sub(OCT_REPLACE, query)
+    return query
