@@ -21,11 +21,13 @@ FULL_RE = re.compile(
 )
 
 DECIMAL_SEPARATOR_RE = re.compile(
-    r'(?!\(\s*)(\d+)' + DECIMAL_SEPARATOR + r'(\d+)')
+    r'(?!\(\s*)(\d+)' + DECIMAL_SEPARATOR + r'(\d+)'
+)
 DECIMAL_SEPARATOR_REPLACEMENT = r'\1.\2'
 
 PARTIAL_DECIMAL_SEPARATOR_RE = re.compile(
-    r'^' + DECIMAL_SEPARATOR + r'(\d+)')
+    r'^' + DECIMAL_SEPARATOR + r'(\d+)'
+)
 PARTIAL_DECIMAL_SEPARATOR_REPLACEMENT = r'0.\1'
 
 ICONS = {
@@ -42,7 +44,6 @@ ICONS = {
     'digital storage': 'binary9.png',
 }
 DEFAULT_ICON = 'ruler9.png'
-
 
 ANNOTATION_REPLACEMENTS = {
     'litre': ('liter', 'liters', 'l'),
@@ -77,7 +78,6 @@ ANNOTATION_REPLACEMENTS = {
     'flozUS': ('flus', 'floz', 'fl', 'fl oz', 'fl oz uk'),
     'flozUK': ('fluk', 'fl oz uk', 'fl uk'),
 }
-
 
 EXPANSIONS = {
     'foot': ('feet', 'ft'),
@@ -119,7 +119,6 @@ NAME_BLACKLIST = {
     'rankine',
 }
 
-
 for annotation, items in ANNOTATION_REPLACEMENTS.items():
     items = set(items)
     items.add(annotation)
@@ -130,7 +129,6 @@ for annotation, items in ANNOTATION_REPLACEMENTS.items():
                 items.add(item.replace(key, expansion))
 
     ANNOTATION_REPLACEMENTS[annotation] = sorted(items)
-
 
 # Mostly for language specific stuff, defaulting to US for now since I'm not
 # easily able to detect the language in a fast way from within alfred

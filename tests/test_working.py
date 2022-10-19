@@ -1,6 +1,6 @@
 import pytest
-from converter import convert, constants
 
+from converter import constants, convert
 
 TESTS = '''
 1m in cm # Just a simple conversion
