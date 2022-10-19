@@ -1,5 +1,6 @@
 import pytest
-from converter import convert, constants
+
+from converter import constants, convert
 
 EXPRESSIONS = {
     '1-0.5': '0.5',
@@ -33,6 +34,7 @@ EXPRESSIONS = {
     '0f in c': '0 degree Fahrenheit = -17.777778 degrees Celsius',
     '10f in c': '10 degree Fahrenheit = -12.222222 degrees Celsius',
     '0x1f': '31',
+    '(10 * 20) mm in cm': '200 millimeters = 20 centimeter',
 }
 SINGULAR_EXPRESSIONS = {
     '100 pounds to ounces': 'pounds mass 100 = ounce mass 1600',

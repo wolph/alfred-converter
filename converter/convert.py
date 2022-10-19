@@ -182,7 +182,7 @@ class Units(object):
 
         :rtype: list of (Unit, decimal.Decimal, Unit)
         '''
-        query = safe_math.convert_base(query)
+        query = safe_math.pre_calculate(query)
         match = constants.FULL_RE.match(query)
         source_match = constants.SOURCE_RE.match(query)
 
