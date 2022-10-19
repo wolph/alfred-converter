@@ -1,9 +1,25 @@
+Alfred Unit Converter
+--------------------------------
+
 Alfred unit converter is a smart calculator for Alfred with support for unit
 conversions to make it a bit comparable to the Google Calculator and Wolfram
 Alpha.
 
+Issues
+================
+
 If new units and/or other names for units should be added please let me know by
 creating an issue at: https://github.com/WoLpH/alfred-converter/issues
+
+Installation
+=============
+
+To install use the following link:
+
+https://github.com/WoLpH/alfred-converter/blob/master/unit_converter.alfredworkflow
+
+Configuration
+==================
 
 The extension can be configured through the environment variables setting in Alfred.
 
@@ -18,6 +34,7 @@ The extension can be configured through the environment variables setting in Alf
     UNITS_SIDE: Showing the units at the right or the left side
 
 Example queries
+==================
 
 ::
 
