@@ -255,7 +255,7 @@ main.scriptfilter(''' 0{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -305,7 +305,7 @@ main.scriptfilter(''' 1{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -355,7 +355,7 @@ main.scriptfilter(''' 2{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -405,7 +405,7 @@ main.scriptfilter(''' 3{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -455,7 +455,7 @@ main.scriptfilter(''' 4{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -505,7 +505,7 @@ main.scriptfilter(''' 5{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -555,7 +555,7 @@ main.scriptfilter(''' 6{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -624,7 +624,7 @@ main.scriptfilter(''' 7{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -674,7 +674,7 @@ main.scriptfilter(''' 8{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -724,7 +724,7 @@ main.scriptfilter(''' 9{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -774,7 +774,7 @@ main.scriptfilter(''' 0.{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -824,7 +824,7 @@ main.scriptfilter(''' {query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -874,7 +874,7 @@ main.scriptfilter(''' {query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -924,7 +924,7 @@ main.scriptfilter(''' ({query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -974,7 +974,7 @@ main.scriptfilter(''' -{query} ''')</string>
 				<key>title</key>
 				<string>Convert "&lt;from&gt; &lt;unit&gt; to &lt;to&gt;"</string>
 				<key>type</key>
-				<integer>3</integer>
+				<integer>9</integer>
 				<key>withspace</key>
 				<false/>
 			</dict>
@@ -1142,8 +1142,10 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<string>true</string>
 		<key>DECIMAL_SEPARATOR</key>
 		<string>.</string>
+		<key>FRACTIONAL_UNITS</key>
+		<string>both</string>
 		<key>MAX_MAGNITUDE</key>
-		<string>8</string>
+		<string>12</string>
 		<key>UNITS_BLACKLIST</key>
 		<string>some-blacklisted-word other-blacklisted-word</string>
 		<key>UNITS_SIDE</key>

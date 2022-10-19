@@ -1,8 +1,9 @@
 # The poscUnits22.xml file is missing a few units which would be quite useful
 # This allows you to add additional units to the list.
 
-import convert
 import decimal
+
+from . import convert
 
 
 def register_pre(units):
@@ -33,7 +34,7 @@ def register_post(units):
         for exponent, prefix, full_prefix in exponents:
             multiplier = base ** exponent
 
-            params = dict(units=units, quantity_types=['digital storage'],)
+            params = dict(units=units, quantity_types=['digital storage'], )
 
             id = prefix + 'bit'
             name = full_prefix + 'bit'

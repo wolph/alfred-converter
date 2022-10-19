@@ -4,14 +4,15 @@ Note that we are _explicityly_ using the system python so we don't rely on
 custom libraries and/or versions
 '''
 from __future__ import print_function
-import os
+
 import collections
 import decimal
-import functools
 import fractions
-import constants
-import safe_math
+import functools
+import os
+from xml.etree import cElementTree as ET
 
+from . import constants, safe_math
 
 infinity = decimal.Decimal('inf')
 
@@ -150,11 +151,9 @@ class Units(object):
         unit.register(self)
 
     def load(self, xml_file):
-        import extra_units
+        from . import extra_units
 
         extra_units.register_pre(self)
-
-        from xml.etree import cElementTree as ET
 
         tree = ET.parse(xml_file)
         root = tree.getroot()
@@ -357,13 +356,15 @@ class Unit(object):
             if new_tos:
                 return new_tos
 
-            for to in tos:
-                for annotation in to.annotations:  # pragma: no branch
+            # This might be a scenario that does not occur anymore, but it
+            # doesn't hurt to keep it
+            for to in tos:  # pragma: no cover
+                for annotation in to.annotations:
                     if to.id in annotation:
                         new_tos.append(to)
                         break
 
-            return new_tos
+            return new_tos  # pragma: no cover
         else:
             return tos
 
@@ -507,7 +508,9 @@ def main(units, query, create_item):
                     new_quantity = fraction_to_string(new_quantity)
                     new_quantity_proper = fraction_to_string(new_quantity, True)
                 else:
-                    new_quantity = decimal_to_string(fraction_to_decimal(new_quantity))
+                    new_quantity = decimal_to_string(
+                        fraction_to_decimal(new_quantity)
+                    )
                     new_quantity_proper = None
             else:
                 new_magnitude = new_quantity.copy_abs().log10()
@@ -520,20 +523,24 @@ def main(units, query, create_item):
                 base_quantity = decimal_to_string(base_quantity)
 
             if magnitude not in {infinity, -infinity} \
-                    and abs(magnitude - new_magnitude) > max_magnitude:
+                and abs(magnitude - new_magnitude) > max_magnitude:
                 continue
 
             titles = []
 
-            titles.append('%s %s = %s %s' % (
-                swap_unit(left, from_, quantity)
-                + swap_unit(left, to, new_quantity)
-            ))
-            if new_quantity_proper:
-                titles.append('%s %s = %s %s' % (
+            titles.append(
+                '%s %s = %s %s' % (
                     swap_unit(left, from_, quantity)
-                    + swap_unit(left, to, new_quantity_proper)
-                ))
+                    + swap_unit(left, to, new_quantity)
+                )
+            )
+            if new_quantity_proper:
+                titles.append(
+                    '%s %s = %s %s' % (
+                        swap_unit(left, from_, quantity)
+                        + swap_unit(left, to, new_quantity_proper)
+                    )
+                )
 
             if to.split:
                 split = units.get(to.split)
@@ -550,17 +557,21 @@ def main(units, query, create_item):
                 minor_proper = fraction_to_string(minor, True)
 
                 if minor.denominator in constants.ALLOWED_DENOMINATORS:
-                    titles.append('%s %s = %s %s %s %s' % (
-                        swap_unit(left, from_, quantity)
-                        + swap_unit(left, to, major)
-                        + swap_unit(left, split, minor)
-                    ))
-                    if minor_proper:
-                        titles.append('%s %s = %s %s %s %s' % (
+                    titles.append(
+                        '%s %s = %s %s %s %s' % (
                             swap_unit(left, from_, quantity)
                             + swap_unit(left, to, major)
-                            + swap_unit(left, split, minor_proper)
-                        ))
+                            + swap_unit(left, split, minor)
+                        )
+                    )
+                    if minor_proper:
+                        titles.append(
+                            '%s %s = %s %s %s %s' % (
+                                swap_unit(left, from_, quantity)
+                                + swap_unit(left, to, major)
+                                + swap_unit(left, split, minor_proper)
+                            )
+                        )
 
             for title in titles:
                 yield create_item(
@@ -570,11 +581,11 @@ def main(units, query, create_item):
                         'to the clipboard'
                     ),
                     icon='icons/'
-                    + (
-                        to.get_icon()
-                        or from_.get_icon()
-                        or get_color_prefix() + constants.DEFAULT_ICON
-                    ),
+                         + (
+                             to.get_icon()
+                             or from_.get_icon()
+                             or get_color_prefix() + constants.DEFAULT_ICON
+                         ),
                     attrib=dict(
                         uid='%s to %s' % (from_.id, to.id),
                         arg=new_quantity,
@@ -592,7 +603,7 @@ def main(units, query, create_item):
                     'the clipboard'
                 ),
                 icon='icons/%scalculator63.png' % get_color_prefix(),
-                attrib=dict(uid=q_str, arg=q_str, valid='yes',),
+                attrib=dict(uid=q_str, arg=q_str, valid='yes', ),
             )
 
             if q_str.isdigit() or (q_str[0] == '-' and q_str[1:].isdigit()):
@@ -612,7 +623,7 @@ def main(units, query, create_item):
                             'value to the clipboard'
                         ),
                         icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(uid=q_hex, arg=q_hex, valid='yes',),
+                        attrib=dict(uid=q_hex, arg=q_hex, valid='yes', ),
                     )
 
                 if bases[8]:  # pragma: no branch
@@ -624,7 +635,7 @@ def main(units, query, create_item):
                             'value to the clipboard'
                         ),
                         icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(uid=q_oct, arg=q_oct, valid='yes',),
+                        attrib=dict(uid=q_oct, arg=q_oct, valid='yes', ),
                     )
 
                 if bases[2]:  # pragma: no branch
@@ -636,5 +647,5 @@ def main(units, query, create_item):
                             'value to the clipboard'
                         ),
                         icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(uid=q_bin, arg=q_bin, valid='yes',),
+                        attrib=dict(uid=q_bin, arg=q_bin, valid='yes', ),
                     )

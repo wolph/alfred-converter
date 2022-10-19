@@ -24,6 +24,17 @@ EXPRESSIONS = {
     'log(10, 10)': '1',
     'log(100) / log(10)': '2',
     '0f': 'degree Fahrenheit 0 = degree Fahrenheit -0',
+    '113 in to ft': 'inch 113 = foot 9 inch 5',
+    '100 pounds to ounces': 'pounds mass 100 = ounce mass 1600',
+    '113.125 in to ft': '113.125 inch = 9 foot 5 1/8 inch',
+    '10 ft to i': '10 foot = 3048 millimeters',
+    '1/4"': '0.25 inch = 1/4 inch',
+    '1/200"': '0.005 inch = 5 mil, a thousandth of an inch',
+    '0f in c': '0 degree Fahrenheit = -17.777778 degrees Celsius',
+    '10f in c': '10 degree Fahrenheit = -12.222222 degrees Celsius',
+}
+SINGULAR_EXPRESSIONS = {
+    '100 pounds to ounces': 'pounds mass 100 = ounce mass 1600',
 }
 
 DECIMAL_EXPRESSIONS = {
@@ -33,62 +44,83 @@ DECIMAL_EXPRESSIONS = {
 }
 
 
-@pytest.mark.parametrize('test', EXPRESSIONS.items())
-def test_working(test, monkeypatch):
-    monkeypatch.setenv('UNITS_SIDE', 'left')
-    # Remove comments if needed
-    expression, expected_result = test
-    expression = expression.split('#')[0]
+def auto_side(monkeypatch, expected):
+    if expected[0].isdigit():
+        monkeypatch.setenv('UNITS_SIDE', 'right')
+    else:
+        monkeypatch.setenv('UNITS_SIDE', 'left')
 
-    units = convert.Units()
-    units.load(constants.UNITS_XML_FILE)
+
+def get_results(units, expression, expected):
+    results = list(convert.main(units, expression, dict))
+
+    print('Results:')
+    for result in results:
+        print(result['title'])
+
+    print('Expected: %r' % expected)
+
+    return results
+
+
+@pytest.mark.parametrize('expression, expected', EXPRESSIONS.items())
+def test_working(expression, expected, monkeypatch, units):
+    auto_side(monkeypatch, expected)
 
     # Execute the expression
     result = None
-    for result in convert.main(units, expression, dict):
-        if result['title'] == expected_result:
+    for result in get_results(units, expression, expected):
+        if result['title'] == expected:
             return True
         else:
-            print('%r != %r' % (expected_result, result['title']))
+            print('%r != %r' % (expected, result['title']))
 
     if result:
         raise RuntimeError(
             '%r returned %r, expected: %r'
-            % (expression, result['title'], expected_result)
+            % (expression, result['title'], expected)
         )
     else:
         raise RuntimeError(
-            '%r didnt return, expected: %r' % (expression, expected_result)
+            '%r didnt return, expected: %r' % (expression, expected)
         )
 
 
-@pytest.mark.parametrize('test', DECIMAL_EXPRESSIONS.items())
-def test_decimal_separator(test, monkeypatch):
-    monkeypatch.setenv('UNITS_SIDE', 'left')
+@pytest.mark.parametrize('expression, expected', SINGULAR_EXPRESSIONS.items())
+def test_expected_singular(expression, expected, monkeypatch, units):
+    auto_side(monkeypatch, expected)
+    print('Expected: %r' % expected)
+
+    # Execute the expression
+    results = get_results(units, expression, expected)
+    assert len(results) == 1, 'Expected a single result, got: %r' % results
+    result, = results
+    assert result['title'] == expected, \
+        ('%r returned %r, expected: %r') \
+        % (expression, result['title'], expected)
+
+
+@pytest.mark.parametrize('expression, expected', DECIMAL_EXPRESSIONS.items())
+def test_decimal_separator(expression, expected, monkeypatch, units):
+    auto_side(monkeypatch, expected)
     monkeypatch.setattr(constants, 'DECIMAL_SEPARATOR', ',')
 
-    # Remove comments if needed
-    expression, expected_result = test
-
-    units = convert.Units()
-    units.load(constants.UNITS_XML_FILE)
-    print 'sep', constants.DECIMAL_SEPARATOR, expression
+    print('sep', constants.DECIMAL_SEPARATOR, expression)
 
     # Execute the expression
     result = None
-    for result in convert.main(units, expression, dict):
-        print('result', result)
-        if result['title'] == expected_result:
+    for result in get_results(units, expression, expected):
+        if result['title'] == expected:
             return True
         else:
-            print('%r != %r' % (expected_result, result['title']))
+            print('%r != %r' % (expected, result['title']))
 
     if result:
         raise RuntimeError(
             '%r returned %r, expected: %r'
-            % (expression, result['title'], expected_result)
+            % (expression, result['title'], expected)
         )
     else:
         raise RuntimeError(
-            '%r didnt return, expected: %r' % (expression, expected_result)
+            '%r didnt return, expected: %r' % (expression, expected)
         )

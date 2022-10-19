@@ -1,6 +1,10 @@
 import os
 import re
 
+FRACTIONAL_UNITS = os.environ.get('FRACTIONAL_UNITS', 'both')
+DECIMAL_UNITS = FRACTIONAL_UNITS in {'decimal'}
+FRACTIONAL_UNITS = FRACTIONAL_UNITS in {'both', 'fractional'}
+
 UNITS_XML_FILE = 'poscUnits22.xml'
 UNITS_PICKLE_FILE = 'units.pickle'
 

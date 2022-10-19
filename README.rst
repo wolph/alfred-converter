@@ -5,6 +5,18 @@ Alpha.
 If new units and/or other names for units should be added please let me know by
 creating an issue at: https://github.com/WoLpH/alfred-converter/issues
 
+The extension can be configured through the environment variables setting in Alfred.
+
+::
+    BASE_2: Enable base 2 (binary ) output
+    BASE_8: Enable base 8 (octal) output
+    BASE_16: Enable base 16 (hexadecimal) output
+    DECIMAL_SEPARATOR: Comma or dot separator for decimals
+    FRACTIONAL_UNITS: "both", "decimal" or "fractional" only
+    MAX_MAGNITUDE: Maximum orders of magnitude to show. For 1 megabyte in bytes we need 9 orders of magnitude because it's 1 million bytes.
+    UNITS_BLACKLIST: Units you wish to hide
+    UNITS_SIDE: Showing the units at the right or the left side
+
 Example queries
 
 ::

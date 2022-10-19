@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 from __future__ import print_function
-import os
-import sys
-import constants
+
 import functools
+import os
+import pickle
+import sys
 from xml.etree import cElementTree as ET
 
+from . import constants, convert
 
 DEBUG = os.environ.get('DEBUG_CONVERTER')
 PRETTY_XML = os.environ.get('PRETTY_XML')
@@ -53,7 +55,8 @@ def to_xml(f):
                 if PRETTY_XML:
                     from xml.dom import minidom
                     xml_string = minidom.parseString(
-                        xml_string).toprettyxml(indent='   ')
+                        xml_string
+                    ).toprettyxml(indent='   ')
 
                 sys.__stdout__.write(xml_string.decode('utf-8'))
 
@@ -81,10 +84,7 @@ def to_xml(f):
 
 @to_xml
 def scriptfilter(items, query):
-    import convert
-    import pickle
-
-    try:
+    try:  # pragma: no cover
         assert not DEBUG
         with open(constants.UNITS_PICKLE_FILE, 'rb') as fh:
             units = pickle.load(fh)
