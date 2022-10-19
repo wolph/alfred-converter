@@ -24,6 +24,7 @@ Configuration
 The extension can be configured through the environment variables setting in Alfred.
 
 ::
+
     BASE_2: Enable base 2 (binary ) output
     BASE_8: Enable base 8 (octal) output
     BASE_16: Enable base 16 (hexadecimal) output
