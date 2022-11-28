@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 '''
 Note that we are _explicityly_ using the system python so we don't rely on
 custom libraries and/or versions
