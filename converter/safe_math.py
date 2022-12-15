@@ -139,7 +139,7 @@ safe_dict['sin'] = sin
 safe_dict['inf'] = decimal.Decimal('Inf')
 safe_dict['infinity'] = decimal.Decimal('Inf')
 
-DECIMAL_RE = re.compile(r'(\d*\.\d+|\d+\.?)')
+DECIMAL_RE = re.compile(r'(?<![a-zA-Z0-9])(\d*\.\d+|\d+\.?)')
 DECIMAL_REPLACE = r'Decimal("\g<1>")'
 
 AUTOMUL_RE = re.compile(r'\)\s*(\w+)')

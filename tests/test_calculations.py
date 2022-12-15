@@ -24,6 +24,8 @@ EXPRESSIONS = {
     '16"': 'inch 16 = foot 1 inch 4',
     'log(10, 10)': '1',
     'log(100) / log(10)': '2',
+    'log10(100)': '2',
+    'log2(16)': '4',
     '0f': 'degree Fahrenheit 0 = degree Fahrenheit -0',
     '113 in to ft': 'inch 113 = foot 9 inch 5',
     '100 pounds to ounces': 'pounds mass 100 = ounce mass 1600',

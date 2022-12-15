@@ -236,6 +236,7 @@ MATH_FUNCTIONS = [
     'log',
     'log1p',
     'log10',
+    'log2',
     'pow',
     'sqrt',
     # Trigonometric functions
