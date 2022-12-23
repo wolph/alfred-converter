@@ -277,7 +277,7 @@ class Unit(object):
         self.conversion_params = conversion_params
 
     def is_blacklisted(self):
-        blacklisted = os.environ.get('UNITS_BLACKLISTED', '').lower().strip()
+        blacklisted = os.environ.get('UNITS_BLACKLIST', '').lower().strip()
         return set(self.name.lower().split()) & set(blacklisted.split())
 
     def copy(self, id, conversion_params, **kwargs):  # pragma: no cover
