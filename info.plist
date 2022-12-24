@@ -1131,26 +1131,189 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>
-	<array/>
-	<key>variables</key>
-	<dict>
-		<key>BASE_16</key>
-		<string>true</string>
-		<key>BASE_2</key>
-		<string>true</string>
-		<key>BASE_8</key>
-		<string>true</string>
-		<key>DECIMAL_SEPARATOR</key>
-		<string>.</string>
-		<key>FRACTIONAL_UNITS</key>
-		<string>both</string>
-		<key>MAX_MAGNITUDE</key>
-		<string>12</string>
-		<key>UNITS_BLACKLIST</key>
-		<string>some-blacklisted-word other-blacklisted-word</string>
-		<key>UNITS_SIDE</key>
-		<string>right</string>
-	</dict>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Enable base 2 output</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Binary output</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>BASE_2</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Enable base 8 output</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Octal output</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>BASE_8</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Enable base 16 output</string>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Hexadecimal output</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>BASE_16</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>both</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>both</string>
+						<string>both</string>
+					</array>
+					<array>
+						<string>decimal</string>
+						<string>decimal</string>
+					</array>
+					<array>
+						<string>fractional</string>
+						<string>fractional</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Fractional unit output</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>FRACTIONAL_UNITS</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>.</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>.</string>
+						<string>.</string>
+					</array>
+					<array>
+						<string>,</string>
+						<string>,</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string></string>
+			<key>label</key>
+			<string>Decimal separator</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>DECIMAL_SEPARATOR</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>12</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>1 order of magnitude would show up to 10 times larger/smaller. For example, centimeter for millimeter, but not decimeter or meter. With 3 orders of magnitude millimeter will show meter.</string>
+			<key>label</key>
+			<string>Maximum orders of magnitude</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>MAX_MAGNITUDE</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>some-blacklisted-word other-blacklisted-word</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+				<key>verticalsize</key>
+				<integer>3</integer>
+			</dict>
+			<key>description</key>
+			<string>Units that contain this text will not be shown.</string>
+			<key>label</key>
+			<string>Blacklisted units</string>
+			<key>type</key>
+			<string>textarea</string>
+			<key>variable</key>
+			<string>UNITS_BLACKLIST</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>right</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>right</string>
+						<string>right</string>
+					</array>
+					<array>
+						<string>left</string>
+						<string>left</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>right for "10 mm", left for "mm 10"</string>
+			<key>label</key>
+			<string>Side to show the units on</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>UNITS_SIDE</string>
+		</dict>
+	</array>
 	<key>version</key>
 	<string></string>
 	<key>webaddress</key>
