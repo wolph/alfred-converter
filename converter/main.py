@@ -108,11 +108,6 @@ def scriptfilter(items, query):
         list(convert.main(units, query, item_creator(items)))
 
 
-import os
-import pprint
-pprint.pprint(os.environ, open('/tmp/env', 'w'))
-
-
 if __name__ == '__main__':
     scriptfilter(' '.join(sys.argv[1:]))
 # else:
