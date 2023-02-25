@@ -21,6 +21,14 @@ class UnknownUnit(Exception):
     pass
 
 
+def get_env_flag(name, default=True):
+    if name not in os.environ:
+        return default
+
+    value = os.environ[name]
+    return value.lower() in {'true', '1', 'yes', 't', 'y'}
+
+
 def get_text(parent, name, default=None):
     child = parent.find(name)
     if child is not None:
@@ -611,8 +619,7 @@ def main(units, query, create_item):
                 quantity = int(quantity)
 
                 bases = {
-                    k: os.environ.get('BASE_%d' % k, 'true').lower() == 'true'
-                    for k in (2, 8, 16)
+                    k: get_env_flag('BASE_%d' % k) for k in (2, 8, 16)
                 }
 
                 if bases[16]:  # pragma: no branch
