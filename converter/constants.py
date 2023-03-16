@@ -67,7 +67,7 @@ ANNOTATION_REPLACEMENTS = {
     'ozm': ('oz', 'ounce', 'ounces'),
     'lbm': ('lb', 'lbs', 'pound', 'pounds'),
     'miPh': ('mph',),
-    'ftPh': ('fps',),
+    'ftPs': ('fps',),
     'foot': ("'",),
     'square': ('sq',),
     'ft2': ('ft^2', 'foot^2'),
