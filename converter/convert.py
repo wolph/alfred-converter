@@ -132,7 +132,7 @@ class Units(object):
 
             base = base_unit.get('baseUnit')
         else:
-            base = elem.get('id')
+            base = None
 
         return base, (a, b, c, d)
 
@@ -152,7 +152,7 @@ class Units(object):
             name=name,
             annotations=annotations,
             quantity_types=get_texts(elem, 'QuantityType'),
-            base_unit=get_text(elem, 'BaseUnit'),
+            base_unit=base_unit,
             conversion_params=conversion_params,
         )
 

@@ -105,3 +105,8 @@ def register_post(units):
             annotations=[prefix + 'f' for prefix in prefixes] + [id, name],
             conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
         ).register(units)
+
+    hz = units.get("Hz")
+    hz.conversion_params = tuple(units.get('cycles/second').conversion_params)
+    hz.base_unit = 'radians/second'
+    hz.register(units)
