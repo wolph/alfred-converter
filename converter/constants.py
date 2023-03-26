@@ -68,6 +68,7 @@ ANNOTATION_REPLACEMENTS = {
     'lbm': ('lb', 'lbs', 'pound', 'pounds'),
     'miPh': ('mph',),
     'ftPs': ('fps',),
+    'ftPmin': ('fpm',),
     'foot': ("'",),
     'square': ('sq',),
     'ft2': ('ft^2', 'foot^2'),
