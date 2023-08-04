@@ -1313,6 +1313,27 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 			<key>variable</key>
 			<string>UNITS_SIDE</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>8</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Note that the maximum orders of magnitude decide which conversions will be visible</string>
+			<key>label</key>
+			<string>Output decimals</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>OUTPUT_DECIMALS</string>
+		</dict>
 	</array>
 	<key>version</key>
 	<string></string>

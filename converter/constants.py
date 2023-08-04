@@ -8,7 +8,7 @@ FRACTIONAL_UNITS = FRACTIONAL_UNITS in {'both', 'fractional'}
 UNITS_XML_FILE = 'poscUnits22.xml'
 UNITS_PICKLE_FILE = 'units.pickle'
 
-OUTPUT_DECIMALS = 6
+OUTPUT_DECIMALS = int(os.environ.get('OUTPUT_DECIMALS') or 6)
 DECIMAL_SEPARATOR = os.environ.get('DECIMAL_SEPARATOR') or '.'
 ALLOWED_DENOMINATORS = set(range(10)) | {16, 32, 64, 100}
 
