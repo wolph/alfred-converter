@@ -1338,7 +1338,7 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>1/128</string>
+				<string>1/64</string>
 				<key>pairs</key>
 				<array>
 					<array>
@@ -1400,7 +1400,7 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 			<key>config</key>
 			<dict>
 				<key>default</key>
-				<string>5</string>
+				<string>10</string>
 				<key>placeholder</key>
 				<string></string>
 				<key>required</key>
