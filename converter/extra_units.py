@@ -1,5 +1,6 @@
 # The poscUnits22.xml file is missing a few units which would be quite useful
 # This allows you to add additional units to the list.
+from __future__ import print_function, annotations
 
 import decimal
 
@@ -32,30 +33,33 @@ def register_post(units):
 
     for base, exponents in exponents.items():
         for exponent, prefix, full_prefix in exponents:
-            multiplier = base ** exponent
+            multiplier = base**exponent
 
-            params = dict(units=units, quantity_types=['digital storage'], )
+            params = dict(
+                units=units,
+                quantity_types=['digital storage'],
+            )
 
-            id = prefix + 'bit'
-            name = full_prefix + 'bit'
+            id_ = f'{prefix}bit'
+            name = f'{full_prefix}bit'
             convert.Unit(
                 base_unit='bit' if exponent else None,
-                id=id,
+                id=id_,
                 name=name,
-                annotations=[prefix.lower() + 'b', prefix + 'b', id, name],
-                conversion_params=tuple(map(str, (0, multiplier, 8, 0))),
-                **params
+                annotations=[f'{prefix.lower()}b', f'{prefix}b', id_, name],
+                conversion_params=('0', str(multiplier), '8', '0'),
+                **params,
             ).register(units)
 
-            id = prefix + 'byte'
-            name = full_prefix + 'byte'
+            id_ = f'{prefix}byte'
+            name = f'{full_prefix}byte'
             convert.Unit(
-                id=id,
+                id=id_,
                 name=name,
                 base_unit='byte' if exponent else None,
-                annotations=[prefix.lower() + 'B', prefix + 'B', id, name],
-                conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
-                **params
+                annotations=[f'{prefix.lower()}B', f'{prefix}B', id_, name],
+                conversion_params=('0', str(multiplier), '1', '0'),
+                **params,
             ).register(units)
 
     liter = units.get('L')
@@ -95,18 +99,18 @@ def register_post(units):
     }
     farad = units.get('farad')
     for prefixes, multiplier in prefixes.items():
-        id = prefixes[1] + farad.id
+        id_ = prefixes[1] + farad.id
         name = prefixes[0] + farad.name
 
         farad.copy(
             units=units,
-            id=id,
+            id=id_,
             name=name,
-            annotations=[prefix + 'f' for prefix in prefixes] + [id, name],
+            annotations=[f'{prefix}f' for prefix in prefixes] + [id_, name],
             conversion_params=tuple(map(str, (0, multiplier, 1, 0))),
         ).register(units)
 
-    hz = units.get("Hz")
+    hz = units.get('Hz')
     hz.conversion_params = tuple(units.get('cycles/second').conversion_params)
     hz.base_unit = 'radians/second'
     hz.register(units)

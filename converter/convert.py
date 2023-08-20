@@ -3,30 +3,52 @@
 Note that we are _explicityly_ using the system python so we don't rely on
 custom libraries and/or versions
 '''
-from __future__ import print_function
+from __future__ import print_function, annotations
 
 import collections
 import decimal
 import fractions
 import functools
 import os
+import typing
 from xml.etree import cElementTree as ET
 
 from . import constants, safe_math
+from .utils import (
+    parse_quantity,
+    fraction_to_decimal,
+    get_env_flag,
+    decimal_to_string,
+    fraction_to_string,
+)
 
 infinity = decimal.Decimal('inf')
+
+_FractionDecimal = typing.Union[decimal.Decimal, fractions.Fraction]
+_FractionDecimalStr = typing.Union[_FractionDecimal, str]
+_DecimalStr = typing.Union[decimal.Decimal, str]
+
+
+class ConversionParams(typing.NamedTuple):
+    a: decimal.Decimal
+    b: decimal.Decimal
+    c: decimal.Decimal
+    d: decimal.Decimal
+    # For decimal conversions we use: (a + b * value) / (c + d * value)
+    # For fractional conversions we use: (b / c) * value
+    # Look at the `to_base` and `from_base` methods for more information
+
+    @classmethod
+    def create(cls, a, b, c, d):
+        a = decimal.Decimal(a)
+        b = decimal.Decimal(b)
+        c = decimal.Decimal(c)
+        d = decimal.Decimal(d)
+        return ConversionParams(a, b, c, d)
 
 
 class UnknownUnit(Exception):
     pass
-
-
-def get_env_flag(name, default=True):
-    if name not in os.environ:
-        return default
-
-    value = os.environ[name]
-    return value.lower() in {'true', '1', 'yes', 't', 'y'}
 
 
 def get_text(parent, name, default=None):
@@ -62,37 +84,6 @@ def get_color_prefix():
         return ''
 
 
-def parse_quantity(quantity):
-    '''
-    Parse a quantity, supports pretty much everything with high precision
-
-    >>> parse_quantity('inf')
-    Decimal('Infinity')
-    >>> parse_quantity('inf - inf')
-    '''
-    try:
-        return decimal.Decimal(quantity)
-    except decimal.InvalidOperation:
-        try:
-            return decimal.Decimal(safe_math.safe_eval(quantity))
-        except decimal.InvalidOperation:  # pragma: no cover
-            pass
-
-
-def fraction_to_decimal(value):
-    '''Convert a fraction to a decimal
-
-    >>> fraction_to_decimal(fractions.Fraction('1/2'))
-    Decimal('0.5')
-    '''
-    if isinstance(value, fractions.Fraction):
-        numerator = decimal.Decimal(value.numerator)
-        denominator = decimal.Decimal(value.denominator)
-        value = numerator / denominator
-
-    return value
-
-
 class Units(object):
     def __init__(self):
         self.annotations = {}
@@ -102,7 +93,7 @@ class Units(object):
         self.base_units = {}
         self.quantity_types = collections.defaultdict(set)
 
-    def get_converter(self, elem):
+    def get_converter(self, elem) -> tuple[str | None, ConversionParams]:
         base_unit = elem.find('ConversionToBaseUnit')
         # Convert to decimals later to make it faster :)
         a = '0'
@@ -134,7 +125,7 @@ class Units(object):
         else:
             base = None
 
-        return base, (a, b, c, d)
+        return base, ConversionParams.create(a, b, c, d)
 
     def register(self, elem):
         base_unit, conversion_params = self.get_converter(elem)
@@ -151,7 +142,7 @@ class Units(object):
             id=elem.get('id'),
             name=name,
             annotations=annotations,
-            quantity_types=get_texts(elem, 'QuantityType'),
+            quantity_types=set(get_texts(elem, 'QuantityType')),
             base_unit=base_unit,
             conversion_params=conversion_params,
         )
@@ -215,11 +206,9 @@ class Units(object):
                 from_ = None
                 quantity = parse_quantity(query)
 
-        except:  # NOQA
-            partial_query = ' '.join(query.split()[:-1])
-            if partial_query:
-                for from_, quantity, to in self.convert(partial_query):
-                    yield from_, quantity, to
+        except Exception:
+            if partial_query := ' '.join(query.split()[:-1]):
+                yield from self.convert(partial_query)
                 return
 
         if tos:
@@ -236,7 +225,10 @@ class Units(object):
         :return: Returns unit
         :rtype: Unit
         '''
+        # sourcery skip: use-or-for-fallback
         unit = self.units.get(name)
+
+        # Coalescing of options for unit names
         if not unit:
             unit = self.annotations.get(name)
 
@@ -252,18 +244,30 @@ class Units(object):
         return unit
 
 
-class Unit(object):
+class Unit:
+    units: Units
+    id: str
+    name: str
+    fractional: bool
+    split: bool | None
+    annotations: set[str]
+    quantity_types: set[str]
+    base_unit: str | None
+    conversion_params: ConversionParams
+
     def __init__(
         self,
-        units,
-        id,
-        name,
-        annotations,
-        quantity_types,
-        base_unit,
-        conversion_params,
-        fractional=False,
-        split=None,
+        units: Units,
+        id: str,
+        name: str,
+        annotations: list[str],
+        quantity_types: set[str],
+        base_unit: str | None,
+        conversion_params: tuple[
+            _DecimalStr, _DecimalStr, _DecimalStr, _DecimalStr
+        ],
+        fractional: bool = False,
+        split: bool | None = None,
     ):
         self.units = units
         self.id = id
@@ -272,62 +276,65 @@ class Unit(object):
         self.split = split
 
         for k, vs in constants.ANNOTATION_REPLACEMENTS.items():
-            if k in name:
-                for v in vs:
+            for v in vs:
+                if k in name:
                     annotations.append(name.replace(k, v))
-            elif k in id:
-                for v in vs:
+                elif k in id:
                     annotations.append(id.replace(k, v))
 
         self.annotations = set(annotations)
         self.quantity_types = set(quantity_types)
         self.base_unit = base_unit
-        self.conversion_params = conversion_params
+
+        self.conversion_params = ConversionParams.create(*conversion_params)
 
     def is_blacklisted(self):
         blacklisted = os.environ.get('UNITS_BLACKLIST', '').lower().strip()
         return set(self.name.lower().split()) & set(blacklisted.split())
 
-    def copy(self, id, conversion_params, **kwargs):  # pragma: no cover
-        annotations = []
-        data = dict(
-            units=self.units,
-            annotations=annotations,
-            quantity_types=self.quantity_types,
-            base_unit=self.base_unit,
-            fractional=self.fractional,
-            split=self.split,
+    def copy(self, id: str, conversion_params, **kwargs):  # pragma: no cover
+        data = (
+            dict(
+                units=self.units,
+                annotations=[],
+                quantity_types=self.quantity_types,
+                base_unit=self.base_unit,
+                fractional=self.fractional,
+                split=self.split,
+            )
+            | kwargs
+            | dict(
+                id=id,
+                name=kwargs.get('name', id),
+                conversion_params=conversion_params,
+            )
         )
-        data.update(kwargs)
-        data['id'] = id
-        data['name'] = kwargs.get('name', id)
-        data['conversion_params'] = map(str, conversion_params)
-        return Unit(**data)
+        return Unit(**data)  # type: ignore
 
     def get_icon(self):
         for quantity_type in self.quantity_types:  # pragma: no cover
             if quantity_type in constants.ICONS:
                 return get_color_prefix() + constants.ICONS[quantity_type]
 
-    def to_base(self, value):
-        a, b, c, d = map(decimal.Decimal, self.conversion_params)
+    def to_base(self, value: _FractionDecimalStr) -> _FractionDecimal:
+        a, b, c, d = self.conversion_params
         if self.fractional:
             assert not a and not d, 'Fractional units cannot use A and D'
             fraction = fractions.Fraction(b) / fractions.Fraction(c)
             return fraction * fractions.Fraction(value)
         else:
-            value = fraction_to_decimal(value)
-            return (a + b * value) / (c + d * value)
+            decimal_value = fraction_to_decimal(value)
+            return (a + b * decimal_value) / (c + d * decimal_value)
 
-    def from_base(self, value):
-        a, b, c, d = map(decimal.Decimal, self.conversion_params)
+    def from_base(self, value: _FractionDecimalStr) -> _FractionDecimal:
+        a, b, c, d = self.conversion_params
         if self.fractional:
             assert not a and not d, 'Fractional units cannot use A and D'
             fraction = fractions.Fraction(c) / fractions.Fraction(b)
             return fraction * fractions.Fraction(value)
         else:
-            value = fraction_to_decimal(value)
-            return (a - c * value) / (d * value - b)
+            decimal_value = fraction_to_decimal(value)
+            return (a - c * decimal_value) / (d * decimal_value - b)
 
     def register(self, units):
         units.ids[self.id] = self
@@ -353,15 +360,15 @@ class Unit(object):
         tos = sorted(tos, key=(lambda x: (len(x.id), x.name)))
 
         if keyword:
-            new_tos = []
-            for to in tos:
+            new_tos = [
+                to
+                for to in tos
                 if (
                     keyword in to.name
                     or keyword in to.id
                     or keyword in to.annotations
-                ):
-                    new_tos.append(to)
-
+                )
+            ]
             if new_tos:
                 return new_tos
 
@@ -378,8 +385,10 @@ class Unit(object):
             return tos
 
     def __repr__(self):
-        return '<%s %r>' % (self.__class__.__name__, self.__dict__,)
-        return '<%s[%s] %s>' % (self.__class__.__name__, self.id, self.name,)
+        data = self.__dict__.copy()
+        data['units'] = '...'
+        data['annotations'] = '...'
+        return f'<{self.__class__.__name__} {data!r}>'
 
     def __str__(self):
         return constants.localize(self.name)
@@ -422,57 +431,14 @@ def clean_query(query):
     return query
 
 
-def decimal_to_string(value):
-    '''This strips trailing zeros without converting to 0e0 for 0
-
-    >>> decimal_to_string(decimal.Decimal('1.2345'))
-    '1.2345'
-    >>> decimal_to_string(decimal.Decimal('1.2000000000000000000000000000001'))
-    '1.2'
-    >>> decimal_to_string(decimal.Decimal('1.01'))
-    '1.01'
-    >>> decimal_to_string(decimal.Decimal('1.10'))
-    '1.1'
-    >>> decimal_to_string(decimal.Decimal('1.00'))
-    '1'
-    >>> decimal_to_string(decimal.Decimal('1'))
-    '1'
-    '''
-    with decimal.localcontext() as context:
-        context.prec = 50
-        value = value.quantize(
-            decimal.Decimal(10) ** -constants.OUTPUT_DECIMALS, context=context
-        )
-
-        value = str(value)
-        value = value.rstrip('0').rstrip('.')
-        return value
-
-
-def fraction_to_string(value, proper=False):
-    '''Converts a decimal to a string fraction
-
-
-    '''
-    fraction = fractions.Fraction(value)
-    if proper:
-        if fraction.numerator > fraction.denominator:
-            major = int(fraction.numerator / fraction.denominator)
-            fraction %= major
-            if major and fraction:
-                return '%s %s' % (major, fraction)
-    else:
-        return str(fraction)
-
-
 def get_units_left():
     '''Whether the place the units on the right or the left of the value'''
-    return os.environ.get('UNITS_SIDE') == 'left'
+    return os.environ.get('UNITS_SIDE', '').lower() == 'left'
 
 
 def get_max_magnitude():
     '''Return the maximum order of magnitude difference between units'''
-    return int(os.environ.get('MAX_MAGNITUDE', 3))
+    return int(os.environ.get('MAX_MAGNITUDE', '3'), 10)
 
 
 def swap_unit(left, unit, *values):
@@ -494,7 +460,7 @@ def change_decimal(function):
     return _change_decimal
 
 
-def main(units, query, create_item):
+def main(units: Units, query: str, create_item):
     create_item = change_decimal(create_item)
     query = clean_query(query)
     left = get_units_left()
@@ -505,155 +471,186 @@ def main(units, query, create_item):
             continue
 
         if from_:
-            base_quantity = from_.to_base(quantity)
-            new_quantity = to.from_base(base_quantity)
-
-            magnitude = quantity.copy_abs().log10()
-            quantity = decimal_to_string(quantity)
-            if to.fractional:
-                new_magnitude = fraction_to_decimal(new_quantity).copy_abs() \
-                    .log10()
-                if new_quantity.denominator in constants.ALLOWED_DENOMINATORS:
-                    new_quantity = fraction_to_string(new_quantity)
-                    new_quantity_proper = fraction_to_string(new_quantity, True)
-                else:
-                    new_quantity = decimal_to_string(
-                        fraction_to_decimal(new_quantity)
-                    )
-                    new_quantity_proper = None
-            else:
-                new_magnitude = new_quantity.copy_abs().log10()
-                new_quantity = decimal_to_string(new_quantity)
-                new_quantity_proper = None
-
-            if from_.fractional:
-                base_quantity = fraction_to_string(base_quantity)
-            else:
-                base_quantity = decimal_to_string(base_quantity)
-
-            if magnitude not in {infinity, -infinity} \
-                and abs(magnitude - new_magnitude) > max_magnitude:
-                continue
-
-            titles = []
-
-            titles.append(
-                '%s %s = %s %s' % (
-                    swap_unit(left, from_, quantity)
-                    + swap_unit(left, to, new_quantity)
-                )
+            yield from format_units(
+                create_item, from_, left, max_magnitude, quantity, to, units
             )
-            if new_quantity_proper:
-                titles.append(
-                    '%s %s = %s %s' % (
-                        swap_unit(left, from_, quantity)
-                        + swap_unit(left, to, new_quantity_proper)
-                    )
-                )
-
-            if to.split:
-                split = units.get(to.split)
-
-                major_quantity = to.from_base(base_quantity)
-                minor_quantity = split.from_base(base_quantity)
-
-                major = int(major_quantity)
-                if major:
-                    divisor = split.from_base(1) / to.from_base(1)
-                    minor = minor_quantity % divisor
-                else:
-                    minor = minor_quantity
-                minor_proper = fraction_to_string(minor, True)
-
-                if minor.denominator in constants.ALLOWED_DENOMINATORS:
-                    titles.append(
-                        '%s %s = %s %s %s %s' % (
-                            swap_unit(left, from_, quantity)
-                            + swap_unit(left, to, major)
-                            + swap_unit(left, split, minor)
-                        )
-                    )
-                    if minor_proper:
-                        titles.append(
-                            '%s %s = %s %s %s %s' % (
-                                swap_unit(left, from_, quantity)
-                                + swap_unit(left, to, major)
-                                + swap_unit(left, split, minor_proper)
-                            )
-                        )
-
-            for title in titles:
-                yield create_item(
-                    title=title,
-                    subtitle=(
-                        'Action this item to copy the converted value '
-                        'to the clipboard'
-                    ),
-                    icon='icons/'
-                         + (
-                             to.get_icon()
-                             or from_.get_icon()
-                             or get_color_prefix() + constants.DEFAULT_ICON
-                         ),
-                    attrib=dict(
-                        uid='%s to %s' % (from_.id, to.id),
-                        arg=new_quantity,
-                        valid='yes',
-                        autocomplete='%s %s' % (new_quantity, to),
-                    ),
-                )
         else:
-            q_str = decimal_to_string(quantity)
+            yield from format_number(create_item, quantity)
 
+
+def format_number(create_item, quantity):
+    q_str = decimal_to_string(quantity)
+    yield create_item(
+        title=f'{q_str}',
+        subtitle=(
+            'Action this item to copy the converted value to ' 'the clipboard'
+        ),
+        icon=f'icons/{get_color_prefix()}calculator63.png',
+        attrib=dict(
+            uid=q_str,
+            arg=q_str,
+            valid='yes',
+        ),
+    )
+    if q_str.isdigit() or (q_str[0] == '-' and q_str[1:].isdigit()):
+        quantity = int(quantity)
+
+        bases = {k: get_env_flag('BASE_%d' % k) for k in (2, 8, 16)}
+
+        if bases[16]:  # pragma: no branch
+            q_hex = hex(quantity)
             yield create_item(
-                title='%s' % q_str,
+                title=f'{q_hex}',
                 subtitle=(
-                    'Action this item to copy the converted value to '
-                    'the clipboard'
+                    'Action this item to copy the HEX '
+                    'value to the clipboard'
                 ),
-                icon='icons/%scalculator63.png' % get_color_prefix(),
-                attrib=dict(uid=q_str, arg=q_str, valid='yes', ),
+                icon=f'icons/{get_color_prefix()}calculator63.png',
+                attrib=dict(
+                    uid=q_hex,
+                    arg=q_hex,
+                    valid='yes',
+                ),
             )
 
-            if q_str.isdigit() or (q_str[0] == '-' and q_str[1:].isdigit()):
-                quantity = int(quantity)
+        if bases[8]:  # pragma: no branch
+            q_oct = oct(quantity)
+            yield create_item(
+                title=f'{q_oct}',
+                subtitle=(
+                    'Action this item to copy the OCT '
+                    'value to the clipboard'
+                ),
+                icon=f'icons/{get_color_prefix()}calculator63.png',
+                attrib=dict(
+                    uid=q_oct,
+                    arg=q_oct,
+                    valid='yes',
+                ),
+            )
 
-                bases = {
-                    k: get_env_flag('BASE_%d' % k) for k in (2, 8, 16)
-                }
+        if bases[2]:  # pragma: no branch
+            q_bin = bin(quantity)
+            yield create_item(
+                title=f'{q_bin}',
+                subtitle=(
+                    'Action this item to copy the BIN '
+                    'value to the clipboard'
+                ),
+                icon=f'icons/{get_color_prefix()}calculator63.png',
+                attrib=dict(
+                    uid=q_bin,
+                    arg=q_bin,
+                    valid='yes',
+                ),
+            )
 
-                if bases[16]:  # pragma: no branch
-                    q_hex = hex(quantity)
-                    yield create_item(
-                        title='%s' % q_hex,
-                        subtitle=(
-                            'Action this item to copy the HEX '
-                            'value to the clipboard'
-                        ),
-                        icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(uid=q_hex, arg=q_hex, valid='yes', ),
-                    )
 
-                if bases[8]:  # pragma: no branch
-                    q_oct = oct(quantity)
-                    yield create_item(
-                        title='%s' % q_oct,
-                        subtitle=(
-                            'Action this item to copy the OCT '
-                            'value to the clipboard'
-                        ),
-                        icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(uid=q_oct, arg=q_oct, valid='yes', ),
-                    )
+def to_title(left, *quantities):
+    quantities = zip(quantities[::2], quantities[1::2])
+    formatted = ['%s %s' % swap_unit(left, u, q) for u, q in quantities]
+    return f'{formatted[0]} = {" ".join(formatted[1:])}'
 
-                if bases[2]:  # pragma: no branch
-                    q_bin = bin(quantity)
-                    yield create_item(
-                        title='%s' % q_bin,
-                        subtitle=(
-                            'Action this item to copy the BIN '
-                            'value to the clipboard'
-                        ),
-                        icon='icons/%scalculator63.png' % get_color_prefix(),
-                        attrib=dict(uid=q_bin, arg=q_bin, valid='yes', ),
-                    )
+
+def format_units(
+    create_item,
+    from_: Unit,
+    left: bool,
+    max_magnitude: decimal.Decimal,
+    quantity: decimal.Decimal,
+    to: Unit,
+    units: Units,
+    fractional: bool = True,
+):
+    base_quantity: _FractionDecimalStr = from_.to_base(quantity)
+    new_quantity: _FractionDecimalStr = to.from_base(base_quantity)
+    magnitude: decimal.Decimal = quantity.copy_abs().log10()
+    str_quantity = decimal_to_string(quantity)
+
+    title_parts = []
+
+    if not from_.fractional and isinstance(base_quantity, decimal.Decimal):
+        base_quantity = decimal_to_string(base_quantity)
+
+    if to.fractional:
+        new_magnitude = fraction_to_decimal(new_quantity).copy_abs().log10()
+
+        if fractional:
+            title_parts.append(
+                (decimal_to_string(fraction_to_decimal(new_quantity)),)
+            )
+
+            if new_quantity_proper := fraction_to_string(new_quantity, True):
+                title_parts.append((new_quantity_proper,))
+
+            if fraction := fraction_to_string(new_quantity):
+                title_parts.append((fraction,))
+                new_quantity = fraction
+
+    elif isinstance(new_quantity, decimal.Decimal):
+        new_magnitude = new_quantity.copy_abs().log10()
+        new_quantity = decimal_to_string(new_quantity)
+        title_parts.append((new_quantity,))
+        new_quantity_proper = None
+    else:
+        raise TypeError('Unknown type %r' % type(new_quantity))
+
+    if (
+        magnitude not in {infinity, -infinity}
+        and abs(magnitude - new_magnitude) > max_magnitude
+    ):
+        return
+
+    if to.split:
+        title_parts += _get_split_unit_title_parts(units, to, base_quantity)
+
+    titles = [
+        to_title(left, from_, str_quantity, to, *title_part)
+        for title_part in title_parts
+    ]
+    yield from create_items(create_item, from_, new_quantity, titles, to)
+
+
+def _get_split_unit_title_parts(units, to, base_quantity):
+    title_parts = []
+    split = units.get(to.split)
+
+    major_quantity = to.from_base(base_quantity)
+    minor_quantity = split.from_base(base_quantity)
+
+    major = int(major_quantity)
+    if major:
+        divisor = split.from_base(1) / to.from_base(1)
+        minor = minor_quantity % divisor
+    else:
+        minor = minor_quantity
+    minor_proper = fraction_to_string(minor, True)
+
+    if minor.denominator in constants.ALLOWED_DENOMINATORS:
+        title_parts.append((major, split, minor))
+        if minor_proper:
+            title_parts.append((major, split, minor_proper))
+
+    return title_parts
+
+
+def create_items(create_item, from_, new_quantity, titles, to):
+    item = dict(
+        subtitle=(
+            'Action this item to copy the converted value ' 'to the clipboard'
+        ),
+        icon='icons/'
+        + (
+            to.get_icon()
+            or from_.get_icon()
+            or get_color_prefix() + constants.DEFAULT_ICON
+        ),
+        attrib=dict(
+            uid=f'{from_.id} to {to.id}',
+            arg=new_quantity,
+            valid='yes',
+            autocomplete=f'{new_quantity} {to}',
+        ),
+    )
+    for title in titles:
+        yield create_item(title=title, **item)

@@ -74,7 +74,9 @@ def test_working(expression, expected, monkeypatch, units):
 
     # Execute the expression
     result = None
+    # sourcery skip: no-loop-in-tests
     for result in get_results(units, expression, expected):
+        # sourcery skip: no-conditionals-in-tests
         if result['title'] == expected:
             return True
         else:

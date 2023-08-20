@@ -1334,6 +1334,89 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 			<key>variable</key>
 			<string>OUTPUT_DECIMALS</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>1/128</string>
+				<key>pairs</key>
+				<array>
+					<array>
+						<string>0</string>
+						<string>0</string>
+					</array>
+					<array>
+						<string>1/2</string>
+						<string>1/2</string>
+					</array>
+					<array>
+						<string>1/4</string>
+						<string>1/4</string>
+					</array>
+					<array>
+						<string>1/8</string>
+						<string>1/8</string>
+					</array>
+					<array>
+						<string>1/16</string>
+						<string>1/16</string>
+					</array>
+					<array>
+						<string>1/32</string>
+						<string>1/32</string>
+					</array>
+					<array>
+						<string>1/64</string>
+						<string>1/64</string>
+					</array>
+					<array>
+						<string>1/128</string>
+						<string>1/128</string>
+					</array>
+					<array>
+						<string>1/256</string>
+						<string>1/256</string>
+					</array>
+					<array>
+						<string>1/512</string>
+						<string>1/512</string>
+					</array>
+					<array>
+						<string>1/1024</string>
+						<string>1/1024</string>
+					</array>
+				</array>
+			</dict>
+			<key>description</key>
+			<string>Set the maximum fraction display precision (i.e. hide results with 3/223 or other weird fractions)</string>
+			<key>label</key>
+			<string>Fraction display precision</string>
+			<key>type</key>
+			<string>popupbutton</string>
+			<key>variable</key>
+			<string>FRACTION_PRECISION</string>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>5</string>
+				<key>placeholder</key>
+				<string></string>
+				<key>required</key>
+				<true/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>If a decimal cannot be accurately converted t o a fraction, set the maximum deviation percentage. For example, 0.7 is within 10% of 2/3 so it would show when we allow for 10% deviation but not with 1% (2/3*1.01 = ~0.673)</string>
+			<key>label</key>
+			<string>Maximum fraction deviation percentage</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>FRACTIONAL_MAX_DEVIATION</string>
+		</dict>
 	</array>
 	<key>version</key>
 	<string></string>

@@ -1,19 +1,32 @@
+import math
 import os
 import re
+import fractions
 
 FRACTIONAL_UNITS = os.environ.get('FRACTIONAL_UNITS', 'both')
 DECIMAL_UNITS = FRACTIONAL_UNITS in {'decimal'}
 FRACTIONAL_UNITS = FRACTIONAL_UNITS in {'both', 'fractional'}
+FRACTIONAL_PRECISION = fractions.Fraction(
+    os.environ.get('FRACTION_PRECISION') or '1/64'
+)
+FRACTIONAL_MAX_DEVIATION = int(
+    os.environ.get('FRACTIONAL_MAX_DEVIATION', '10'), 10
+)
 
 UNITS_XML_FILE = 'poscUnits22.xml'
 UNITS_PICKLE_FILE = 'units.pickle'
 
 OUTPUT_DECIMALS = int(os.environ.get('OUTPUT_DECIMALS') or 6)
 DECIMAL_SEPARATOR = os.environ.get('DECIMAL_SEPARATOR') or '.'
-ALLOWED_DENOMINATORS = set(range(10)) | {16, 32, 64, 100}
+ALLOWED_DENOMINATORS = set(range(10)) | {100}
+
+_fraction = fractions.Fraction(1)
+while _fraction.denominator <= FRACTIONAL_PRECISION.denominator:
+    ALLOWED_DENOMINATORS.add(_fraction.denominator)
+    _fraction /= fractions.Fraction(2)
 
 SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s]([^\s]*|.+?))'
-SOURCE_RE = re.compile(SOURCE_PATTERN + '$', re.IGNORECASE | re.VERBOSE)
+SOURCE_RE = re.compile(f'{SOURCE_PATTERN}$', re.IGNORECASE | re.VERBOSE)
 
 FULL_PATTERN = r'(\s+as|\s+to|\s+in|\s*>|\s*=)\s(?P<to>[^\d\s][^\s]*)$'
 FULL_RE = re.compile(
@@ -25,9 +38,7 @@ DECIMAL_SEPARATOR_RE = re.compile(
 )
 DECIMAL_SEPARATOR_REPLACEMENT = r'\1.\2'
 
-PARTIAL_DECIMAL_SEPARATOR_RE = re.compile(
-    r'^' + DECIMAL_SEPARATOR + r'(\d+)'
-)
+PARTIAL_DECIMAL_SEPARATOR_RE = re.compile(f'^{DECIMAL_SEPARATOR}' + r'(\d+)')
 PARTIAL_DECIMAL_SEPARATOR_REPLACEMENT = r'0.\1'
 
 ICONS = {
@@ -50,20 +61,46 @@ ANNOTATION_REPLACEMENTS = {
     'metre': ('meter', 'm'),
     'm2': ('meter^3',),
     'dm': ('decimeter',),
-    'dm2': ('dm^2', 'decimeter^2',),
-    'dm3': ('dm^3', 'decimeter^3',),
+    'dm2': (
+        'dm^2',
+        'decimeter^2',
+    ),
+    'dm3': (
+        'dm^3',
+        'decimeter^3',
+    ),
     'cm': ('centimeter',),
-    'cm2': ('cm^2', 'centimeter^2',),
-    'cm3': ('cm^3', 'centimeter^3',),
+    'cm2': (
+        'cm^2',
+        'centimeter^2',
+    ),
+    'cm3': (
+        'cm^3',
+        'centimeter^3',
+    ),
     'mm': ('milimeter',),
     'mm2': ('mm^2', 'milimeter^2'),
     'mm3': ('mm^3', 'milimeter^3'),
     'degF': ('f', 'fahrenheit', 'farhenheit', 'farenheit'),
     'degC': ('c', 'celsius', 'celcius'),
-    'byte': ('B', 'bytes',),
-    'bit': ('b', 'bits',),
-    'kbyte': ('KB', 'kB', 'kb', 'kilobyte',),
-    'Mbyte': ('MB', 'megabyte',),
+    'byte': (
+        'B',
+        'bytes',
+    ),
+    'bit': (
+        'b',
+        'bits',
+    ),
+    'kbyte': (
+        'KB',
+        'kB',
+        'kb',
+        'kilobyte',
+    ),
+    'Mbyte': (
+        'MB',
+        'megabyte',
+    ),
     'ozm': ('oz', 'ounce', 'ounces'),
     'lbm': ('lb', 'lbs', 'pound', 'pounds'),
     'miPh': ('mph',),
@@ -160,7 +197,7 @@ FUNCTION_ALIASES_RE = re.compile(r'\b(%s)\(' % '|'.join(FUNCTION_ALIASES))
 
 
 def FUNCTION_ALIASES_REPLACEMENT(match):
-    return FUNCTION_ALIASES[match.group(1)] + '('
+    return f'{FUNCTION_ALIASES[match.group(1)]}('
 
 
 FOOT_INCH_RE = re.compile(
@@ -182,7 +219,7 @@ def FOOT_INCH_REPLACE(match):
 
     output = []
     if g['foot']:
-        output.append('%s*12' % g['foot'])
+        output.append(f'{g["foot"]}*12')
 
     if g['inch_decimal']:
         output.append(g['inch_decimal'])

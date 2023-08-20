@@ -171,7 +171,7 @@ class SyntaxErr(SyntaxError):
         self.error = error
 
     def __str__(self):  # pragma: no cover
-        return '%s: %s' % (self.error.msg, self.error.text)
+        return f'{self.error.msg}: {self.error.text}'
 
 
 def fix_parentheses(query):
@@ -220,7 +220,7 @@ def safe_eval(query):
     try:
         return eval(query, {'__builtins__': None}, context)
     except SyntaxError as e:
-        raise SyntaxErr(e)
+        raise SyntaxErr(e) from e
 
 
 def pre_calculate(query):

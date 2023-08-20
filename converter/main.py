@@ -13,7 +13,10 @@ DEBUG = os.environ.get('DEBUG_CONVERTER')
 PRETTY_XML = os.environ.get('PRETTY_XML')
 
 
-def create_item(parent, attrib={}, **kwargs):
+def create_item(parent, attrib=None, **kwargs):
+    if attrib is None:
+        attrib = {}
+
     # Make sure all attributes are strings
     for k in list(attrib):
         attrib[k] = str(attrib[k])
@@ -54,20 +57,20 @@ def to_xml(f):
                 xml_string = ET.tostring(items)
                 if PRETTY_XML:
                     from xml.dom import minidom
-                    xml_string = minidom.parseString(
-                        xml_string
-                    ).toprettyxml(indent='   ')
+
+                    xml_string = minidom.parseString(xml_string).toprettyxml(
+                        indent='   '
+                    )
 
                 sys.__stdout__.write(xml_string.decode('utf-8'))
 
         except Exception as e:  # pragma: no cover
-            raise
             items = ET.Element('items')
             tree = ET.ElementTree(items)
             item = ET.SubElement(items, 'item', valid='no')
 
             title = ET.SubElement(item, 'title')
-            title.text = '%s: %s' % (e.__class__.__name__, str(e))
+            title.text = f'{e.__class__.__name__}: {str(e)}'
 
             import traceback
 
