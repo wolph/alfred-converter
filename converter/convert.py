@@ -207,7 +207,8 @@ class Units(object):
                 quantity = parse_quantity(query)
 
         except Exception:
-            if partial_query := ' '.join(query.split()[:-1]):
+            partial_query = ' '.join(query.split()[:-1])
+            if partial_query:
                 yield from self.convert(partial_query)
                 return
 
@@ -293,22 +294,20 @@ class Unit:
         return set(self.name.lower().split()) & set(blacklisted.split())
 
     def copy(self, id: str, conversion_params, **kwargs):  # pragma: no cover
-        data = (
-            dict(
-                units=self.units,
-                annotations=[],
-                quantity_types=self.quantity_types,
-                base_unit=self.base_unit,
-                fractional=self.fractional,
-                split=self.split,
-            )
-            | kwargs
-            | dict(
-                id=id,
-                name=kwargs.get('name', id),
-                conversion_params=conversion_params,
-            )
+        data = dict(
+            units=self.units,
+            annotations=[],
+            quantity_types=self.quantity_types,
+            base_unit=self.base_unit,
+            fractional=self.fractional,
+            split=self.split,
         )
+        data.update(kwargs)
+        data.update(dict(
+            id=id,
+            name=kwargs.get('name', id),
+            conversion_params=conversion_params,
+        ))
         return Unit(**data)  # type: ignore
 
     def get_icon(self):
@@ -580,10 +579,12 @@ def format_units(
                 (decimal_to_string(fraction_to_decimal(new_quantity)),)
             )
 
-            if new_quantity_proper := fraction_to_string(new_quantity, True):
+            new_quantity_proper = fraction_to_string(new_quantity, True)
+            if new_quantity_proper:
                 title_parts.append((new_quantity_proper,))
 
-            if fraction := fraction_to_string(new_quantity):
+            fraction = fraction_to_string(new_quantity)
+            if fraction:
                 title_parts.append((fraction,))
                 new_quantity = fraction
 
