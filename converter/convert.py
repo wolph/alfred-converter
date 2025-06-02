@@ -459,20 +459,26 @@ def change_decimal(function):
     return _change_decimal
 
 
-
 def sort_abs_magnitude(result):
     from_, quantity, to = result
+
     if not from_ or not to or from_ == to:
         return infinity
+
     base_quantity: _FractionDecimalStr = from_.to_base(quantity)
     new_quantity: _FractionDecimalStr = to.from_base(base_quantity)
+
     if to.fractional:
-        new_magnitude = fraction_to_decimal(new_quantity).copy_abs().log10()
+        abs_decimal_value = fraction_to_decimal(new_quantity).copy_abs()
     elif isinstance(new_quantity, decimal.Decimal):
-        new_magnitude = new_quantity.copy_abs().log10()
+        abs_decimal_value = new_quantity.copy_abs()
     else:
         return infinity
-    abs_magnitude = abs(new_magnitude)
+
+    if abs_decimal_value.is_zero():
+        return infinity
+
+    abs_magnitude = abs(abs_decimal_value.log10())
     return abs_magnitude
 
 
