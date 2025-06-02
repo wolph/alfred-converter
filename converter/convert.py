@@ -459,13 +459,38 @@ def change_decimal(function):
     return _change_decimal
 
 
+def sort_abs_magnitude(result):
+    from_, quantity, to = result
+
+    if not from_ or not to or from_ == to:
+        return infinity
+
+    base_quantity: _FractionDecimalStr = from_.to_base(quantity)
+    new_quantity: _FractionDecimalStr = to.from_base(base_quantity)
+
+    if to.fractional:
+        abs_decimal_value = fraction_to_decimal(new_quantity).copy_abs()
+    elif isinstance(new_quantity, decimal.Decimal):
+        abs_decimal_value = new_quantity.copy_abs()
+    else:
+        return infinity
+
+    if abs_decimal_value.is_zero():
+        return infinity
+
+    abs_magnitude = abs(abs_decimal_value.log10())
+    return abs_magnitude
+
+
 def main(units: Units, query: str, create_item):
     create_item = change_decimal(create_item)
     query = clean_query(query)
     left = get_units_left()
     max_magnitude = get_max_magnitude()
 
-    for from_, quantity, to in units.convert(query):
+    result = list(units.convert(query))
+    result.sort(key=sort_abs_magnitude)
+    for from_, quantity, to in result:
         if to and to.is_blacklisted():  # pragma: no cover
             continue
 
