@@ -462,7 +462,7 @@ def change_decimal(function):
 
 def sort_abs_magnitude(result):
     from_, quantity, to = result
-    if from_ == to:
+    if not from_ or not to or from_ == to:
         return infinity
     base_quantity: _FractionDecimalStr = from_.to_base(quantity)
     new_quantity: _FractionDecimalStr = to.from_base(base_quantity)
