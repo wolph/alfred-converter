@@ -10,6 +10,7 @@ import decimal
 import fractions
 import functools
 import os
+import re
 import typing
 from xml.etree import cElementTree as ET
 
@@ -386,11 +387,29 @@ class Unit:
         return hash(self.id)
 
 
+def normalize_decimal_separator(query):
+    separators = {constants.DECIMAL_SEPARATOR, ','}
+    for separator in separators:
+        if not separator or separator == '.':
+            continue
+
+        escaped = re.escape(separator)
+        query = re.sub(
+            r'(?<![\w.])(\d+)' + escaped + r'(\d+)',
+            constants.DECIMAL_SEPARATOR_REPLACEMENT,
+            query,
+        )
+        query = re.sub(
+            r'(?<![\w.])' + escaped + r'(\d+)',
+            constants.PARTIAL_DECIMAL_SEPARATOR_REPLACEMENT,
+            query,
+        )
+
+    return query
+
+
 def clean_query(query):
-    # query = constants.DECIMAL_SEPARATOR_RE.sub(
-    #     constants.DECIMAL_SEPARATOR_REPLACEMENT, query)
-    # query = constants.PARTIAL_DECIMAL_SEPARATOR_RE.sub(
-    #     constants.PARTIAL_DECIMAL_SEPARATOR_REPLACEMENT, query)
+    query = normalize_decimal_separator(query)
     query = query.replace('$', '')
     query = constants.FUNCTION_ALIASES_RE.sub(
         constants.FUNCTION_ALIASES_REPLACEMENT, query

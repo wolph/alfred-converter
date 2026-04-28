@@ -46,6 +46,14 @@ def test_scriptfilter_empty_results_are_valid_json_error(capsys, monkeypatch):
     )
 
 
+def test_comma_decimal_query_does_not_emit_error(monkeypatch):
+    monkeypatch.setattr(main.constants, "DECIMAL_SEPARATOR", ",")
+
+    response = main.run("5,2")
+
+    assert response.items[0].title == "5,2"
+
+
 def test_currency_query_routes_to_currency(monkeypatch, tmp_path):
     called = []
 
@@ -67,6 +75,45 @@ def test_currency_query_routes_to_currency(monkeypatch, tmp_path):
 
     assert response.items[0].title == "2000 ISK = 13.908436 EUR"
     assert called == [(str(tmp_path), "2000 isk eur")]
+
+
+def test_default_currency_query_routes_to_currency(monkeypatch, tmp_path):
+    called = []
+
+    def fake_convert_query(base_dir, query):
+        called.append((base_dir, query))
+        return main.output.Response(
+            items=[
+                main.output.Item(
+                    title="5 USD = 4.5 EUR",
+                    arg="4.5",
+                )
+            ]
+        )
+
+    monkeypatch.setenv("alfred_workflow_cache", str(tmp_path))
+    monkeypatch.setattr(main.currency, "convert_query", fake_convert_query)
+
+    response = main.run("5 usd")
+
+    assert response.items[0].title == "5 USD = 4.5 EUR"
+    assert called == [(str(tmp_path), "5 usd")]
+
+
+def test_default_currency_query_does_not_shadow_unit_source(
+    monkeypatch,
+    tmp_path,
+):
+    monkeypatch.setenv("alfred_workflow_cache", str(tmp_path))
+
+    def fail_currency(*args, **kwargs):
+        raise AssertionError("currency path touched")
+
+    monkeypatch.setattr(main.currency, "convert_query", fail_currency)
+
+    response = main.run("5 cup")
+
+    assert any("cup" in item.title for item in response.items)
 
 
 def test_regular_unit_query_does_not_touch_currency(monkeypatch, tmp_path):

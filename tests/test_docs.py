@@ -7,6 +7,8 @@ def test_readme_documents_currency_and_log_behavior():
 
     assert "Python 3.8+" in readme
     assert "2000 isk eur" in readme
+    assert "5 usd" in readme
+    assert "CURRENCY_DEFAULT_TARGETS" in readme
     assert "currency-update isk" in readme
     assert "log() is the natural logarithm" in readme
     assert "log10()" in readme
@@ -19,5 +21,7 @@ def test_workflow_readme_documents_currency_update():
     workflow_readme = info["readme"]
 
     assert "2000 isk eur" in workflow_readme
+    assert "5 usd" in workflow_readme
+    assert "CURRENCY_DEFAULT_TARGETS" in workflow_readme
     assert "currency-update isk" in workflow_readme
     assert "log() is the natural logarithm" in workflow_readme

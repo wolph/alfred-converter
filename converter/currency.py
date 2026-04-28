@@ -37,9 +37,196 @@ CURRENCY_QUERY_RE = re.compile(
     r"(?:\s+(?:to|in|as))?\s+"
     r"(?P<target>[a-zA-Z]{3})\s*$"
 )
+DEFAULT_CURRENCY_QUERY_RE = re.compile(
+    r"^\s*(?P<amount>[+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+))\s+"
+    r"(?P<source>[a-zA-Z]{3})\s*$"
+)
 
 DECIMAL_COMMA_RE = re.compile(r"^[+-]?(?:\d+,\d{1,2}|,\d+)$")
 UPDATE_RE = re.compile(r"^\s*currency-update(?:\s+(?P<base>[a-zA-Z]{3}))?\s*$")
+DEFAULT_TARGETS_ENV = "CURRENCY_DEFAULT_TARGETS"
+DEFAULT_TARGETS = ("usd", "eur", "gbp", "jpy", "cny", "cad", "aud")
+CURRENCY_NAMES = {
+    "aed": "United Arab Emirates Dirham",
+    "afn": "Afghan Afghani",
+    "all": "Albanian Lek",
+    "amd": "Armenian Dram",
+    "ang": "Netherlands Antillean Guilder",
+    "aoa": "Angolan Kwanza",
+    "ars": "Argentine Peso",
+    "aud": "Australian Dollar",
+    "awg": "Aruban Florin",
+    "azn": "Azerbaijani Manat",
+    "bam": "Bosnia-Herzegovina Convertible Mark",
+    "bbd": "Barbadian Dollar",
+    "bdt": "Bangladeshi Taka",
+    "bgn": "Bulgarian Lev",
+    "bhd": "Bahraini Dinar",
+    "bif": "Burundian Franc",
+    "bmd": "Bermudan Dollar",
+    "bnd": "Brunei Dollar",
+    "bob": "Bolivian Boliviano",
+    "bov": "Bolivian Mvdol",
+    "brl": "Brazilian Real",
+    "bsd": "Bahamian Dollar",
+    "btn": "Bhutanese Ngultrum",
+    "bwp": "Botswanan Pula",
+    "byn": "Belarusian Ruble",
+    "bzd": "Belize Dollar",
+    "cad": "Canadian Dollar",
+    "cdf": "Congolese Franc",
+    "che": "WIR Euro",
+    "chf": "Swiss Franc",
+    "chw": "WIR Franc",
+    "clf": "Chilean Unit of Account (UF)",
+    "clp": "Chilean Peso",
+    "cny": "Chinese Yuan",
+    "cop": "Colombian Peso",
+    "cou": "Colombian Real Value Unit",
+    "crc": "Costa Rican Colon",
+    "cuc": "Cuban Convertible Peso",
+    "cup": "Cuban Peso",
+    "cve": "Cape Verdean Escudo",
+    "czk": "Czech Koruna",
+    "djf": "Djiboutian Franc",
+    "dkk": "Danish Krone",
+    "dop": "Dominican Peso",
+    "dzd": "Algerian Dinar",
+    "egp": "Egyptian Pound",
+    "ern": "Eritrean Nakfa",
+    "etb": "Ethiopian Birr",
+    "eur": "Euro",
+    "fjd": "Fijian Dollar",
+    "fkp": "Falkland Islands Pound",
+    "gbp": "British Pound",
+    "gel": "Georgian Lari",
+    "ghs": "Ghanaian Cedi",
+    "gip": "Gibraltar Pound",
+    "gmd": "Gambian Dalasi",
+    "gnf": "Guinean Franc",
+    "gtq": "Guatemalan Quetzal",
+    "gyd": "Guyanaese Dollar",
+    "hkd": "Hong Kong Dollar",
+    "hnl": "Honduran Lempira",
+    "htg": "Haitian Gourde",
+    "huf": "Hungarian Forint",
+    "idr": "Indonesian Rupiah",
+    "ils": "Israeli New Shekel",
+    "inr": "Indian Rupee",
+    "iqd": "Iraqi Dinar",
+    "irr": "Iranian Rial",
+    "isk": "Icelandic Krona",
+    "jmd": "Jamaican Dollar",
+    "jod": "Jordanian Dinar",
+    "jpy": "Japanese Yen",
+    "kes": "Kenyan Shilling",
+    "kgs": "Kyrgyz Som",
+    "khr": "Cambodian Riel",
+    "kmf": "Comorian Franc",
+    "kpw": "North Korean Won",
+    "krw": "South Korean Won",
+    "kwd": "Kuwaiti Dinar",
+    "kyd": "Cayman Islands Dollar",
+    "kzt": "Kazakhstani Tenge",
+    "lak": "Laotian Kip",
+    "lbp": "Lebanese Pound",
+    "lkr": "Sri Lankan Rupee",
+    "lrd": "Liberian Dollar",
+    "lsl": "Lesotho Loti",
+    "lyd": "Libyan Dinar",
+    "mad": "Moroccan Dirham",
+    "mdl": "Moldovan Leu",
+    "mga": "Malagasy Ariary",
+    "mkd": "Macedonian Denar",
+    "mmk": "Myanmar Kyat",
+    "mnt": "Mongolian Tugrik",
+    "mop": "Macanese Pataca",
+    "mru": "Mauritanian Ouguiya",
+    "mur": "Mauritian Rupee",
+    "mvr": "Maldivian Rufiyaa",
+    "mwk": "Malawian Kwacha",
+    "mxn": "Mexican Peso",
+    "mxv": "Mexican Investment Unit",
+    "myr": "Malaysian Ringgit",
+    "mzn": "Mozambican Metical",
+    "nad": "Namibian Dollar",
+    "ngn": "Nigerian Naira",
+    "nio": "Nicaraguan Cordoba",
+    "nok": "Norwegian Krone",
+    "npr": "Nepalese Rupee",
+    "nzd": "New Zealand Dollar",
+    "omr": "Omani Rial",
+    "pab": "Panamanian Balboa",
+    "pen": "Peruvian Sol",
+    "pgk": "Papua New Guinean Kina",
+    "php": "Philippine Peso",
+    "pkr": "Pakistani Rupee",
+    "pln": "Polish Zloty",
+    "pyg": "Paraguayan Guarani",
+    "qar": "Qatari Riyal",
+    "ron": "Romanian Leu",
+    "rsd": "Serbian Dinar",
+    "rub": "Russian Ruble",
+    "rwf": "Rwandan Franc",
+    "sar": "Saudi Riyal",
+    "sbd": "Solomon Islands Dollar",
+    "scr": "Seychellois Rupee",
+    "sdg": "Sudanese Pound",
+    "sek": "Swedish Krona",
+    "sgd": "Singapore Dollar",
+    "shp": "St. Helena Pound",
+    "sle": "Sierra Leonean Leone",
+    "sll": "Sierra Leonean Leone (1964-2022)",
+    "sos": "Somali Shilling",
+    "srd": "Surinamese Dollar",
+    "ssp": "South Sudanese Pound",
+    "stn": "Sao Tome and Principe Dobra",
+    "svc": "Salvadoran Colon",
+    "syp": "Syrian Pound",
+    "szl": "Swazi Lilangeni",
+    "thb": "Thai Baht",
+    "tjs": "Tajikistani Somoni",
+    "tmt": "Turkmenistani Manat",
+    "tnd": "Tunisian Dinar",
+    "top": "Tongan Pa'anga",
+    "try": "Turkish Lira",
+    "ttd": "Trinidad and Tobago Dollar",
+    "twd": "New Taiwan Dollar",
+    "tzs": "Tanzanian Shilling",
+    "uah": "Ukrainian Hryvnia",
+    "ugx": "Ugandan Shilling",
+    "usd": "US Dollar",
+    "usn": "US Dollar (Next day)",
+    "uyi": "Uruguayan Peso (Indexed Units)",
+    "uyu": "Uruguayan Peso",
+    "uzs": "Uzbekistani Som",
+    "ved": "Bolivar Soberano",
+    "ves": "Venezuelan Bolivar",
+    "vnd": "Vietnamese Dong",
+    "vuv": "Vanuatu Vatu",
+    "wst": "Samoan Tala",
+    "xaf": "Central African CFA Franc",
+    "xag": "Silver",
+    "xau": "Gold",
+    "xba": "European Composite Unit",
+    "xbb": "European Monetary Unit",
+    "xbc": "European Unit of Account (XBC)",
+    "xbd": "European Unit of Account (XBD)",
+    "xcd": "East Caribbean Dollar",
+    "xdr": "Special Drawing Rights",
+    "xof": "West African CFA Franc",
+    "xpd": "Palladium",
+    "xpf": "CFP Franc",
+    "xpt": "Platinum",
+    "xsu": "Sucre",
+    "xts": "Testing Currency Code",
+    "xua": "ADB Unit of Account",
+    "xxx": "Unknown Currency",
+    "yer": "Yemeni Rial",
+    "zar": "South African Rand",
+    "zmw": "Zambian Kwacha",
+    "zwg": "Zimbabwean Gold",
+}
 
 PRIMARY_URL = (
     "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/"
@@ -61,6 +248,13 @@ class CurrencyQuery:
     amount: decimal.Decimal
     source: str
     target: str
+
+
+@dataclass(frozen=True)
+class DefaultQuery:
+    amount: decimal.Decimal
+    source: str
+    targets: typing.Tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -118,6 +312,14 @@ def _lock_path_mutex(path):
             fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
 
 
+def _parse_amount(match):
+    amount_text = match.group("amount")
+    if "," in amount_text and not DECIMAL_COMMA_RE.match(amount_text):
+        return None
+
+    return decimal.Decimal(amount_text.replace(",", "."))
+
+
 def parse_query(query):
     match = CURRENCY_QUERY_RE.match(query)
     if not match:
@@ -128,12 +330,52 @@ def parse_query(query):
     if source not in CURRENCY_CODES or target not in CURRENCY_CODES:
         return None
 
-    amount_text = match.group("amount")
-    if "," in amount_text and not DECIMAL_COMMA_RE.match(amount_text):
+    amount = _parse_amount(match)
+    if amount is None:
+        return None
+    return CurrencyQuery(amount=amount, source=source, target=target)
+
+
+def default_targets(source):
+    configured = os.environ.get(DEFAULT_TARGETS_ENV)
+    if configured is None:
+        candidates = DEFAULT_TARGETS
+    else:
+        candidates = re.split(r"[\s,]+", configured.strip())
+
+    targets = []
+    seen = set()
+    for candidate in candidates:
+        target = candidate.lower()
+        if (
+            not target
+            or target == source
+            or target in seen
+            or target not in CURRENCY_CODES
+        ):
+            continue
+        seen.add(target)
+        targets.append(target)
+    return tuple(targets)
+
+
+def parse_default_query(query):
+    match = DEFAULT_CURRENCY_QUERY_RE.match(query)
+    if not match:
         return None
 
-    amount = decimal.Decimal(amount_text.replace(",", "."))
-    return CurrencyQuery(amount=amount, source=source, target=target)
+    source = match.group("source").lower()
+    if source not in CURRENCY_CODES:
+        return None
+
+    amount = _parse_amount(match)
+    if amount is None:
+        return None
+    return DefaultQuery(
+        amount=amount,
+        source=source,
+        targets=default_targets(source),
+    )
 
 
 def _format_decimal(value):
@@ -149,6 +391,10 @@ def _format_decimal(value):
     if quantized.is_zero():
         return "0"
     return str(quantized).rstrip("0").rstrip(".")
+
+
+def currency_name(code):
+    return CURRENCY_NAMES.get(code.lower(), code.upper())
 
 
 def _normalize_rates(rates, key_error_message, value_error_message):
@@ -171,22 +417,35 @@ def _normalize_rates(rates, key_error_message, value_error_message):
     return parsed_rates
 
 
-def _conversion_response(query, cache, stale=False, refresh_launched=False):
+def _normalize_provider_rates(rates):
+    if not isinstance(rates, dict):
+        raise ValueError("rates must be a mapping")
+
+    supported_rates = {
+        key: value
+        for key, value in rates.items()
+        if isinstance(key, str) and key.lower() in CURRENCY_CODES
+    }
+    if not supported_rates:
+        raise ValueError("provider rate key is invalid")
+    return _normalize_rates(
+        supported_rates,
+        key_error_message="provider rate key is invalid",
+        value_error_message="provider rates must be finite",
+    )
+
+
+def _conversion_item(query, cache, stale=False, refresh_launched=False):
     rate = cache.rates.get(query.target)
     if rate is None:
-        return output.Response(
-            items=[
-                output.Item(
-                    title=f"Currency {query.target.upper()} unavailable",
-                    subtitle=(
-                        f"No {query.target.upper()} rate in "
-                        f"{query.source.upper()} cache"
-                    ),
-                    valid=False,
-                    icon="icons/dollars17.png",
-                )
-            ],
-            skipknowledge=True,
+        return output.Item(
+            title=f"Currency {query.target.upper()} unavailable",
+            subtitle=(
+                f"No {query.target.upper()} rate in "
+                f"{query.source.upper()} cache"
+            ),
+            valid=False,
+            icon="icons/dollars17.png",
         )
 
     multiplication_precision = max(
@@ -197,26 +456,53 @@ def _conversion_response(query, cache, stale=False, refresh_launched=False):
     with decimal.localcontext() as context:
         context.prec = multiplication_precision
         converted = _format_decimal(query.amount * rate)
-    subtitle = f"Rates from {cache.date.isoformat()}"
+    subtitle = (
+        f"{currency_name(query.source)} to {currency_name(query.target)} - "
+        f"Rates from {cache.date.isoformat()}"
+    )
     if stale:
         if refresh_launched:
             subtitle += " (stale, refreshing)"
         else:
             subtitle += " (stale, refresh unavailable)"
+    return output.Item(
+        uid=f"currency:{query.source}:{query.target}",
+        title=(
+            f"{_format_decimal(query.amount)} "
+            f"{query.source.upper()} = "
+            f"{converted} {query.target.upper()}"
+        ),
+        subtitle=subtitle,
+        arg=converted,
+        autocomplete=f"{converted} {query.target.upper()}",
+        icon="icons/dollars17.png",
+    )
+
+
+def _conversion_response(query, cache, stale=False, refresh_launched=False):
     return output.Response(
         items=[
-            output.Item(
-                uid=f"currency:{query.source}:{query.target}",
-                title=(
-                    f"{_format_decimal(query.amount)} "
-                    f"{query.source.upper()} = "
-                    f"{converted} {query.target.upper()}"
-                ),
-                subtitle=subtitle,
-                arg=converted,
-                autocomplete=f"{converted} {query.target.upper()}",
-                icon="icons/dollars17.png",
+            _conversion_item(query, cache, stale, refresh_launched),
+        ],
+        skipknowledge=True,
+    )
+
+
+def _default_conversion_response(
+    query,
+    cache,
+    stale=False,
+    refresh_launched=False,
+):
+    return output.Response(
+        items=[
+            _conversion_item(
+                CurrencyQuery(query.amount, query.source, target),
+                cache,
+                stale,
+                refresh_launched,
             )
+            for target in query.targets
         ],
         skipknowledge=True,
     )
@@ -255,7 +541,7 @@ def unavailable_response(base):
 
 
 def convert_query(base_dir, query_text, today=None):
-    query = parse_query(query_text)
+    query = parse_query(query_text) or parse_default_query(query_text)
     if query is None:
         return None
 
@@ -268,9 +554,18 @@ def convert_query(base_dir, query_text, today=None):
 
     today = today or dt.date.today()
     if cache.is_fresh(today):
+        if isinstance(query, DefaultQuery):
+            return _default_conversion_response(query, cache, stale=False)
         return _conversion_response(query, cache, stale=False)
 
     status = start_background_refresh_status(base_dir, query.source)
+    if isinstance(query, DefaultQuery):
+        return _default_conversion_response(
+            query,
+            cache,
+            stale=True,
+            refresh_launched=status != BACKGROUND_REFRESH_FAILED,
+        )
     return _conversion_response(
         query,
         cache,
@@ -634,11 +929,7 @@ def _rate_cache_from_payload(base, data):
 
     date = dt.date.fromisoformat(data["date"])
     rates = data[base]
-    parsed_rates = _normalize_rates(
-        rates,
-        key_error_message="provider rate key is invalid",
-        value_error_message="provider rates must be finite",
-    )
+    parsed_rates = _normalize_provider_rates(rates)
 
     return RateCache(
         base=base,

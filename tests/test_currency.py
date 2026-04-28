@@ -39,6 +39,51 @@ def test_parse_currency_query_variants():
     )
 
 
+def test_parse_default_currency_query_uses_default_targets(monkeypatch):
+    monkeypatch.delenv(currency.DEFAULT_TARGETS_ENV, raising=False)
+
+    assert currency.parse_default_query("5 usd") == currency.DefaultQuery(
+        amount=decimal.Decimal("5"),
+        source="usd",
+        targets=("eur", "gbp", "jpy", "cny", "cad", "aud"),
+    )
+    assert currency.parse_default_query("5 eur") == currency.DefaultQuery(
+        amount=decimal.Decimal("5"),
+        source="eur",
+        targets=("usd", "gbp", "jpy", "cny", "cad", "aud"),
+    )
+
+
+def test_parse_default_currency_query_uses_configured_targets(monkeypatch):
+    monkeypatch.setenv(currency.DEFAULT_TARGETS_ENV, "EUR JPY, cny")
+
+    assert currency.parse_default_query("5 usd") == currency.DefaultQuery(
+        amount=decimal.Decimal("5"),
+        source="usd",
+        targets=("eur", "jpy", "cny"),
+    )
+
+
+def test_parse_default_currency_query_excludes_source_and_duplicates(
+    monkeypatch,
+):
+    monkeypatch.setenv(currency.DEFAULT_TARGETS_ENV, "usd eur USD gbp")
+
+    assert currency.parse_default_query("5 usd") == currency.DefaultQuery(
+        amount=decimal.Decimal("5"),
+        source="usd",
+        targets=("eur", "gbp"),
+    )
+
+
+def test_parse_default_currency_query_rejects_invalid_source():
+    assert currency.parse_default_query("5 foo") is None
+
+
+def test_parse_default_currency_query_rejects_grouped_amounts():
+    assert currency.parse_default_query("1,000 usd") is None
+
+
 def test_parse_currency_query_rejects_grouped_amounts():
     assert currency.parse_query("1,000 usd eur") is None
     assert currency.parse_query("1,000.50 usd eur") is None
@@ -164,6 +209,22 @@ def test_write_rate_cache_normalizes_rate_keys(tmp_path):
     assert data["rates"] == {"eur": "0.0069542179"}
 
 
+def test_provider_payload_ignores_unsupported_rate_keys():
+    cache = currency._rate_cache_from_payload(
+        "eur",
+        {
+            "date": "2026-04-25",
+            "eur": {
+                "usd": "1.136986",
+                "btc": "0.000011",
+                "1inch": "3.4",
+            },
+        },
+    )
+
+    assert cache.rates == {"usd": decimal.Decimal("1.136986")}
+
+
 def test_rate_cache_freshness_accepts_same_day_or_newer():
     cache = currency.RateCache(
         base="isk",
@@ -200,7 +261,105 @@ def test_convert_with_fresh_cache_returns_valid_item(tmp_path):
 
     assert response.items[0].title == "2000 ISK = 13.908436 EUR"
     assert response.items[0].arg == "13.908436"
-    assert "Rates from" in response.items[0].subtitle
+    assert response.items[0].subtitle == (
+        "Icelandic Krona to Euro - Rates from 2026-04-24"
+    )
+
+
+def test_convert_default_query_returns_default_target_items(tmp_path):
+    cache = currency.RateCache(
+        base="usd",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date.today(),
+        rates={
+            "eur": decimal.Decimal("0.9"),
+            "gbp": decimal.Decimal("0.8"),
+            "jpy": decimal.Decimal("150"),
+            "cny": decimal.Decimal("7.2"),
+            "cad": decimal.Decimal("1.3"),
+            "aud": decimal.Decimal("1.5"),
+        },
+    )
+    currency.write_rate_cache(tmp_path, cache)
+
+    response = currency.convert_query(tmp_path, "5 usd")
+
+    assert [item.title for item in response.items] == [
+        "5 USD = 4.5 EUR",
+        "5 USD = 4 GBP",
+        "5 USD = 750 JPY",
+        "5 USD = 36 CNY",
+        "5 USD = 6.5 CAD",
+        "5 USD = 7.5 AUD",
+    ]
+    assert response.items[0].subtitle == (
+        "US Dollar to Euro - Rates from 2026-04-24"
+    )
+
+
+def test_convert_default_query_includes_usd_for_eur_source(tmp_path):
+    cache = currency.RateCache(
+        base="eur",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date.today(),
+        rates={
+            "usd": decimal.Decimal("1.1"),
+            "gbp": decimal.Decimal("0.8"),
+            "jpy": decimal.Decimal("150"),
+            "cny": decimal.Decimal("7.2"),
+            "cad": decimal.Decimal("1.3"),
+            "aud": decimal.Decimal("1.5"),
+        },
+    )
+    currency.write_rate_cache(tmp_path, cache)
+
+    response = currency.convert_query(tmp_path, "5 eur")
+
+    assert [item.title for item in response.items] == [
+        "5 EUR = 5.5 USD",
+        "5 EUR = 4 GBP",
+        "5 EUR = 750 JPY",
+        "5 EUR = 36 CNY",
+        "5 EUR = 6.5 CAD",
+        "5 EUR = 7.5 AUD",
+    ]
+    assert response.items[0].subtitle == (
+        "Euro to US Dollar - Rates from 2026-04-24"
+    )
+
+
+def test_convert_default_query_with_stale_cache_marks_each_result(
+    tmp_path,
+    monkeypatch,
+):
+    cache = currency.RateCache(
+        base="usd",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 24),
+        rates={
+            "eur": decimal.Decimal("0.9"),
+            "gbp": decimal.Decimal("0.8"),
+        },
+    )
+    currency.write_rate_cache(tmp_path, cache)
+    monkeypatch.setenv(currency.DEFAULT_TARGETS_ENV, "eur,gbp")
+    monkeypatch.setattr(
+        currency,
+        "start_background_refresh_status",
+        lambda base_dir, base: currency.BACKGROUND_REFRESH_STARTED,
+    )
+
+    response = currency.convert_query(
+        tmp_path,
+        "5 usd",
+        today=dt.date(2026, 4, 25),
+    )
+
+    assert [item.title for item in response.items] == [
+        "5 USD = 4.5 EUR",
+        "5 USD = 4 GBP",
+    ]
+    assert all("stale, refreshing" in item.subtitle for item in response.items)
 
 
 def test_convert_with_stale_cache_returns_result_and_refreshes(

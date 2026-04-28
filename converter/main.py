@@ -64,7 +64,19 @@ def run(query):
         if response is not None:
             return response
 
-    units = load_units()
+    units = None
+    default_currency_query = currency.parse_default_query(query)
+    if default_currency_query is not None:
+        units = load_units()
+        try:
+            units.get(default_currency_query.source)
+        except convert.UnknownUnit:
+            response = currency.convert_query(cache_dir, query)
+            if response is not None:
+                return response
+
+    if units is None:
+        units = load_units()
     items = list(convert.main(units, query, output.item_creator()))
     if not items:
         raise RuntimeError(f"No results for {query!r}")

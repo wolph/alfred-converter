@@ -56,3 +56,15 @@ def test_currency_update_command_exists_with_workflow_wiring():
     ]
     assert "xpos" in info["uidata"][uid]
     assert "ypos" in info["uidata"][uid]
+
+
+def test_default_currency_targets_are_configurable():
+    info = load_info()
+    config = [
+        item
+        for item in info["userconfigurationconfig"]
+        if item["variable"] == "CURRENCY_DEFAULT_TARGETS"
+    ]
+
+    assert len(config) == 1
+    assert config[0]["config"]["default"] == "usd,eur,gbp,jpy,cny,cad,aud"

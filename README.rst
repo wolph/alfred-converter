@@ -38,6 +38,7 @@ The extension can be configured through the environment variables setting in Alf
     OUTPUT_DECIMALS: Number of decimals to show for decimal output
     FRACTION_PRECISION: Maximum denominator for fractional output
     FRACTIONAL_MAX_DEVIATION: Maximum allowed deviation for fractional output
+    CURRENCY_DEFAULT_TARGETS: Currency targets to show for short queries such as "5 usd". Defaults to usd,eur,gbp,jpy,cny,cad,aud
     MAX_MAGNITUDE: Maximum orders of magnitude to show. For 1 megabyte in bytes we need 9 orders of magnitude because it's 1 million bytes.
     UNITS_BLACKLIST: Units you wish to hide
     UNITS_SIDE: Showing the units at the right or the left side
@@ -56,11 +57,16 @@ Currency examples:
     2000 isk eur
     2000 isk to eur
     2000 isk in eur
+    5 usd
 
 Rates refresh automatically on the first currency use of a new day. If cached
 rates are stale, Alfred shows the stale result immediately while a background
 refresh runs. If no rates exist yet, Alfred shows a rates-updating item; retry
 the query shortly after.
+
+Short currency queries such as ``5 usd`` show the configured default target
+currencies. The default list is ``usd,eur,gbp,jpy,cny,cad,aud`` and can be changed
+with ``CURRENCY_DEFAULT_TARGETS`` in the Alfred workflow configuration.
 
 To update a base currency manually:
 
