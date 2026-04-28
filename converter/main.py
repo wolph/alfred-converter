@@ -4,7 +4,7 @@ import pickle
 import sys
 import traceback
 
-from . import constants, convert, output
+from . import constants, convert, currency, output
 
 DEBUG = os.environ.get('DEBUG_CONVERTER')
 
@@ -48,11 +48,26 @@ def load_units():
             return pickle.load(fh)
 
 
+def workflow_cache_dir():
+    return os.environ.get("alfred_workflow_cache") or os.getcwd()
+
+
 def run(query):
+    query = " ".join(str(query).split())
+    cache_dir = workflow_cache_dir()
+
+    if currency.is_update_command(query):
+        return currency.update_command(cache_dir, query)
+
+    if currency.parse_query(query) is not None:
+        response = currency.convert_query(cache_dir, query)
+        if response is not None:
+            return response
+
     units = load_units()
     items = list(convert.main(units, query, output.item_creator()))
     if not items:
-        raise RuntimeError(f'No results for {query!r}')
+        raise RuntimeError(f"No results for {query!r}")
     return output.Response(items=items, skipknowledge=True)
 
 

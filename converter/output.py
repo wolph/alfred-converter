@@ -29,8 +29,11 @@ class Item:
             data["subtitle"] = self.subtitle
         if self.arg is not None:
             data["arg"] = self.arg
+            text_copy = (
+                self.text_copy if self.text_copy is not None else self.arg
+            )
             data["text"] = {
-                "copy": self.text_copy if self.text_copy is not None else self.arg,
+                "copy": text_copy,
                 "largetype": (
                     self.text_largetype
                     if self.text_largetype is not None

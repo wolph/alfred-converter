@@ -41,4 +41,81 @@ def test_scriptfilter_empty_results_are_valid_json_error(capsys, monkeypatch):
 
     assert len(data["items"]) == 1
     assert data["items"][0]["valid"] is False
-    assert data["items"][0]["title"] == "RuntimeError: No results for '1 m in cm'"
+    assert data["items"][0]["title"] == (
+        "RuntimeError: No results for '1 m in cm'"
+    )
+
+
+def test_currency_query_routes_to_currency(monkeypatch, tmp_path):
+    called = []
+
+    def fake_convert_query(base_dir, query):
+        called.append((base_dir, query))
+        return main.output.Response(
+            items=[
+                main.output.Item(
+                    title="2000 ISK = 13.908436 EUR",
+                    arg="13.908436",
+                )
+            ]
+        )
+
+    monkeypatch.setenv("alfred_workflow_cache", str(tmp_path))
+    monkeypatch.setattr(main.currency, "convert_query", fake_convert_query)
+
+    response = main.run("2000 isk eur")
+
+    assert response.items[0].title == "2000 ISK = 13.908436 EUR"
+    assert called == [(str(tmp_path), "2000 isk eur")]
+
+
+def test_regular_unit_query_does_not_touch_currency(monkeypatch, tmp_path):
+    monkeypatch.setenv("alfred_workflow_cache", str(tmp_path))
+
+    def fail_currency(*args, **kwargs):
+        raise AssertionError("currency path touched")
+
+    monkeypatch.setattr(main.currency, "convert_query", fail_currency)
+
+    response = main.run("1 m in cm")
+
+    assert any("centimeter" in item.title for item in response.items)
+
+
+def test_update_command_routes_to_currency_update(monkeypatch, tmp_path):
+    monkeypatch.setenv("alfred_workflow_cache", str(tmp_path))
+    monkeypatch.setattr(
+        main.currency,
+        "update_command",
+        lambda base_dir, query: main.output.Response(
+            items=[
+                main.output.Item(
+                    title="Updated ISK currency rates",
+                    valid=False,
+                )
+            ]
+        ),
+    )
+
+    response = main.run("currency-update isk")
+
+    assert response.items[0].title == "Updated ISK currency rates"
+
+
+def test_malformed_update_command_routes_to_currency_update(
+    monkeypatch,
+    tmp_path,
+):
+    monkeypatch.setenv("alfred_workflow_cache", str(tmp_path))
+
+    def fail_refresh(*args, **kwargs):
+        raise AssertionError("refresh called")
+
+    monkeypatch.setattr(main.currency, "fetch_rates", fail_refresh)
+    monkeypatch.setattr(main.currency, "refresh_rates", fail_refresh)
+    monkeypatch.setattr(main.currency, "manual_refresh_rates", fail_refresh)
+
+    response = main.run("currency-update isk now")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Invalid currency update command"

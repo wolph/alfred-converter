@@ -16,6 +16,8 @@ import urllib.request
 import uuid
 from dataclasses import dataclass
 
+from . import output
+
 CURRENCY_CODES = frozenset("""
     aed afn all amd ang aoa ars aud awg azn bam bbd bdt bgn bhd bif bmd bnd
     bob bov brl bsd btn bwp byn bzd cad cdf che chf chw clf clp cny cop cou
@@ -37,6 +39,7 @@ CURRENCY_QUERY_RE = re.compile(
 )
 
 DECIMAL_COMMA_RE = re.compile(r"^[+-]?(?:\d+,\d{1,2}|,\d+)$")
+UPDATE_RE = re.compile(r"^\s*currency-update(?:\s+(?P<base>[a-zA-Z]{3}))?\s*$")
 
 PRIMARY_URL = (
     "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/"
@@ -48,6 +51,9 @@ FALLBACK_URL = (
 DEFAULT_LOCK_STALE_AFTER = dt.timedelta(minutes=10)
 LOCK_TOKEN_ENV = "ALFRED_CONVERTER_CURRENCY_LOCK_TOKEN"
 LOCK_TOKEN_RE = re.compile(r"^[0-9a-f]{32}$")
+BACKGROUND_REFRESH_STARTED = "started"
+BACKGROUND_REFRESH_ALREADY_RUNNING = "already_running"
+BACKGROUND_REFRESH_FAILED = "failed"
 
 
 @dataclass(frozen=True)
@@ -128,6 +134,226 @@ def parse_query(query):
 
     amount = decimal.Decimal(amount_text.replace(",", "."))
     return CurrencyQuery(amount=amount, source=source, target=target)
+
+
+def _format_decimal(value):
+    integer_digits = max(value.adjusted() + 1, 1)
+    coefficient_digits = len(value.as_tuple().digits)
+    precision = max(integer_digits + 6, coefficient_digits, 28)
+    with decimal.localcontext() as context:
+        context.prec = precision
+        quantized = value.quantize(decimal.Decimal("0.000001"))
+    if quantized.is_zero() and not value.is_zero():
+        formatted = format(value, "f").rstrip("0").rstrip(".")
+        return "0" if formatted in {"", "-0"} else formatted
+    if quantized.is_zero():
+        return "0"
+    return str(quantized).rstrip("0").rstrip(".")
+
+
+def _normalize_rates(rates, key_error_message, value_error_message):
+    if not isinstance(rates, dict):
+        raise ValueError("rates must be a mapping")
+
+    parsed_rates = {}
+    for key, value in rates.items():
+        if not isinstance(key, str):
+            raise ValueError(key_error_message)
+        normalized_key = key.lower()
+        if normalized_key not in CURRENCY_CODES:
+            raise ValueError(key_error_message)
+        if normalized_key in parsed_rates:
+            raise ValueError(key_error_message)
+        rate = decimal.Decimal(str(value))
+        if not rate.is_finite() or rate <= 0:
+            raise ValueError(value_error_message)
+        parsed_rates[normalized_key] = rate
+    return parsed_rates
+
+
+def _conversion_response(query, cache, stale=False, refresh_launched=False):
+    rate = cache.rates.get(query.target)
+    if rate is None:
+        return output.Response(
+            items=[
+                output.Item(
+                    title=f"Currency {query.target.upper()} unavailable",
+                    subtitle=(
+                        f"No {query.target.upper()} rate in "
+                        f"{query.source.upper()} cache"
+                    ),
+                    valid=False,
+                    icon="icons/dollars17.png",
+                )
+            ],
+            skipknowledge=True,
+        )
+
+    multiplication_precision = max(
+        len(query.amount.as_tuple().digits) + len(rate.as_tuple().digits) + 6,
+        query.amount.adjusted() + rate.adjusted() + 8,
+        28,
+    )
+    with decimal.localcontext() as context:
+        context.prec = multiplication_precision
+        converted = _format_decimal(query.amount * rate)
+    subtitle = f"Rates from {cache.date.isoformat()}"
+    if stale:
+        if refresh_launched:
+            subtitle += " (stale, refreshing)"
+        else:
+            subtitle += " (stale, refresh unavailable)"
+    return output.Response(
+        items=[
+            output.Item(
+                uid=f"currency:{query.source}:{query.target}",
+                title=(
+                    f"{_format_decimal(query.amount)} "
+                    f"{query.source.upper()} = "
+                    f"{converted} {query.target.upper()}"
+                ),
+                subtitle=subtitle,
+                arg=converted,
+                autocomplete=f"{converted} {query.target.upper()}",
+                icon="icons/dollars17.png",
+            )
+        ],
+        skipknowledge=True,
+    )
+
+
+def updating_response(base):
+    return output.Response(
+        items=[
+            output.Item(
+                title="Currency rates updating",
+                subtitle=f"Fetching {base.upper()} rates. Try again shortly.",
+                valid=False,
+                icon="icons/dollars17.png",
+            )
+        ],
+        skipknowledge=True,
+        rerun=1,
+    )
+
+
+def unavailable_response(base):
+    return output.Response(
+        items=[
+            output.Item(
+                title="Currency rates unavailable",
+                subtitle=(
+                    f"Could not start background update for "
+                    f"{base.upper()}."
+                ),
+                valid=False,
+                icon="icons/dollars17.png",
+            )
+        ],
+        skipknowledge=True,
+    )
+
+
+def convert_query(base_dir, query_text, today=None):
+    query = parse_query(query_text)
+    if query is None:
+        return None
+
+    cache = read_rate_cache(base_dir, query.source)
+    if cache is None:
+        status = start_background_refresh_status(base_dir, query.source)
+        if status == BACKGROUND_REFRESH_FAILED:
+            return unavailable_response(query.source)
+        return updating_response(query.source)
+
+    today = today or dt.date.today()
+    if cache.is_fresh(today):
+        return _conversion_response(query, cache, stale=False)
+
+    status = start_background_refresh_status(base_dir, query.source)
+    return _conversion_response(
+        query,
+        cache,
+        stale=True,
+        refresh_launched=status != BACKGROUND_REFRESH_FAILED,
+    )
+
+
+def is_update_command(query):
+    parts = str(query).split()
+    return bool(parts and parts[0] == "currency-update")
+
+
+def manual_refresh_rates(base_dir, base):
+    normalized_base = normalize_base(base)
+    lock = acquire_refresh_lock(base_dir, normalized_base)
+    if not lock.acquired:
+        return None
+    return _refresh_rates_with_lock(base_dir, normalized_base, lock)
+
+
+def update_command(base_dir, query):
+    match = UPDATE_RE.match(query)
+    if match is None:
+        return output.Response(
+            items=[
+                output.Item(
+                    title="Invalid currency update command",
+                    subtitle="Use currency-update or currency-update <base>.",
+                    valid=False,
+                    icon="icons/dollars17.png",
+                )
+            ],
+            skipknowledge=True,
+        )
+
+    base = (match.group("base") if match and match.group("base") else "eur")
+    base = base.lower()
+    try:
+        cache = manual_refresh_rates(base_dir, base)
+    except Exception as error:
+        return output.Response(
+            items=[
+                output.Item(
+                    title="Currency update failed",
+                    subtitle=str(error),
+                    valid=False,
+                    icon="icons/dollars17.png",
+                )
+            ],
+            skipknowledge=True,
+        )
+
+    if cache is None:
+        return output.Response(
+            items=[
+                output.Item(
+                    title="Currency update already running",
+                    subtitle=(
+                        f"{base.upper()} rates are already refreshing. "
+                        "Try again shortly."
+                    ),
+                    valid=False,
+                    icon="icons/dollars17.png",
+                )
+            ],
+            skipknowledge=True,
+        )
+
+    return output.Response(
+        items=[
+            output.Item(
+                title=f"Updated {base.upper()} currency rates",
+                subtitle=(
+                    f"Rates from {cache.date.isoformat()}, "
+                    f"{len(cache.rates)} currencies"
+                ),
+                valid=False,
+                icon="icons/dollars17.png",
+            )
+        ],
+        skipknowledge=True,
+    )
 
 
 def cache_root(base_dir=None):
@@ -408,15 +634,11 @@ def _rate_cache_from_payload(base, data):
 
     date = dt.date.fromisoformat(data["date"])
     rates = data[base]
-    if not isinstance(rates, dict):
-        raise ValueError("provider rates must be a mapping")
-
-    parsed_rates = {}
-    for key, value in rates.items():
-        rate = decimal.Decimal(str(value))
-        if not rate.is_finite():
-            raise ValueError("provider rates must be finite")
-        parsed_rates[key] = rate
+    parsed_rates = _normalize_rates(
+        rates,
+        key_error_message="provider rate key is invalid",
+        value_error_message="provider rates must be finite",
+    )
 
     return RateCache(
         base=base,
@@ -480,11 +702,11 @@ def refresh_rates_with_existing_lock(base_dir, base, lock_path, token=None):
     return _refresh_rates_with_lock(base_dir, normalized_base, lock)
 
 
-def start_background_refresh(base_dir, base):
+def start_background_refresh_status(base_dir, base):
     normalized_base = normalize_base(base)
     lock = acquire_refresh_lock(base_dir, normalized_base)
     if not lock.acquired:
-        return False
+        return BACKGROUND_REFRESH_ALREADY_RUNNING
 
     command = [
         sys.executable,
@@ -511,8 +733,15 @@ def start_background_refresh(base_dir, base):
         subprocess.Popen(command, **popen_kwargs)
     except OSError:
         lock.release()
-        return False
-    return True
+        return BACKGROUND_REFRESH_FAILED
+    return BACKGROUND_REFRESH_STARTED
+
+
+def start_background_refresh(base_dir, base):
+    return (
+        start_background_refresh_status(base_dir, base)
+        == BACKGROUND_REFRESH_STARTED
+    )
 
 
 def read_rate_cache(base_dir, base):
@@ -523,14 +752,11 @@ def read_rate_cache(base_dir, base):
             data = json.load(fh)
         if data["base"] != normalized_base:
             return None
-        if not isinstance(data["rates"], dict):
-            return None
-        rates = {
-            key: decimal.Decimal(str(value))
-            for key, value in data["rates"].items()
-        }
-        if not all(value.is_finite() for value in rates.values()):
-            return None
+        rates = _normalize_rates(
+            data["rates"],
+            key_error_message="cache rate key is invalid",
+            value_error_message="cache rates must be finite",
+        )
         return RateCache(
             base=data["base"],
             date=dt.date.fromisoformat(data["date"]),
@@ -552,13 +778,18 @@ def write_rate_cache(base_dir, cache):
     base = normalize_base(cache.base)
     path = rate_cache_path(base_dir, base)
     tmp_path = None
+    rates = _normalize_rates(
+        cache.rates,
+        key_error_message="cache rate key is invalid",
+        value_error_message="cache rates must be finite",
+    )
     data = {
         "base": base,
         "date": cache.date.isoformat(),
         "fetched_at": cache.fetched_at.isoformat(),
         "rates": {
             key: str(value)
-            for key, value in sorted(cache.rates.items())
+            for key, value in sorted(rates.items())
         },
     }
     try:

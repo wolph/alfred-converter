@@ -205,6 +205,19 @@
 				<false/>
 			</dict>
 		</array>
+		<key>10AAEA10-1775-4E1B-9645-8920EB67F7CA</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
 	</dict>
 	<key>createdby</key>
 	<string>Wolph (Rick van Hattem)</string>
@@ -985,17 +998,99 @@ main.scriptfilter(''' -{query} ''')</string>
 			<key>version</key>
 			<integer>3</integer>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>1</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>0</integer>
+				<key>keyword</key>
+				<string>currency-update</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Updating currency rates</string>
+				<key>script</key>
+				<string>from converter import main
+main.scriptfilter('''currency-update {query}''')</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Optionally provide a base currency, e.g. isk</string>
+				<key>title</key>
+				<string>Update currency rates</string>
+				<key>type</key>
+				<integer>9</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>10AAEA10-1775-4E1B-9645-8920EB67F7CA</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
 	</array>
 	<key>readme</key>
-	<string>Alfred Calculor is a smart calculator for Alfred with support for unit
-conversions to make it a bit comparable to the Google Calculator and Wolfram
-Alpha.
+	<string>Alfred Unit Converter is a smart calculator for Alfred with support for unit conversions, mathematical expressions, and cached currency conversion.
 
-If new units and/or other names for units should be added please let me know by
-creating an issue at: https://github.com/WoLpH/alfred-converter/issues
+Requirements
 
-The UNITS_SIDE variable can be set to either `left` or `right` depending on your preference.
-With the `MAX_MAGNITUDE` you can specify the maximum order of magnitude difference between two measures. With 3 you will see up to 3 zeros: 1 meter = 1000 millimeters. With 1 you would see up to 1 meter = 10 decimeter.
+This workflow supports Python 3.8+.
+
+Currency conversion
+
+Currency conversions use daily cached rates from the free fawazahmed0 exchange-api. Normal unit and calculator queries never block on currency network access.
+
+Examples:
+
+    2000 isk eur
+    2000 isk to eur
+    2000 isk in eur
+
+Rates refresh automatically on the first currency use of a new day. If cached rates are stale, Alfred shows the stale result immediately while a background refresh runs. If no rates exist yet, Alfred shows a rates-updating item; retry the query shortly after.
+
+Manual currency update:
+
+    currency-update isk
+
+Math notes
+
+log() is the natural logarithm. ln() is an alias for log(). Use log10() for base-10 logarithms.
+
+Configuration
+
+The extension can be configured through Alfred workflow environment variables.
+
+    BASE_2: Enable base 2 (binary) output
+    BASE_8: Enable base 8 (octal) output
+    BASE_16: Enable base 16 (hexadecimal) output
+    DECIMAL_SEPARATOR: Comma or dot separator for decimals
+    FRACTIONAL_UNITS: "both", "decimal" or "fractional" only
+    OUTPUT_DECIMALS: Number of decimals to show for decimal output
+    FRACTION_PRECISION: Maximum denominator for fractional output
+    FRACTIONAL_MAX_DEVIATION: Maximum allowed deviation for fractional output
+    MAX_MAGNITUDE: Maximum orders of magnitude to show. For 1 megabyte in bytes we need 9 orders of magnitude because it is 1 million bytes.
+    UNITS_BLACKLIST: Units you wish to hide
+    UNITS_SIDE: Show units at the right or left side
 
 Example queries
 
@@ -1006,12 +1101,14 @@ Example queries
     5 * cos(pi + 2) # Executing mathematical functions
     5 * pi + 2 mm in m # Mathematical constants with unit conversion
     1 * cos(pi/2) - sin(pi^2) # More advanced mathematical expressions
-    ln(e^10) # Testing the ln(x) alias of log _e(x)
-    log(e^10) # The normal log method
+    ln(e^10) # Testing the ln(x) alias of log_e(x)
+    log(e^10) # Natural logarithm
+    log10(e^10) # Base-10 logarithm
     5+3^2" in mm # Testing math with unit conversion
-    1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis with unit conversion
-    ((1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced paranthesis the other way
+    1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced parenthesis with unit conversion
+    ((1 + 2 / 3 * 4) mm^2 in cm^2 # Unbalanced parenthesis the other way
     inf - inf # Not actually possible, but we backtrack to "inf"
+    0b1010 + 0xA - 050 # Test calculations with hex, oct and binary numbers
 
 The list of units and conversions was downloaded from:
 http://w3.energistics.org/uom/poscUnits22.xml</string>
@@ -1020,114 +1117,121 @@ http://w3.energistics.org/uom/poscUnits22.xml</string>
 		<key>06C9C4A9-38CE-441A-8D06-E2F2D8B39B60</key>
 		<dict>
 			<key>xpos</key>
-			<real>700</real>
+			<real>700.0</real>
 			<key>ypos</key>
-			<real>670</real>
+			<real>670.0</real>
 		</dict>
 		<key>4CC56A28-09F3-4387-A540-81DCB4DC8C14</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>1440</real>
+			<real>1440.0</real>
 		</dict>
 		<key>5E060269-88B3-4259-A125-92E4B3E8942C</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>1220</real>
+			<real>1220.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E0</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>15</real>
+			<real>15.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E1</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>120</real>
+			<real>120.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E2</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>230</real>
+			<real>230.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E3</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>340</real>
+			<real>340.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E4</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>450</real>
+			<real>450.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E5</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>560</real>
+			<real>560.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E6</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>670</real>
+			<real>670.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E7</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>780</real>
+			<real>780.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E8</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>890</real>
+			<real>890.0</real>
 		</dict>
 		<key>7DD3BDE5-A157-42E5-9376-F681FB50A4E9</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>1000</real>
+			<real>1000.0</real>
 		</dict>
 		<key>87B4FA40-AE32-4F0F-A763-0F7633244946</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>1550</real>
+			<real>1550.0</real>
 		</dict>
 		<key>B9E7F633-5C7A-405B-894B-BBDFB09DE5C8</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>1110</real>
+			<real>1110.0</real>
 		</dict>
 		<key>E42A313A-CE15-4A7E-B4B7-AAA7ADCBA21E</key>
 		<dict>
 			<key>xpos</key>
-			<real>300</real>
+			<real>300.0</real>
 			<key>ypos</key>
-			<real>1330</real>
+			<real>1330.0</real>
+		</dict>
+		<key>10AAEA10-1775-4E1B-9645-8920EB67F7CA</key>
+		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
+			<key>ypos</key>
+			<integer>1660</integer>
 		</dict>
 	</dict>
 	<key>userconfigurationconfig</key>

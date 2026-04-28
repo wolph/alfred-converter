@@ -5,9 +5,10 @@ from converter import output
 
 
 def test_item_to_alfred_json_contains_copy_fields():
+    subtitle = "Action this item to copy the converted value to the clipboard"
     item = output.Item(
         title="10 meter = 1000 centimeter",
-        subtitle="Action this item to copy the converted value to the clipboard",
+        subtitle=subtitle,
         arg="1000",
         uid="m to cm",
         icon="icons/scale6.png",
@@ -19,7 +20,7 @@ def test_item_to_alfred_json_contains_copy_fields():
     assert data == {
         "uid": "m to cm",
         "title": "10 meter = 1000 centimeter",
-        "subtitle": "Action this item to copy the converted value to the clipboard",
+        "subtitle": subtitle,
         "arg": "1000",
         "valid": True,
         "autocomplete": "1000 centimeter",
@@ -136,7 +137,9 @@ def test_legacy_create_item_factory_defaults_to_valid_item():
 def test_legacy_create_item_factory_accepts_boolean_valid():
     create_item = output.item_creator()
 
-    assert create_item(title="invalid", attrib={"valid": False}) == output.Item(
+    item = create_item(title="invalid", attrib={"valid": False})
+
+    assert item == output.Item(
         title="invalid",
         valid=False,
     )
@@ -167,7 +170,8 @@ def test_legacy_create_item_factory_stringifies_non_none_attrib_values():
 
 
 def test_write_json_writes_response_to_stdout(capsys):
-    output.write_json(output.Response(items=[output.Item(title="pi", arg="3.14")]))
+    item = output.Item(title="pi", arg="3.14")
+    output.write_json(output.Response(items=[item]))
 
     assert json.loads(capsys.readouterr().out) == {
         "items": [

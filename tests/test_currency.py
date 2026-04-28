@@ -67,6 +67,103 @@ def test_cache_round_trip(tmp_path):
     assert loaded == cache
 
 
+def test_read_rate_cache_normalizes_uppercase_rate_keys(tmp_path):
+    rate_dir = tmp_path / "currency"
+    rate_dir.mkdir()
+    (rate_dir / "isk.json").write_text(
+        json.dumps(
+            {
+                "base": "isk",
+                "date": "2026-04-24",
+                "fetched_at": dt.date.today().isoformat(),
+                "rates": {"EUR": "0.0069542179"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    loaded = currency.read_rate_cache(tmp_path, "isk")
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert loaded.rates == {"eur": decimal.Decimal("0.0069542179")}
+    assert response.items[0].title == "2000 ISK = 13.908436 EUR"
+    assert response.items[0].valid is True
+
+
+def test_read_rate_cache_rejects_invalid_rate_key(tmp_path):
+    rate_dir = tmp_path / "currency"
+    rate_dir.mkdir()
+    (rate_dir / "isk.json").write_text(
+        json.dumps(
+            {
+                "base": "isk",
+                "date": "2026-04-24",
+                "fetched_at": dt.date.today().isoformat(),
+                "rates": {"not-currency": "1"},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert currency.read_rate_cache(tmp_path, "isk") is None
+
+
+def test_read_rate_cache_rejects_duplicate_normalized_rate_keys(tmp_path):
+    rate_dir = tmp_path / "currency"
+    rate_dir.mkdir()
+    (rate_dir / "isk.json").write_text(
+        json.dumps(
+            {
+                "base": "isk",
+                "date": "2026-04-24",
+                "fetched_at": dt.date.today().isoformat(),
+                "rates": {
+                    "EUR": "0.0069542179",
+                    "eur": "0.0069542180",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert currency.read_rate_cache(tmp_path, "isk") is None
+
+
+@pytest.mark.parametrize("rate", ["0", "-0.1"])
+def test_read_rate_cache_rejects_non_positive_rates(tmp_path, rate):
+    rate_dir = tmp_path / "currency"
+    rate_dir.mkdir()
+    (rate_dir / "isk.json").write_text(
+        json.dumps(
+            {
+                "base": "isk",
+                "date": "2026-04-24",
+                "fetched_at": dt.date.today().isoformat(),
+                "rates": {"eur": rate},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    assert currency.read_rate_cache(tmp_path, "isk") is None
+
+
+def test_write_rate_cache_normalizes_rate_keys(tmp_path):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 25),
+        rates={"EUR": decimal.Decimal("0.0069542179")},
+    )
+
+    currency.write_rate_cache(tmp_path, cache)
+
+    data = json.loads(
+        (tmp_path / "currency" / "isk.json").read_text(encoding="utf-8")
+    )
+    assert data["rates"] == {"eur": "0.0069542179"}
+
+
 def test_rate_cache_freshness_accepts_same_day_or_newer():
     cache = currency.RateCache(
         base="isk",
@@ -88,6 +185,442 @@ def test_rate_cache_freshness_defaults_to_today():
     )
 
     assert cache.is_fresh()
+
+
+def test_convert_with_fresh_cache_returns_valid_item(tmp_path):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date.today(),
+        rates={"eur": decimal.Decimal("0.0069542179")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].title == "2000 ISK = 13.908436 EUR"
+    assert response.items[0].arg == "13.908436"
+    assert "Rates from" in response.items[0].subtitle
+
+
+def test_convert_with_stale_cache_returns_result_and_refreshes(
+    tmp_path,
+    monkeypatch,
+):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 24),
+        rates={"eur": decimal.Decimal("0.0069542179")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+    launched = []
+    monkeypatch.setattr(
+        currency,
+        "start_background_refresh_status",
+        lambda base_dir, base: launched.append((base_dir, base))
+        or currency.BACKGROUND_REFRESH_STARTED,
+    )
+
+    response = currency.convert_query(
+        tmp_path,
+        "2000 isk eur",
+        today=dt.date(2026, 4, 25),
+    )
+
+    assert response.items[0].arg == "13.908436"
+    assert "stale" in response.items[0].subtitle.lower()
+    assert launched == [(tmp_path, "isk")]
+
+
+def test_convert_with_stale_cache_does_not_claim_refresh_when_launch_fails(
+    tmp_path,
+    monkeypatch,
+):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 24),
+        rates={"eur": decimal.Decimal("0.0069542179")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+    monkeypatch.setattr(
+        currency,
+        "start_background_refresh_status",
+        lambda base_dir, base: currency.BACKGROUND_REFRESH_FAILED,
+    )
+
+    response = currency.convert_query(
+        tmp_path,
+        "2000 isk eur",
+        today=dt.date(2026, 4, 25),
+    )
+
+    assert response.items[0].valid is True
+    assert response.items[0].arg == "13.908436"
+    assert "stale" in response.items[0].subtitle.lower()
+    assert "refreshing" not in response.items[0].subtitle.lower()
+
+
+def test_convert_with_stale_cache_treats_existing_lock_as_refreshing(
+    tmp_path,
+    monkeypatch,
+):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 24),
+        rates={"eur": decimal.Decimal("0.0069542179")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+    lock = currency.acquire_refresh_lock(tmp_path, "isk")
+    monkeypatch.setattr(
+        currency.subprocess,
+        "Popen",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("Popen called")
+        ),
+    )
+
+    response = currency.convert_query(
+        tmp_path,
+        "2000 isk eur",
+        today=dt.date(2026, 4, 25),
+    )
+
+    assert response.items[0].valid is True
+    assert response.items[0].arg == "13.908436"
+    assert "refreshing" in response.items[0].subtitle.lower()
+    assert "unavailable" not in response.items[0].subtitle.lower()
+    lock.release()
+
+
+def test_convert_without_cache_returns_updating_item(tmp_path, monkeypatch):
+    launched = []
+    monkeypatch.setattr(
+        currency,
+        "start_background_refresh_status",
+        lambda base_dir, base: launched.append((base_dir, base))
+        or currency.BACKGROUND_REFRESH_STARTED,
+    )
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Currency rates updating"
+    assert launched == [(tmp_path, "isk")]
+
+
+def test_convert_without_cache_treats_existing_lock_as_updating(
+    tmp_path,
+    monkeypatch,
+):
+    lock = currency.acquire_refresh_lock(tmp_path, "isk")
+    monkeypatch.setattr(
+        currency.subprocess,
+        "Popen",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("Popen called")
+        ),
+    )
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Currency rates updating"
+    assert response.rerun == 1
+    lock.release()
+
+
+def test_convert_without_cache_reports_background_launch_failure(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        currency,
+        "start_background_refresh_status",
+        lambda base_dir, base: currency.BACKGROUND_REFRESH_FAILED,
+    )
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title != "Currency rates updating"
+    assert response.items[0].title == "Currency rates unavailable"
+    assert "background update" in response.items[0].subtitle
+    assert response.rerun is None
+
+
+def test_convert_without_cache_reports_popen_launch_failure(
+    tmp_path,
+    monkeypatch,
+):
+    def fail_popen(command, **kwargs):
+        raise OSError("cannot launch")
+
+    monkeypatch.setattr(currency.subprocess, "Popen", fail_popen)
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Currency rates unavailable"
+    assert response.rerun is None
+
+
+def test_convert_without_cache_does_not_refresh_synchronously(
+    tmp_path,
+    monkeypatch,
+):
+    launched = []
+    monkeypatch.setattr(
+        currency,
+        "start_background_refresh_status",
+        lambda base_dir, base: launched.append((base_dir, base))
+        or currency.BACKGROUND_REFRESH_STARTED,
+    )
+    monkeypatch.setattr(
+        currency,
+        "refresh_rates",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("refresh_rates called")
+        ),
+    )
+    monkeypatch.setattr(
+        currency,
+        "fetch_rates",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("fetch_rates called")
+        ),
+    )
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].title == "Currency rates updating"
+    assert launched == [(tmp_path, "isk")]
+
+
+def test_convert_with_stale_cache_does_not_refresh_synchronously(
+    tmp_path,
+    monkeypatch,
+):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 24),
+        rates={"eur": decimal.Decimal("0.0069542179")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+    launched = []
+    monkeypatch.setattr(
+        currency,
+        "start_background_refresh_status",
+        lambda base_dir, base: launched.append((base_dir, base))
+        or currency.BACKGROUND_REFRESH_STARTED,
+    )
+    monkeypatch.setattr(
+        currency,
+        "refresh_rates",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("refresh_rates called")
+        ),
+    )
+    monkeypatch.setattr(
+        currency,
+        "fetch_rates",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("fetch_rates called")
+        ),
+    )
+
+    response = currency.convert_query(
+        tmp_path,
+        "2000 isk eur",
+        today=dt.date(2026, 4, 25),
+    )
+
+    assert response.items[0].arg == "13.908436"
+    assert launched == [(tmp_path, "isk")]
+
+
+def test_convert_missing_target_rate_returns_unavailable_item(tmp_path):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date.today(),
+        rates={"usd": decimal.Decimal("0.0075")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Currency EUR unavailable"
+
+
+def test_convert_unparsed_query_returns_none(tmp_path):
+    assert currency.convert_query(tmp_path, "1 m in cm") is None
+
+
+def test_convert_large_decimal_amount_does_not_crash(tmp_path):
+    amount = "9" * 40
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date.today(),
+        rates={"eur": decimal.Decimal("1")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+
+    response = currency.convert_query(tmp_path, f"{amount} isk eur")
+
+    assert response.items[0].valid is True
+    assert response.items[0].arg == amount
+    assert response.items[0].title == f"{amount} ISK = {amount} EUR"
+
+
+def test_convert_tiny_nonzero_result_does_not_format_as_zero(tmp_path):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date.today(),
+        rates={"eur": decimal.Decimal("0.0000000002")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+
+    response = currency.convert_query(tmp_path, "2000 isk eur")
+
+    assert response.items[0].valid is True
+    assert response.items[0].arg == "0.0000004"
+    assert "0.0000004 EUR" in response.items[0].title
+
+
+def test_convert_tiny_negative_result_does_not_format_as_negative_zero(
+    tmp_path,
+):
+    cache = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date.today(),
+        rates={"eur": decimal.Decimal("0.0000000002")},
+    )
+    currency.write_rate_cache(tmp_path, cache)
+
+    response = currency.convert_query(tmp_path, "-1 isk eur")
+
+    assert response.items[0].valid is True
+    assert response.items[0].arg == "-0.0000000002"
+    assert "-0 EUR" not in response.items[0].title
+
+
+def test_manual_update_success(tmp_path, monkeypatch):
+    fetched = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 25),
+        rates={
+            "eur": decimal.Decimal("0.0069542179"),
+            "usd": decimal.Decimal("0.0075"),
+        },
+    )
+    monkeypatch.setattr(
+        currency,
+        "fetch_rates",
+        lambda base: fetched,
+    )
+
+    response = currency.update_command(tmp_path, "currency-update isk")
+
+    assert response.items[0].title == "Updated ISK currency rates"
+    assert "2 currencies" in response.items[0].subtitle
+
+
+def test_manual_update_failure(tmp_path, monkeypatch):
+    def fail(base):
+        raise RuntimeError("network down")
+
+    monkeypatch.setattr(currency, "fetch_rates", fail)
+
+    response = currency.update_command(tmp_path, "currency-update isk")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Currency update failed"
+    assert "network down" in response.items[0].subtitle
+
+
+def test_manual_update_reports_already_running_instead_of_cached_success(
+    tmp_path,
+    monkeypatch,
+):
+    existing = currency.RateCache(
+        base="isk",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 24),
+        rates={"eur": decimal.Decimal("0.0069542179")},
+    )
+    currency.write_rate_cache(tmp_path, existing)
+    lock = currency.acquire_refresh_lock(tmp_path, "isk")
+    monkeypatch.setattr(
+        currency,
+        "fetch_rates",
+        lambda base: (_ for _ in ()).throw(
+            AssertionError("fetch_rates called")
+        ),
+    )
+
+    response = currency.update_command(tmp_path, "currency-update isk")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Currency update already running"
+    assert "Updated" not in response.items[0].title
+    assert "already refreshing" in response.items[0].subtitle
+    lock.release()
+
+
+def test_manual_update_defaults_to_eur(tmp_path, monkeypatch):
+    calls = []
+    fetched = currency.RateCache(
+        base="eur",
+        date=dt.date(2026, 4, 24),
+        fetched_at=dt.date(2026, 4, 25),
+        rates={"usd": decimal.Decimal("1.14052")},
+    )
+    monkeypatch.setattr(
+        currency,
+        "fetch_rates",
+        lambda base: calls.append(base) or fetched,
+    )
+
+    response = currency.update_command(tmp_path, "currency-update")
+
+    assert response.items[0].title == "Updated EUR currency rates"
+    assert calls == ["eur"]
+
+
+def test_manual_update_invalid_base_returns_failure_item(tmp_path):
+    response = currency.update_command(tmp_path, "currency-update zzz")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Currency update failed"
+    assert "invalid currency base" in response.items[0].subtitle
+
+
+def test_manual_update_invalid_command_returns_failure_without_refresh(
+    tmp_path,
+    monkeypatch,
+):
+    calls = []
+
+    def fail_manual_refresh(base_dir, base):
+        calls.append((base_dir, base))
+        raise AssertionError("manual refresh called")
+
+    monkeypatch.setattr(currency, "manual_refresh_rates", fail_manual_refresh)
+
+    response = currency.update_command(tmp_path, "not-update")
+
+    assert response.items[0].valid is False
+    assert response.items[0].title == "Invalid currency update command"
+    assert calls == []
 
 
 def test_rate_cache_path_rejects_invalid_base(tmp_path):
@@ -258,7 +791,7 @@ def test_fetch_rates_uses_primary_url(monkeypatch):
     calls = []
 
     def fake_urlopen(request, timeout):
-        calls.append(request.full_url)
+        calls.append((request, timeout))
         return FakeResponse({
             "date": "2026-04-24",
             "isk": {"eur": 0.0069542179},
@@ -268,11 +801,77 @@ def test_fetch_rates_uses_primary_url(monkeypatch):
 
     cache = currency.fetch_rates("isk")
 
-    assert calls == [
+    request, timeout = calls[0]
+    assert request.full_url == (
         "https://cdn.jsdelivr.net/npm/"
         "@fawazahmed0/currency-api@latest/v1/currencies/isk.json"
-    ]
+    )
+    assert timeout == 10
+    assert request.get_header("User-agent") == "alfred-converter/1"
     assert cache.rates["eur"] == decimal.Decimal("0.0069542179")
+
+
+def test_fetch_rates_normalizes_provider_rate_keys(monkeypatch):
+    monkeypatch.setattr(
+        currency,
+        "_load_json_url",
+        lambda url: {
+            "date": "2026-04-24",
+            "isk": {"EUR": 0.0069542179},
+        },
+    )
+
+    cache = currency.fetch_rates("isk")
+
+    assert cache.rates == {"eur": decimal.Decimal("0.0069542179")}
+
+
+def test_fetch_rates_rejects_duplicate_normalized_provider_rate_keys(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        currency,
+        "_load_json_url",
+        lambda url: {
+            "date": "2026-04-24",
+            "isk": {"EUR": 0.0069542179, "eur": 0.0069542180},
+        },
+    )
+
+    with pytest.raises(RuntimeError, match="Unable to fetch rates for isk"):
+        currency.fetch_rates("isk")
+
+
+def test_fetch_rates_rejects_invalid_provider_rate_key(monkeypatch):
+    monkeypatch.setattr(
+        currency,
+        "_load_json_url",
+        lambda url: {
+            "date": "2026-04-24",
+            "isk": {"not-currency": 1},
+        },
+    )
+
+    with pytest.raises(RuntimeError, match="Unable to fetch rates for isk"):
+        currency.fetch_rates("isk")
+
+
+@pytest.mark.parametrize("rate", ["0", "-0.1"])
+def test_fetch_rates_rejects_non_positive_provider_rates(
+    rate,
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        currency,
+        "_load_json_url",
+        lambda url: {
+            "date": "2026-04-24",
+            "isk": {"eur": rate},
+        },
+    )
+
+    with pytest.raises(RuntimeError, match="Unable to fetch rates for isk"):
+        currency.fetch_rates("isk")
 
 
 def test_fetch_rates_uses_fallback_after_primary_failure(monkeypatch):
