@@ -4,11 +4,116 @@ import decimal
 import json
 import os
 import shutil
+import struct
 import urllib.error
+import zlib
+from pathlib import Path
 
 import pytest
 
 from converter import currency
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def _png_size_and_alpha_bbox(path):
+    data = path.read_bytes()
+    assert data.startswith(b"\x89PNG\r\n\x1a\n")
+
+    cursor = 8
+    idat_chunks = []
+    palette_alpha = b""
+    while cursor < len(data):
+        length = struct.unpack(">I", data[cursor:cursor + 4])[0]
+        chunk_type = data[cursor + 4:cursor + 8]
+        chunk_data = data[cursor + 8:cursor + 8 + length]
+        cursor += length + 12
+
+        if chunk_type == b"IHDR":
+            width, height, bit_depth, color_type, _, _, interlace = (
+                struct.unpack(">IIBBBBB", chunk_data)
+            )
+        elif chunk_type == b"IDAT":
+            idat_chunks.append(chunk_data)
+        elif chunk_type == b"tRNS":
+            palette_alpha = chunk_data
+        elif chunk_type == b"IEND":
+            break
+
+    assert bit_depth == 8
+    assert color_type in {3, 4, 6}
+    assert interlace == 0
+
+    bytes_per_pixel = {3: 1, 4: 2, 6: 4}[color_type]
+    row_length = width * bytes_per_pixel
+    raw = zlib.decompress(b"".join(idat_chunks))
+    previous = bytearray(row_length)
+    bbox = None
+    offset = 0
+
+    for y in range(height):
+        filter_type = raw[offset]
+        row = bytearray(raw[offset + 1:offset + 1 + row_length])
+        offset += row_length + 1
+
+        for x in range(row_length):
+            left = row[x - bytes_per_pixel] if x >= bytes_per_pixel else 0
+            up = previous[x]
+            up_left = (
+                previous[x - bytes_per_pixel]
+                if x >= bytes_per_pixel
+                else 0
+            )
+
+            if filter_type == 1:
+                row[x] = (row[x] + left) & 0xFF
+            elif filter_type == 2:
+                row[x] = (row[x] + up) & 0xFF
+            elif filter_type == 3:
+                row[x] = (row[x] + ((left + up) // 2)) & 0xFF
+            elif filter_type == 4:
+                row[x] = (row[x] + _paeth(left, up, up_left)) & 0xFF
+            else:
+                assert filter_type == 0
+
+        for x in range(width):
+            if color_type == 3:
+                palette_index = row[x]
+                alpha = (
+                    palette_alpha[palette_index]
+                    if palette_index < len(palette_alpha)
+                    else 255
+                )
+            else:
+                alpha_offset = 1 if color_type == 4 else 3
+                alpha = row[(x * bytes_per_pixel) + alpha_offset]
+
+            if alpha:
+                if bbox is None:
+                    bbox = [x, y, x + 1, y + 1]
+                else:
+                    bbox[0] = min(bbox[0], x)
+                    bbox[1] = min(bbox[1], y)
+                    bbox[2] = max(bbox[2], x + 1)
+                    bbox[3] = max(bbox[3], y + 1)
+
+        previous = row
+
+    return (width, height), None if bbox is None else tuple(bbox)
+
+
+def _paeth(left, up, up_left):
+    estimate = left + up - up_left
+    left_distance = abs(estimate - left)
+    up_distance = abs(estimate - up)
+    up_left_distance = abs(estimate - up_left)
+
+    if left_distance <= up_distance and left_distance <= up_left_distance:
+        return left
+    if up_distance <= up_left_distance:
+        return up
+    return up_left
 
 
 def test_parse_currency_query_variants():
@@ -84,6 +189,60 @@ def test_parse_default_currency_query_rejects_grouped_amounts():
     assert currency.parse_default_query("1,000 usd") is None
 
 
+def test_currency_symbols_use_common_display_values():
+    assert currency.currency_symbol("usd") == "$"
+    assert currency.currency_symbol("eur") == "€"
+    assert currency.currency_symbol("cny") == "CN¥"
+    assert currency.currency_symbol("isk") == "kr"
+
+
+def test_currency_icon_path_uses_flag_when_currency_has_logical_region():
+    assert (
+        currency.currency_icon_path("usd")
+        == "icons/currencies/flags/usd.png"
+    )
+    assert (
+        currency.currency_icon_path("eur")
+        == "icons/currencies/flags/eur.png"
+    )
+    assert (
+        currency.currency_icon_path("cad")
+        == "icons/currencies/flags/cad.png"
+    )
+
+
+def test_currency_icon_path_keeps_neutral_badge_for_regional_currency():
+    assert currency.currency_icon_path("xof") == "icons/currencies/xof.png"
+
+
+def test_currency_icon_assets_exist_for_all_currency_codes():
+    missing = [
+        code for code in sorted(currency.CURRENCY_CODES)
+        if not (REPO_ROOT / currency.currency_icon_path(code)).exists()
+    ]
+
+    assert missing == []
+
+
+def test_currency_icons_use_unit_icon_canvas_style():
+    unit_size, _ = _png_size_and_alpha_bbox(REPO_ROOT / "icons/ruler9.png")
+    assert unit_size == (512, 512)
+
+    for icon_path in (
+        "icons/currencies/flags/usd.png",
+        "icons/currencies/flags/eur.png",
+        "icons/currencies/xof.png",
+    ):
+        icon_size, bbox = _png_size_and_alpha_bbox(REPO_ROOT / icon_path)
+
+        assert icon_size == unit_size
+        assert bbox is not None
+        assert bbox[0] > 0
+        assert bbox[1] > 0
+        assert bbox[2] < icon_size[0]
+        assert bbox[3] < icon_size[1]
+
+
 def test_parse_currency_query_rejects_grouped_amounts():
     assert currency.parse_query("1,000 usd eur") is None
     assert currency.parse_query("1,000.50 usd eur") is None
@@ -131,8 +290,11 @@ def test_read_rate_cache_normalizes_uppercase_rate_keys(tmp_path):
     response = currency.convert_query(tmp_path, "2000 isk eur")
 
     assert loaded.rates == {"eur": decimal.Decimal("0.0069542179")}
-    assert response.items[0].title == "2000 ISK = 13.908436 EUR"
+    assert response.items[0].title == (
+        "2000 ISK (kr) = 13.908436 EUR (€)"
+    )
     assert response.items[0].valid is True
+    assert response.items[0].icon == "icons/currencies/flags/eur.png"
 
 
 def test_read_rate_cache_rejects_invalid_rate_key(tmp_path):
@@ -259,8 +421,11 @@ def test_convert_with_fresh_cache_returns_valid_item(tmp_path):
 
     response = currency.convert_query(tmp_path, "2000 isk eur")
 
-    assert response.items[0].title == "2000 ISK = 13.908436 EUR"
+    assert response.items[0].title == (
+        "2000 ISK (kr) = 13.908436 EUR (€)"
+    )
     assert response.items[0].arg == "13.908436"
+    assert response.items[0].icon == "icons/currencies/flags/eur.png"
     assert response.items[0].subtitle == (
         "Icelandic Krona to Euro - Rates from 2026-04-24"
     )
@@ -285,12 +450,20 @@ def test_convert_default_query_returns_default_target_items(tmp_path):
     response = currency.convert_query(tmp_path, "5 usd")
 
     assert [item.title for item in response.items] == [
-        "5 USD = 4.5 EUR",
-        "5 USD = 4 GBP",
-        "5 USD = 750 JPY",
-        "5 USD = 36 CNY",
-        "5 USD = 6.5 CAD",
-        "5 USD = 7.5 AUD",
+        "5 USD ($) = 4.5 EUR (€)",
+        "5 USD ($) = 4 GBP (£)",
+        "5 USD ($) = 750 JPY (¥)",
+        "5 USD ($) = 36 CNY (CN¥)",
+        "5 USD ($) = 6.5 CAD (CA$)",
+        "5 USD ($) = 7.5 AUD (A$)",
+    ]
+    assert [item.icon for item in response.items] == [
+        "icons/currencies/flags/eur.png",
+        "icons/currencies/flags/gbp.png",
+        "icons/currencies/flags/jpy.png",
+        "icons/currencies/flags/cny.png",
+        "icons/currencies/flags/cad.png",
+        "icons/currencies/flags/aud.png",
     ]
     assert response.items[0].subtitle == (
         "US Dollar to Euro - Rates from 2026-04-24"
@@ -316,13 +489,14 @@ def test_convert_default_query_includes_usd_for_eur_source(tmp_path):
     response = currency.convert_query(tmp_path, "5 eur")
 
     assert [item.title for item in response.items] == [
-        "5 EUR = 5.5 USD",
-        "5 EUR = 4 GBP",
-        "5 EUR = 750 JPY",
-        "5 EUR = 36 CNY",
-        "5 EUR = 6.5 CAD",
-        "5 EUR = 7.5 AUD",
+        "5 EUR (€) = 5.5 USD ($)",
+        "5 EUR (€) = 4 GBP (£)",
+        "5 EUR (€) = 750 JPY (¥)",
+        "5 EUR (€) = 36 CNY (CN¥)",
+        "5 EUR (€) = 6.5 CAD (CA$)",
+        "5 EUR (€) = 7.5 AUD (A$)",
     ]
+    assert response.items[0].icon == "icons/currencies/flags/usd.png"
     assert response.items[0].subtitle == (
         "Euro to US Dollar - Rates from 2026-04-24"
     )
@@ -356,8 +530,8 @@ def test_convert_default_query_with_stale_cache_marks_each_result(
     )
 
     assert [item.title for item in response.items] == [
-        "5 USD = 4.5 EUR",
-        "5 USD = 4 GBP",
+        "5 USD ($) = 4.5 EUR (€)",
+        "5 USD ($) = 4 GBP (£)",
     ]
     assert all("stale, refreshing" in item.subtitle for item in response.items)
 
@@ -634,7 +808,9 @@ def test_convert_large_decimal_amount_does_not_crash(tmp_path):
 
     assert response.items[0].valid is True
     assert response.items[0].arg == amount
-    assert response.items[0].title == f"{amount} ISK = {amount} EUR"
+    assert response.items[0].title == (
+        f"{amount} ISK (kr) = {amount} EUR (€)"
+    )
 
 
 def test_convert_tiny_nonzero_result_does_not_format_as_zero(tmp_path):

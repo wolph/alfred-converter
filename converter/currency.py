@@ -227,6 +227,201 @@ CURRENCY_NAMES = {
     "zmw": "Zambian Kwacha",
     "zwg": "Zimbabwean Gold",
 }
+CURRENCY_SYMBOLS = {
+    "aud": "A$",
+    "brl": "R$",
+    "cad": "CA$",
+    "chf": "CHF",
+    "cny": "CN¥",
+    "czk": "Kč",
+    "dkk": "kr.",
+    "eur": "€",
+    "gbp": "£",
+    "hkd": "HK$",
+    "huf": "Ft",
+    "ils": "₪",
+    "isk": "kr",
+    "jpy": "¥",
+    "krw": "₩",
+    "mxn": "MX$",
+    "nok": "kr",
+    "nzd": "NZ$",
+    "pln": "zł",
+    "ron": "lei",
+    "rub": "₽",
+    "sek": "kr",
+    "sgd": "S$",
+    "thb": "฿",
+    "try": "₺",
+    "twd": "NT$",
+    "uah": "₴",
+    "usd": "$",
+    "vnd": "₫",
+    "zar": "R",
+}
+CURRENCY_FLAG_REGIONS = {
+    "aed": "AE",
+    "afn": "AF",
+    "all": "AL",
+    "amd": "AM",
+    "aoa": "AO",
+    "ars": "AR",
+    "aud": "AU",
+    "awg": "AW",
+    "azn": "AZ",
+    "bam": "BA",
+    "bbd": "BB",
+    "bdt": "BD",
+    "bgn": "BG",
+    "bhd": "BH",
+    "bif": "BI",
+    "bmd": "BM",
+    "bnd": "BN",
+    "bob": "BO",
+    "bov": "BO",
+    "brl": "BR",
+    "bsd": "BS",
+    "btn": "BT",
+    "bwp": "BW",
+    "byn": "BY",
+    "bzd": "BZ",
+    "cad": "CA",
+    "cdf": "CD",
+    "che": "CH",
+    "chf": "CH",
+    "chw": "CH",
+    "clf": "CL",
+    "clp": "CL",
+    "cny": "CN",
+    "cop": "CO",
+    "cou": "CO",
+    "crc": "CR",
+    "cuc": "CU",
+    "cup": "CU",
+    "cve": "CV",
+    "czk": "CZ",
+    "djf": "DJ",
+    "dkk": "DK",
+    "dop": "DO",
+    "dzd": "DZ",
+    "egp": "EG",
+    "ern": "ER",
+    "etb": "ET",
+    "eur": "EU",
+    "fjd": "FJ",
+    "fkp": "FK",
+    "gbp": "GB",
+    "gel": "GE",
+    "ghs": "GH",
+    "gip": "GI",
+    "gmd": "GM",
+    "gnf": "GN",
+    "gtq": "GT",
+    "gyd": "GY",
+    "hkd": "HK",
+    "hnl": "HN",
+    "htg": "HT",
+    "huf": "HU",
+    "idr": "ID",
+    "ils": "IL",
+    "inr": "IN",
+    "iqd": "IQ",
+    "irr": "IR",
+    "isk": "IS",
+    "jmd": "JM",
+    "jod": "JO",
+    "jpy": "JP",
+    "kes": "KE",
+    "kgs": "KG",
+    "khr": "KH",
+    "kmf": "KM",
+    "kpw": "KP",
+    "krw": "KR",
+    "kwd": "KW",
+    "kyd": "KY",
+    "kzt": "KZ",
+    "lak": "LA",
+    "lbp": "LB",
+    "lkr": "LK",
+    "lrd": "LR",
+    "lsl": "LS",
+    "lyd": "LY",
+    "mad": "MA",
+    "mdl": "MD",
+    "mga": "MG",
+    "mkd": "MK",
+    "mmk": "MM",
+    "mnt": "MN",
+    "mop": "MO",
+    "mru": "MR",
+    "mur": "MU",
+    "mvr": "MV",
+    "mwk": "MW",
+    "mxn": "MX",
+    "mxv": "MX",
+    "myr": "MY",
+    "mzn": "MZ",
+    "nad": "NA",
+    "ngn": "NG",
+    "nio": "NI",
+    "nok": "NO",
+    "npr": "NP",
+    "nzd": "NZ",
+    "omr": "OM",
+    "pab": "PA",
+    "pen": "PE",
+    "pgk": "PG",
+    "php": "PH",
+    "pkr": "PK",
+    "pln": "PL",
+    "pyg": "PY",
+    "qar": "QA",
+    "ron": "RO",
+    "rsd": "RS",
+    "rub": "RU",
+    "rwf": "RW",
+    "sar": "SA",
+    "sbd": "SB",
+    "scr": "SC",
+    "sdg": "SD",
+    "sek": "SE",
+    "sgd": "SG",
+    "shp": "SH",
+    "sle": "SL",
+    "sll": "SL",
+    "sos": "SO",
+    "srd": "SR",
+    "ssp": "SS",
+    "stn": "ST",
+    "svc": "SV",
+    "syp": "SY",
+    "szl": "SZ",
+    "thb": "TH",
+    "tjs": "TJ",
+    "tmt": "TM",
+    "tnd": "TN",
+    "top": "TO",
+    "try": "TR",
+    "ttd": "TT",
+    "twd": "TW",
+    "tzs": "TZ",
+    "uah": "UA",
+    "ugx": "UG",
+    "usd": "US",
+    "usn": "US",
+    "uyi": "UY",
+    "uyu": "UY",
+    "uzs": "UZ",
+    "ved": "VE",
+    "ves": "VE",
+    "vnd": "VN",
+    "vuv": "VU",
+    "wst": "WS",
+    "yer": "YE",
+    "zar": "ZA",
+    "zmw": "ZM",
+    "zwg": "ZW",
+}
 
 PRIMARY_URL = (
     "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/"
@@ -397,6 +592,30 @@ def currency_name(code):
     return CURRENCY_NAMES.get(code.lower(), code.upper())
 
 
+def currency_symbol(code):
+    return CURRENCY_SYMBOLS.get(code.lower(), code.upper())
+
+
+def currency_label(code):
+    normalized = code.lower()
+    symbol = currency_symbol(normalized)
+    code_text = normalized.upper()
+    if symbol == code_text:
+        return code_text
+    return f"{code_text} ({symbol})"
+
+
+def currency_amount_label(amount, code):
+    return f"{_format_decimal(amount)} {currency_label(code)}"
+
+
+def currency_icon_path(code):
+    normalized = normalize_base(code)
+    if normalized in CURRENCY_FLAG_REGIONS:
+        return f"icons/currencies/flags/{normalized}.png"
+    return f"icons/currencies/{normalized}.png"
+
+
 def _normalize_rates(rates, key_error_message, value_error_message):
     if not isinstance(rates, dict):
         raise ValueError("rates must be a mapping")
@@ -445,7 +664,7 @@ def _conversion_item(query, cache, stale=False, refresh_launched=False):
                 f"{query.source.upper()} cache"
             ),
             valid=False,
-            icon="icons/dollars17.png",
+            icon=currency_icon_path(query.target),
         )
 
     multiplication_precision = max(
@@ -468,14 +687,13 @@ def _conversion_item(query, cache, stale=False, refresh_launched=False):
     return output.Item(
         uid=f"currency:{query.source}:{query.target}",
         title=(
-            f"{_format_decimal(query.amount)} "
-            f"{query.source.upper()} = "
-            f"{converted} {query.target.upper()}"
+            f"{currency_amount_label(query.amount, query.source)} = "
+            f"{converted} {currency_label(query.target)}"
         ),
         subtitle=subtitle,
         arg=converted,
         autocomplete=f"{converted} {query.target.upper()}",
-        icon="icons/dollars17.png",
+        icon=currency_icon_path(query.target),
     )
 
 

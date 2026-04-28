@@ -1070,6 +1070,7 @@ Examples:
 Rates refresh automatically on the first currency use of a new day. If cached rates are stale, Alfred shows the stale result immediately while a background refresh runs. If no rates exist yet, Alfred shows a rates-updating item; retry the query shortly after.
 
 Short currency queries such as 5 usd show the configured default target currencies. The default list is usd,eur,gbp,jpy,cny,cad,aud and can be changed with CURRENCY_DEFAULT_TARGETS in the Alfred workflow configuration.
+Currency results include symbols and target-currency icons. Currencies with a clear country or region use flag badges; ambiguous regional and special currencies keep neutral currency badges.
 
 Manual currency update:
 

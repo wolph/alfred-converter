@@ -67,6 +67,9 @@ the query shortly after.
 Short currency queries such as ``5 usd`` show the configured default target
 currencies. The default list is ``usd,eur,gbp,jpy,cny,cad,aud`` and can be changed
 with ``CURRENCY_DEFAULT_TARGETS`` in the Alfred workflow configuration.
+Currency results include symbols and target-currency icons. Currencies with
+a clear country or region use flag badges; ambiguous regional and special
+currencies keep neutral currency badges.
 
 To update a base currency manually:
 

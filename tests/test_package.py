@@ -67,6 +67,8 @@ def test_workflow_archive_excludes_generated_artifacts(tmp_path):
 
     assert "info.plist" in names
     assert "converter/main.py" in names
+    assert "icons/currencies/flags/usd.png" in names
+    assert "icons/currencies/xof.png" in names
     assert "poscUnits22.xml" in names
     assert all("__pycache__" not in name for name in names)
     assert all(not name.endswith(".pyc") for name in names)
