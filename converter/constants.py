@@ -1,5 +1,5 @@
-import math
 import os
+from pathlib import Path
 import re
 import fractions
 
@@ -13,8 +13,22 @@ FRACTIONAL_MAX_DEVIATION = int(
     os.environ.get('FRACTIONAL_MAX_DEVIATION', '10'), 10
 )
 
-UNITS_XML_FILE = 'poscUnits22.xml'
+
+def _resolve_units_xml_file():
+    override = os.environ.get('UNITS_XML_FILE')
+    if override:
+        return Path(override)
+
+    repo_file = Path(__file__).resolve().parent.parent / 'poscUnits22.xml'
+    if repo_file.exists():
+        return repo_file
+
+    return Path(__file__).with_name('poscUnits22.xml')
+
+
+UNITS_XML_FILE = _resolve_units_xml_file()
 UNITS_PICKLE_FILE = 'units.pickle'
+UNITS_CACHE_VERSION = 2
 
 OUTPUT_DECIMALS = int(os.environ.get('OUTPUT_DECIMALS') or 6)
 DECIMAL_SEPARATOR = os.environ.get('DECIMAL_SEPARATOR') or '.'
@@ -28,7 +42,7 @@ while _fraction.denominator <= FRACTIONAL_PRECISION.denominator:
 SOURCE_PATTERN = r'^(?P<quantity>.*[\d.]+)\s*(?P<from>[^\d\s]([^\s]*|.+?))'
 SOURCE_RE = re.compile(f'{SOURCE_PATTERN}$', re.IGNORECASE | re.VERBOSE)
 
-FULL_PATTERN = r'(\s+as|\s+to|\s+in|\s*>|\s*=)\s(?P<to>[^\d\s][^\s]*)$'
+FULL_PATTERN = r'(\s+as|\s+to|\s+in|\s*>|\s*=)\s(?P<to>[^\s]+)$'
 FULL_RE = re.compile(
     SOURCE_PATTERN + FULL_PATTERN + '$', re.IGNORECASE | re.VERBOSE
 )
@@ -128,8 +142,10 @@ EXPANSIONS = {
 
 # Blacklisting a bunch of esoteric units
 ANNOTATION_BLACKLIST = {
+    'cs',
     'chUS',
     'ftUS',
+    'hs',
     'inUS',
     'lkUS',
     'ftGC',
@@ -139,6 +155,7 @@ ANNOTATION_BLACKLIST = {
     'ftBnB',
     'ftCla',
     'ftInd',
+    '100ka',
 }
 
 NAME_BLACKLIST = {

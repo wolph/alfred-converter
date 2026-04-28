@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alfred-converter"
+version = "0.0.0"
+description = "Alfred unit converter and calculator workflow"
+readme = "README.rst"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+  {name = "Rick van Hattem"}
+]
+
+[project.optional-dependencies]
+dev = [
+  "flake8",
+  "pytest",
+  "pytest-cov",
+]
+
+[tool.setuptools]
+packages = ["converter"]
+
+[tool.setuptools.package-data]
+converter = ["poscUnits22.xml"]

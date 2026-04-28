@@ -93,7 +93,9 @@ class Units(object):
         self.base_units = {}
         self.quantity_types = collections.defaultdict(set)
 
-    def get_converter(self, elem) -> tuple[str | None, ConversionParams]:
+    def get_converter(
+        self, elem
+    ) -> typing.Tuple[typing.Optional[str], ConversionParams]:
         base_unit = elem.find('ConversionToBaseUnit')
         # Convert to decimals later to make it faster :)
         a = '0'
@@ -175,6 +177,7 @@ class Units(object):
                 self.register(elem)
 
         extra_units.register_post(self)
+        self.cache_version = constants.UNITS_CACHE_VERSION
 
     def convert(self, query):
         '''Convert a query to a list of units with quantities
@@ -194,6 +197,8 @@ class Units(object):
                     from_ = self.get(match.group('from'))
                     quantity = parse_quantity(match.group('quantity'))
                     tos = from_.others(match.group('to'))
+                    if not tos:
+                        return
                 elif source_match:
                     from_ = self.get(source_match.group('from'))
                     quantity = parse_quantity(source_match.group('quantity'))
@@ -250,10 +255,10 @@ class Unit:
     id: str
     name: str
     fractional: bool
-    split: bool | None
-    annotations: set[str]
-    quantity_types: set[str]
-    base_unit: str | None
+    split: typing.Optional[str]
+    annotations: typing.Set[str]
+    quantity_types: typing.Set[str]
+    base_unit: typing.Optional[str]
     conversion_params: ConversionParams
 
     def __init__(
@@ -261,14 +266,14 @@ class Unit:
         units: Units,
         id: str,
         name: str,
-        annotations: list[str],
-        quantity_types: set[str],
-        base_unit: str | None,
-        conversion_params: tuple[
+        annotations: typing.List[str],
+        quantity_types: typing.Set[str],
+        base_unit: typing.Optional[str],
+        conversion_params: typing.Tuple[
             _DecimalStr, _DecimalStr, _DecimalStr, _DecimalStr
         ],
         fractional: bool = False,
-        split: bool | None = None,
+        split: typing.Optional[str] = None,
     ):
         self.units = units
         self.id = id
@@ -315,6 +320,11 @@ class Unit:
             if quantity_type in constants.ICONS:
                 return get_color_prefix() + constants.ICONS[quantity_type]
 
+    def matches_token(self, token):
+        token = token.lower()
+        annotations = (annotation.lower() for annotation in self.annotations)
+        return token in {self.name.lower(), self.id.lower(), *annotations}
+
     def to_base(self, value: _FractionDecimalStr) -> _FractionDecimal:
         a, b, c, d = self.conversion_params
         if self.fractional:
@@ -359,27 +369,7 @@ class Unit:
         tos = sorted(tos, key=(lambda x: (len(x.id), x.name)))
 
         if keyword:
-            new_tos = [
-                to
-                for to in tos
-                if (
-                    keyword in to.name
-                    or keyword in to.id
-                    or keyword in to.annotations
-                )
-            ]
-            if new_tos:
-                return new_tos
-
-            # This might be a scenario that does not occur anymore, but it
-            # doesn't hurt to keep it
-            for to in tos:  # pragma: no cover
-                for annotation in to.annotations:
-                    if to.id in annotation:
-                        new_tos.append(to)
-                        break
-
-            return new_tos  # pragma: no cover
+            return [to for to in tos if to.matches_token(keyword)]
         else:
             return tos
 
@@ -459,13 +449,62 @@ def change_decimal(function):
     return _change_decimal
 
 
+def sort_abs_magnitude(result):
+    from_, quantity, to = result
+
+    if not from_ or not to or from_ == to:
+        return infinity
+
+    base_quantity = from_.to_base(quantity)
+    new_quantity = to.from_base(base_quantity)
+
+    if to.fractional:
+        abs_decimal_value = fraction_to_decimal(new_quantity).copy_abs()
+    elif isinstance(new_quantity, decimal.Decimal):
+        abs_decimal_value = new_quantity.copy_abs()
+    else:
+        return infinity
+
+    if abs_decimal_value.is_zero():
+        return infinity
+
+    return abs(abs_decimal_value.log10())
+
+
+def unit_matches_token(unit, token):
+    return unit.matches_token(token)
+
+
+def sort_explicit_target(result, target_token):
+    from_, _, to = result
+    target_matches_to = to and unit_matches_token(to, target_token)
+    target_matches_from = from_ and unit_matches_token(from_, target_token)
+    requested_identity = from_ == to and target_matches_from
+
+    return (
+        not target_matches_to,
+        not requested_identity,
+        sort_abs_magnitude(result),
+    )
+
+
 def main(units: Units, query: str, create_item):
     create_item = change_decimal(create_item)
     query = clean_query(query)
     left = get_units_left()
     max_magnitude = get_max_magnitude()
 
-    for from_, quantity, to in units.convert(query):
+    results = list(units.convert(query))
+    match = constants.FULL_RE.match(query)
+    if match:
+        target_token = match.group('to')
+        sort_key = functools.partial(
+            sort_explicit_target, target_token=target_token
+        )
+    else:
+        sort_key = sort_abs_magnitude
+    results.sort(key=sort_key)
+    for from_, quantity, to in results:
         if to and to.is_blacklisted():  # pragma: no cover
             continue
 

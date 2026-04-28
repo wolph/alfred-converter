@@ -1,6 +1,6 @@
 import pytest
 
-from converter import constants, convert
+from converter import constants, convert, safe_math
 
 EXPRESSIONS = {
     '1-0.5': '0.5',
@@ -30,7 +30,7 @@ EXPRESSIONS = {
     '113 in to ft': 'inch 113 = foot 9 inch 5',
     '100 pounds to ounces': 'pounds mass 100 = ounce mass 1600',
     '113.125 in to ft': '113.125 inch = 9 foot 5 1/8 inch',
-    '10 ft to i': '10 foot = 3048 millimeters',
+    '10 ft to mm': '10 foot = 3048 millimeters',
     '1/4"': '0.25 inch = 1/4 inch',
     '1/200"': '0.005 inch = 5 mil, a thousandth of an inch',
     '0f in c': '0 degree Fahrenheit = -17.777778 degrees Celsius',
@@ -131,3 +131,76 @@ def test_decimal_separator(expression, expected, monkeypatch, units):
         raise RuntimeError(
             '%r didnt return, expected: %r' % (expression, expected)
         )
+
+
+def test_seconds_prioritize_minute_conversion(monkeypatch, units):
+    monkeypatch.setenv("UNITS_SIDE", "right")
+    titles = [
+        item["title"]
+        for item in convert.main(units, "100 s", dict)
+    ]
+
+    assert titles[0] == "100 second = 1.666667 minutes"
+    assert "100 second = 1 hundred seconds" not in titles[:5]
+    assert "100 second = 10000 ten milli second" not in titles[:5]
+
+
+def test_rare_time_units_are_filtered(monkeypatch, units):
+    monkeypatch.setenv("UNITS_SIDE", "right")
+    titles = [
+        item["title"]
+        for item in convert.main(units, "0.02 s", dict)
+    ]
+
+    assert all("ten milli second" not in title for title in titles)
+    assert all("hundred seconds" not in title for title in titles)
+
+
+def test_explicit_blacklisted_target_returns_no_results(units):
+    assert list(convert.main(units, "1 s to cs", dict)) == []
+
+
+def test_explicit_digit_prefixed_blacklisted_target_returns_no_results(units):
+    assert list(convert.main(units, "1 s to 100ka", dict)) == []
+
+
+def test_explicit_unknown_target_returns_no_results(units):
+    assert list(convert.main(units, "1 s to xyz", dict)) == []
+
+
+def test_explicit_metric_identity_target_is_first(monkeypatch, units):
+    monkeypatch.setenv("UNITS_SIDE", "right")
+    titles = [
+        item["title"]
+        for item in convert.main(units, "10 m in m", dict)
+    ]
+
+    assert titles[0] == "10 meter = 10 meter"
+
+
+def test_explicit_time_identity_target_is_first(monkeypatch, units):
+    monkeypatch.setenv("UNITS_SIDE", "right")
+    titles = [
+        item["title"]
+        for item in convert.main(units, "100 s to s", dict)
+    ]
+
+    assert titles[0] == "100 second = 100 second"
+
+
+def test_explicit_target_match_beats_identity(monkeypatch, units):
+    monkeypatch.setenv("UNITS_SIDE", "right")
+    titles = [
+        item["title"]
+        for item in convert.main(units, "1 kg to g", dict)
+    ]
+
+    assert titles[0] == "1 kilogram = 1000 gram"
+
+
+def test_log_functions_keep_scientific_meaning():
+    assert str(safe_math.safe_eval("log(e^10)")) == "10"
+    assert str(safe_math.safe_eval(convert.clean_query("ln(e^10)"))) == "10"
+    assert str(safe_math.safe_eval("log10(e^10)")) == (
+        "4.342944819032518045543160246"
+    )
