@@ -104,6 +104,8 @@ Example queries
     inf - inf # Not actually possible, but we backtrack to "inf"
     0b1010 + 0xA - 050 # Test calculations with hex, oct and binary numbers
 
+.. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/currency.png
+
 .. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/bytes.png
 
 .. image:: https://raw.githubusercontent.com/WoLpH/alfred-converter/master/examples/exponent_rounding.png
