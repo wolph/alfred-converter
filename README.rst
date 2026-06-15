@@ -16,7 +16,7 @@ Installation
 
 To install use the following link:
 
-https://github.com/WoLpH/alfred-converter/blob/master/unit_converter.alfredworkflow
+https://github.com/WoLpH/alfred-converter/releases/latest/download/unit_converter.alfredworkflow
 
 Requirements
 ==================

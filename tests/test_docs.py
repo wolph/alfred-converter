@@ -6,6 +6,10 @@ def test_readme_documents_currency_and_log_behavior():
     readme = Path("README.rst").read_text(encoding="utf-8")
 
     assert "Python 3.8+" in readme
+    assert (
+        "https://github.com/WoLpH/alfred-converter/releases/latest/download/"
+        "unit_converter.alfredworkflow"
+    ) in readme
     assert "2000 isk eur" in readme
     assert "5 usd" in readme
     assert "CURRENCY_DEFAULT_TARGETS" in readme
